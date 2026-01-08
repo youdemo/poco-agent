@@ -4,3 +4,10 @@ repos:
     hooks:
       - id: ruff-check
       - id: ruff-format
+
+  - repo: https://github.com/facebook/pyrefly-pre-commit
+    rev: 0.47.0
+    hooks:
+      - id: pyrefly-check
+        pass_filenames: false
+        language: system
