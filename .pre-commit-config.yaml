@@ -3,12 +3,15 @@ repos:
     rev: v0.14.10
     hooks:
       - id: ruff-check
+        name: backend · lint
       - id: ruff-format
+        name: backend · format
 
   - repo: https://github.com/facebook/pyrefly-pre-commit
     rev: 0.47.0
     hooks:
       - id: pyrefly-check
+        name: backend · typecheck
         pass_filenames: false
         language: system
 
@@ -16,6 +19,7 @@ repos:
     rev: v9.39.1
     hooks:
       - id: eslint
+        name: frontend · lint
         args: ["--config", "frontend/eslint.config.mjs"]
         files: ^frontend/.*\.[jt]sx?$
         types: [file]
@@ -27,3 +31,4 @@ repos:
     rev: v3.7.4
     hooks:
       - id: prettier
+        name: frontend · format
