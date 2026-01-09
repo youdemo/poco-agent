@@ -11,3 +11,14 @@ repos:
       - id: pyrefly-check
         pass_filenames: false
         language: system
+
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v9.39.1
+    hooks:
+      - id: eslint
+        args: ["--config", "frontend/eslint.config.mjs"]
+        files: ^frontend/.*\.[jt]sx?$
+        types: [file]
+        additional_dependencies:
+          - eslint
+          - eslint-config-next
