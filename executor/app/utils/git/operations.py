@@ -609,6 +609,45 @@ def diff(
     return result.stdout
 
 
+def get_numstat(
+    cwd: str | Path | None = None, cached: bool = False
+) -> dict[str, tuple[int, int]]:
+    """
+    Get the numstat for changed files (added and deleted lines per file).
+
+    Args:
+        cwd: Working directory
+        cached: If True, get numstat for staged changes only
+
+    Returns:
+        dict: Mapping of file path to (added_lines, deleted_lines) tuple
+
+    Raises:
+        GitNotRepositoryError: If not a git repository
+    """
+    args = ["diff", "--numstat"]
+    if cached:
+        args.append("--cached")
+
+    result = _run_git_command(args, cwd=cwd, check=True)
+
+    numstat = {}
+    for line in result.stdout.strip().split("\n"):
+        if not line:
+            continue
+        parts = line.split("\t")
+        if len(parts) >= 3:
+            try:
+                added = int(parts[0]) if parts[0] != "-" else 0
+                deleted = int(parts[1]) if parts[1] != "-" else 0
+                file_path = parts[2]
+                numstat[file_path] = (added, deleted)
+            except ValueError:
+                continue
+
+    return numstat
+
+
 def create_branch(
     name: str,
     start_point: str | None = None,

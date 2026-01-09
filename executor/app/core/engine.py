@@ -1,19 +1,22 @@
+import os
+
 from claude_agent_sdk import ClaudeAgentOptions
 from claude_agent_sdk.client import ClaudeSDKClient
+from dotenv import load_dotenv
 
 from app.core.workspace import WorkspaceManager
 from app.hooks.base import ExecutionContext
 from app.hooks.manager import HookManager
 from app.schemas.request import TaskConfig
 
+load_dotenv()
+
 
 class AgentExecutor:
     def __init__(self, session_id: str, hooks: list):
         self.session_id = session_id
         self.hooks = HookManager(hooks)
-        self.workspace = WorkspaceManager(
-            mount_path="/Users/qychen/01-Develop/toto/test_workspace"
-        )
+        self.workspace = WorkspaceManager(mount_path="/Users/qychen/01-Develop/toto")
 
     async def execute(self, prompt: str, config: TaskConfig):
         await self.workspace.prepare(config)
@@ -27,6 +30,7 @@ class AgentExecutor:
                 setting_sources=["project"],
                 mcp_servers=config.mcp_config,
                 permission_mode="bypassPermissions",
+                model=os.environ["DEFAULT_MODEL"],
             )
 
             async with ClaudeSDKClient(options=options) as client:
