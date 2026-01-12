@@ -12,7 +12,7 @@ repos:
     hooks:
       - id: pyrefly-check
         name: backend · typecheck
-        pass_filenames: false
+        pass_filenames: true
         language: system
 
   - repo: https://github.com/pre-commit/mirrors-eslint
