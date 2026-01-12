@@ -1,5 +1,6 @@
 import logging
 import uuid
+from datetime import datetime, timezone
 from typing import Any
 
 from sqlalchemy.orm import Session
@@ -53,40 +54,81 @@ class CallbackService:
             block_type = block.get("_type", "")
 
             if "ToolUseBlock" in block_type:
+                tool_use_id = block.get("id")
                 tool_name = block.get("name")
                 tool_input = block.get("input")
 
-                if tool_name:
-                    ToolExecutionRepository.create(
-                        session_db=session_db,
-                        session_id=session_id,
-                        message_id=message_id,
-                        tool_name=tool_name,
-                        tool_input=tool_input,
-                    )
+                if not tool_use_id or not tool_name:
+                    continue
+
+                existing = ToolExecutionRepository.get_by_session_and_tool_use_id(
+                    session_db=session_db,
+                    session_id=session_id,
+                    tool_use_id=tool_use_id,
+                )
+                if existing:
+                    existing.tool_name = tool_name
+                    existing.tool_input = tool_input
+                    existing.message_id = message_id
                     logger.debug(
-                        f"Created tool execution for tool '{tool_name}' in message {message_id}"
+                        f"Updated tool execution (tool_use_id={tool_use_id}) in message {message_id}"
                     )
+                    continue
+
+                ToolExecutionRepository.create(
+                    session_db=session_db,
+                    session_id=session_id,
+                    message_id=message_id,
+                    tool_use_id=tool_use_id,
+                    tool_name=tool_name,
+                    tool_input=tool_input,
+                )
+                logger.debug(
+                    f"Created tool execution (tool_use_id={tool_use_id}, tool={tool_name}) in message {message_id}"
+                )
 
             elif "ToolResultBlock" in block_type:
                 tool_use_id = block.get("tool_use_id")
                 result_content = block.get("content")
                 is_error = block.get("is_error", False)
 
-                if tool_use_id:
+                if not tool_use_id:
+                    continue
+
+                tool_output = {"content": result_content} if result_content else None
+                existing = ToolExecutionRepository.get_by_session_and_tool_use_id(
+                    session_db=session_db,
+                    session_id=session_id,
+                    tool_use_id=tool_use_id,
+                )
+
+                if not existing:
                     ToolExecutionRepository.create(
                         session_db=session_db,
                         session_id=session_id,
                         message_id=message_id,
-                        tool_name=tool_use_id,
-                        tool_output={"content": result_content}
-                        if result_content
-                        else None,
-                        is_error=is_error,
+                        tool_use_id=tool_use_id,
+                        tool_name="unknown",
+                        tool_output=tool_output,
+                        result_message_id=message_id,
+                        is_error=bool(is_error),
                     )
                     logger.debug(
-                        f"Created tool result execution for '{tool_use_id}' in message {message_id}"
+                        f"Created tool execution placeholder (tool_use_id={tool_use_id}) in message {message_id}"
                     )
+                    continue
+
+                existing.tool_output = tool_output
+                existing.result_message_id = message_id
+                existing.is_error = bool(is_error)
+
+                if existing.duration_ms is None and existing.created_at is not None:
+                    duration = datetime.now(timezone.utc) - existing.created_at
+                    existing.duration_ms = int(duration.total_seconds() * 1000)
+
+                logger.debug(
+                    f"Updated tool execution result (tool_use_id={tool_use_id}) in message {message_id}"
+                )
 
     def _persist_message_and_tools(
         self, db: Session, session_id: uuid.UUID, message: dict[str, Any]

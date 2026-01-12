@@ -14,9 +14,11 @@ class ToolExecutionRepository:
         session_db: Session,
         session_id: uuid.UUID,
         message_id: int,
+        tool_use_id: str | None,
         tool_name: str,
         tool_input: dict[str, Any] | None = None,
         tool_output: dict[str, Any] | None = None,
+        result_message_id: int | None = None,
         is_error: bool = False,
         duration_ms: int | None = None,
     ) -> ToolExecution:
@@ -24,9 +26,11 @@ class ToolExecutionRepository:
         tool_execution = ToolExecution(
             session_id=session_id,
             message_id=message_id,
+            tool_use_id=tool_use_id,
             tool_name=tool_name,
             tool_input=tool_input,
             tool_output=tool_output,
+            result_message_id=result_message_id,
             is_error=is_error,
             duration_ms=duration_ms,
         )
@@ -39,6 +43,22 @@ class ToolExecutionRepository:
         return (
             session_db.query(ToolExecution)
             .filter(ToolExecution.id == execution_id)
+            .first()
+        )
+
+    @staticmethod
+    def get_by_session_and_tool_use_id(
+        session_db: Session,
+        session_id: uuid.UUID,
+        tool_use_id: str,
+    ) -> ToolExecution | None:
+        """Gets a tool execution by (session_id, tool_use_id)."""
+        return (
+            session_db.query(ToolExecution)
+            .filter(
+                ToolExecution.session_id == session_id,
+                ToolExecution.tool_use_id == tool_use_id,
+            )
             .first()
         )
 

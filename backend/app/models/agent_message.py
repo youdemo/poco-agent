@@ -24,5 +24,11 @@ class AgentMessage(Base, TimestampMixin):
 
     session: Mapped["AgentSession"] = relationship(back_populates="messages")
     tool_executions: Mapped[list["ToolExecution"]] = relationship(
-        back_populates="message", cascade="all, delete-orphan"
+        back_populates="message",
+        cascade="all, delete-orphan",
+        foreign_keys="ToolExecution.message_id",
+    )
+    tool_result_executions: Mapped[list["ToolExecution"]] = relationship(
+        back_populates="result_message",
+        foreign_keys="ToolExecution.result_message_id",
     )

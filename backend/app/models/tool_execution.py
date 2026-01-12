@@ -1,7 +1,15 @@
 import uuid
 from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import JSON, Boolean, ForeignKey, Integer, String, text
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    ForeignKey,
+    Integer,
+    String,
+    UniqueConstraint,
+    text,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models import Base, TimestampMixin
@@ -13,6 +21,13 @@ if TYPE_CHECKING:
 
 class ToolExecution(Base, TimestampMixin):
     __tablename__ = "tool_executions"
+    __table_args__ = (
+        UniqueConstraint(
+            "session_id",
+            "tool_use_id",
+            name="uq_tool_executions_session_tool_use_id",
+        ),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(
         primary_key=True, server_default=text("gen_random_uuid()")
@@ -23,11 +38,22 @@ class ToolExecution(Base, TimestampMixin):
     message_id: Mapped[int] = mapped_column(
         ForeignKey("agent_messages.id", ondelete="CASCADE"), nullable=False
     )
+    tool_use_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
     tool_name: Mapped[str] = mapped_column(String(100), nullable=False)
     tool_input: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
     tool_output: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+    result_message_id: Mapped[int | None] = mapped_column(
+        ForeignKey("agent_messages.id", ondelete="SET NULL"), nullable=True
+    )
     is_error: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     duration_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     session: Mapped["AgentSession"] = relationship(back_populates="tool_executions")
-    message: Mapped["AgentMessage"] = relationship(back_populates="tool_executions")
+    message: Mapped["AgentMessage"] = relationship(
+        back_populates="tool_executions",
+        foreign_keys=[message_id],
+    )
+    result_message: Mapped["AgentMessage"] = relationship(
+        foreign_keys=[result_message_id],
+        back_populates="tool_result_executions",
+    )
