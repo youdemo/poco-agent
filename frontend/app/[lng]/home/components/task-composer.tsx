@@ -43,7 +43,7 @@ export function TaskComposer({
             }
           }}
           placeholder={t("hero.placeholder")}
-          className="min-h-[60px] max-h-[40vh] w-full resize-none border-0 bg-transparent p-0 text-base shadow-none placeholder:text-muted-foreground/50 focus-visible:ring-0"
+          className="min-h-[60px] max-h-[40vh] w-full resize-none border-0 bg-transparent dark:bg-transparent p-0 text-base shadow-none placeholder:text-muted-foreground/50 focus-visible:ring-0"
           rows={2}
         />
       </div>
