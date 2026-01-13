@@ -16,9 +16,7 @@ class AgentExecutor:
     def __init__(self, session_id: str, hooks: list):
         self.session_id = session_id
         self.hooks = HookManager(hooks)
-        self.workspace = WorkspaceManager(
-            mount_path="/Users/qychen/01-Develop/opencowork"
-        )
+        self.workspace = WorkspaceManager(mount_path="/Users/qychen/01-Develop/toto")
 
     async def execute(self, prompt: str, config: TaskConfig):
         await self.workspace.prepare(config)

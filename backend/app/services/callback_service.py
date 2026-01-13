@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.repositories.message_repository import MessageRepository
 from app.repositories.tool_execution_repository import ToolExecutionRepository
+from app.repositories.usage_log_repository import UsageLogRepository
 from app.schemas.callback import (
     AgentCallbackRequest,
     CallbackResponse,
@@ -130,6 +131,42 @@ class CallbackService:
                     f"Updated tool execution result (tool_use_id={tool_use_id}) in message {message_id}"
                 )
 
+    def _extract_and_persist_usage(
+        self, db: Session, session_id: uuid.UUID, message: dict[str, Any]
+    ) -> None:
+        """Extracts and persists usage data from a ResultMessage."""
+        message_type = message.get("_type", "")
+
+        if "ResultMessage" not in message_type:
+            return
+
+        usage_data = message.get("usage")
+        if not usage_data or not isinstance(usage_data, dict):
+            logger.debug(f"No usage data in ResultMessage for session {session_id}")
+            return
+
+        total_cost_usd = message.get("total_cost_usd")
+        duration_ms = message.get("duration_ms")
+
+        UsageLogRepository.create(
+            session_db=db,
+            session_id=session_id,
+            total_cost_usd=total_cost_usd,
+            duration_ms=duration_ms,
+            usage_json=usage_data,
+        )
+        db.commit()
+
+        input_tokens = usage_data.get("input_tokens")
+        output_tokens = usage_data.get("output_tokens")
+
+        logger.info(
+            f"Persisted usage log for session {session_id}: "
+            f"cost=${total_cost_usd}, "
+            f"tokens={input_tokens}+{output_tokens}, "
+            f"duration={duration_ms}ms"
+        )
+
     def _persist_message_and_tools(
         self, db: Session, session_id: uuid.UUID, message: dict[str, Any]
     ) -> None:
@@ -187,6 +224,8 @@ class CallbackService:
 
         if callback.new_message:
             self._persist_message_and_tools(db, db_session.id, callback.new_message)
+            # Extract and persist usage data if this is a ResultMessage
+            self._extract_and_persist_usage(db, db_session.id, callback.new_message)
 
         # TODO: Persist state_patch
 

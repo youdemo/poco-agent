@@ -1,4 +1,5 @@
 import uuid
+from typing import Any
 
 from sqlalchemy.orm import Session
 
@@ -13,17 +14,15 @@ class UsageLogRepository:
         session_db: Session,
         session_id: uuid.UUID,
         total_cost_usd: float | None = None,
-        input_tokens: int | None = None,
-        output_tokens: int | None = None,
         duration_ms: int | None = None,
+        usage_json: dict[str, Any] | None = None,
     ) -> UsageLog:
         """Creates a new usage log."""
         usage_log = UsageLog(
             session_id=session_id,
             total_cost_usd=total_cost_usd,
-            input_tokens=input_tokens,
-            output_tokens=output_tokens,
             duration_ms=duration_ms,
+            usage_json=usage_json,
         )
         session_db.add(usage_log)
         return usage_log
