@@ -101,6 +101,17 @@ class WorkspaceManager:
             return None
         return workspace_dir
 
+    def resolve_user_id(self, session_id: str) -> str | None:
+        """Resolve user_id for a session by scanning workspace roots."""
+        if not self.active_dir.exists():
+            return None
+        for user_dir in self.active_dir.iterdir():
+            if not user_dir.is_dir():
+                continue
+            if (user_dir / session_id).exists():
+                return user_dir.name
+        return None
+
     def list_workspace_files(
         self,
         user_id: str,

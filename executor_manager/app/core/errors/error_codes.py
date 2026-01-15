@@ -18,6 +18,7 @@ class ErrorCode(Enum):
     EXECUTOR_UNAVAILABLE = (30001, "Executor service unavailable")
     BACKEND_UNAVAILABLE = (30002, "Backend service unavailable")
     CALLBACK_FORWARD_FAILED = (30003, "Failed to forward callback to backend")
+    EXTERNAL_SERVICE_ERROR = (50201, "External service error")
 
     WORKSPACE_NOT_FOUND = (22001, "Workspace not found")
     WORKSPACE_ARCHIVE_FAILED = (22002, "Failed to archive workspace")

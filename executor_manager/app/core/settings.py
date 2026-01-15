@@ -97,6 +97,12 @@ class Settings(BaseSettings):
     workspace_ignore_dot_files: bool = Field(
         default=True, alias="WORKSPACE_IGNORE_DOT_FILES"
     )
+    s3_endpoint: str | None = Field(default=None, alias="S3_ENDPOINT")
+    s3_access_key: str | None = Field(default=None, alias="S3_ACCESS_KEY")
+    s3_secret_key: str | None = Field(default=None, alias="S3_SECRET_KEY")
+    s3_region: str = Field(default="us-east-1", alias="S3_REGION")
+    s3_bucket: str | None = Field(default=None, alias="S3_BUCKET")
+    s3_force_path_style: bool = Field(default=True, alias="S3_FORCE_PATH_STYLE")
 
     model_config = SettingsConfigDict(
         env_file=".env",
