@@ -1,3 +1,5 @@
+import "server-only";
+
 import type { UserProfile, UserCredits } from "@/features/user/types";
 
 const DEFAULT_USER_PROFILE: UserProfile = {

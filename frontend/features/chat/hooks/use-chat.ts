@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { chatService } from "@/features/chat/services/chat-service";
+import { getExecutionSessionAction } from "@/features/chat/actions/query-actions";
 import type { ExecutionSession } from "@/features/chat/types";
 
 // Session polling interval (configurable via env, default 2500ms)
@@ -25,10 +25,10 @@ export function useChat(sessionId: string) {
     try {
       const currentSession = sessionRef.current;
       const currentProgress = currentSession?.progress || 0;
-      const updatedSession = await chatService.getExecutionSession(
+      const updatedSession = await getExecutionSessionAction({
         sessionId,
         currentProgress,
-      );
+      });
 
       // Handle user prompt persistence (logic from original hook)
       if (!currentSession) {

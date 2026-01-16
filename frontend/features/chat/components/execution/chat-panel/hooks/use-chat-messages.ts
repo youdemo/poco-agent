@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { sendMessageAction } from "@/features/chat/actions/session-actions";
-import { chatService } from "@/features/chat/services/chat-service";
+import { getMessagesAction } from "@/features/chat/actions/query-actions";
 import type { ChatMessage, ExecutionSession } from "@/features/chat/types";
 
 interface UseChatMessagesOptions {
@@ -108,7 +108,7 @@ export function useChatMessages({
         console.log("[Chat] Message sent successfully");
 
         // Fetch latest messages immediately to confirm sync
-        const serverMessages = await chatService.getMessages(sessionId);
+        const serverMessages = await getMessagesAction({ sessionId });
         setMessages((prev) => mergeMessages(prev, serverMessages));
       } catch (error) {
         console.error("[Chat] Failed to send message or get reply:", error);
@@ -130,9 +130,9 @@ export function useChatMessages({
 
     const fetchMessages = async () => {
       try {
-        const historyMessages = await chatService.getMessages(
-          session.session_id,
-        );
+        const historyMessages = await getMessagesAction({
+          sessionId: session.session_id,
+        });
 
         setMessages((prev) => {
           // If it's the first load (empty prev), just set it

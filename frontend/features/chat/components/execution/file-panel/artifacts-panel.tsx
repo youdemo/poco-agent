@@ -1,6 +1,4 @@
 "use client";
-
-import { chatService } from "@/features/chat/services/chat-service";
 import { FileSidebar } from "./file-sidebar";
 import { DocumentViewer } from "./document-viewer";
 import { ArtifactsHeader } from "./artifacts-header";
@@ -146,7 +144,6 @@ export function ArtifactsPanel({
                   name,
                   path: filePath,
                   type: "file",
-                  url: chatService.getWorkspaceFileUrl(sessionId, filePath),
                 };
               }
 

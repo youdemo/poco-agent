@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from "react";
-import { chatService } from "@/features/chat/services/chat-service";
+import { getExecutionSessionAction } from "@/features/chat/actions/query-actions";
 import { useAdaptivePolling } from "./use-adaptive-polling";
 import type { ExecutionSession } from "@/features/chat/types";
 
@@ -89,10 +89,10 @@ export function useExecutionSession({
 
     try {
       const currentProgress = progressRef.current;
-      const updatedSession = await chatService.getExecutionSession(
+      const updatedSession = await getExecutionSessionAction({
         sessionId,
         currentProgress,
-      );
+      });
 
       // Update ref for next poll
       progressRef.current = updatedSession.progress || 0;

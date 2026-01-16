@@ -1,6 +1,8 @@
 import { useState, useCallback, useEffect } from "react";
-import { projectsService } from "@/features/projects/services/projects-service";
-import { createProjectAction } from "@/features/projects/actions/project-actions";
+import {
+  createProjectAction,
+  listProjectsAction,
+} from "@/features/projects/actions/project-actions";
 import type { ProjectItem } from "@/features/projects/types";
 
 interface UseProjectsOptions {
@@ -15,7 +17,7 @@ export function useProjects(options: UseProjectsOptions = {}) {
 
   const fetchProjects = useCallback(async () => {
     try {
-      const data = await projectsService.listProjects();
+      const data = await listProjectsAction();
       setProjects(data);
     } catch (error) {
       console.error("Failed to fetch projects", error);

@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import { tasksService } from "@/features/projects/services/projects-service";
+import { listTaskHistoryAction } from "@/features/projects/actions/project-actions";
 import type { TaskHistoryItem } from "@/features/projects/types";
 
 interface UseTaskHistoryOptions {
@@ -26,7 +26,7 @@ export function useTaskHistory(options: UseTaskHistoryOptions = {}) {
       if (saved) {
         setTaskHistory(JSON.parse(saved));
       } else {
-        const data = await tasksService.listHistory();
+        const data = await listTaskHistoryAction();
         setTaskHistory(data);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
       }

@@ -2,12 +2,9 @@
  * Chat Service - Session execution and messaging
  */
 
-import {
-  apiClient,
-  API_ENDPOINTS,
-  API_PREFIX,
-  getApiBaseUrl,
-} from "@/lib/api-client";
+import "server-only";
+
+import { apiClient, API_ENDPOINTS } from "@/lib/api-client";
 import type {
   ExecutionSession,
   FileNode,
@@ -297,17 +294,8 @@ export const chatService = {
           name: change.path.split("/").pop() || change.path,
           path: change.path,
           type: "file",
-          url: chatService.getWorkspaceFileUrl(sessionId, change.path),
         }));
       }
-
-      const fixUrls = (nodes: FileNode[]): FileNode[] => {
-        return nodes.map((node) => ({
-          ...node,
-          url: chatService.getWorkspaceFileUrl(sessionId, node.path),
-          children: node.children ? fixUrls(node.children) : node.children,
-        }));
-      };
 
       const buildFileTree = (nodes: FileNode[]): FileNode[] => {
         const nodeMap = new Map<string, FileNode>();
@@ -412,17 +400,10 @@ export const chatService = {
       let tree = buildFileTree(rawFiles);
       tree = removeEmptyFolders(tree);
 
-      return fixUrls(tree);
+      return tree;
     } catch (error) {
       console.error("[Chat Service] Failed to get files:", error);
       return [];
     }
-  },
-
-  getWorkspaceFileUrl: (sessionId: string, filePath: string): string => {
-    return `${getApiBaseUrl()}${API_PREFIX}${API_ENDPOINTS.sessionWorkspaceFile(
-      sessionId,
-      filePath,
-    )}`;
   },
 };

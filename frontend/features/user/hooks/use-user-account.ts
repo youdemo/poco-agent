@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import { userService } from "@/features/user/services/user-service";
+import {
+  getUserCreditsAction,
+  getUserProfileAction,
+} from "@/features/user/actions/user-actions";
 import type { UserProfile, UserCredits } from "@/features/user/types";
 
 export function useUserAccount() {
@@ -11,8 +14,8 @@ export function useUserAccount() {
     const fetchUserData = async () => {
       try {
         const [profileData, creditsData] = await Promise.all([
-          userService.getProfile(),
-          userService.getCredits(),
+          getUserProfileAction(),
+          getUserCreditsAction(),
         ]);
 
         setProfile(profileData);

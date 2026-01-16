@@ -4,7 +4,7 @@ import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { History, MessageSquare } from "lucide-react";
-import { chatService } from "@/features/chat/services/chat-service";
+import { listSessionsAction } from "@/features/chat/actions/query-actions";
 import type { SessionResponse } from "@/features/chat/types";
 import { formatDistanceToNow } from "date-fns";
 import { zhCN } from "date-fns/locale";
@@ -21,7 +21,7 @@ export function ConversationHistory({}: ConversationHistoryProps) {
   React.useEffect(() => {
     async function fetchHistory() {
       try {
-        const sessions = await chatService.listSessions({ limit: 20 });
+        const sessions = await listSessionsAction({ limit: 20 });
         setHistory(sessions);
       } catch (error) {
         console.error("Failed to fetch history:", error);

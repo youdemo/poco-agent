@@ -6,7 +6,7 @@ import type {
   SearchResultProject,
   SearchResultMessage,
 } from "@/features/search/types";
-import { chatService } from "@/features/chat/services/chat-service";
+import { listSessionsAction } from "@/features/chat/actions/query-actions";
 
 /**
  * Hook for fetching and aggregating search data
@@ -22,7 +22,7 @@ export function useSearchData() {
     try {
       setIsLoading(true);
 
-      const sessions = await chatService.listSessions({ limit: 20 });
+      const sessions = await listSessionsAction({ limit: 20 });
 
       const realTasks: SearchResultTask[] = sessions.map((session) => ({
         id: session.session_id,

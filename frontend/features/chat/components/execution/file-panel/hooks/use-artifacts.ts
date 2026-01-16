@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { chatService } from "@/features/chat/services/chat-service";
+import { getFilesAction } from "@/features/chat/actions/query-actions";
 import type { FileNode } from "@/features/chat/types";
 
 export type ViewMode = "artifacts" | "document";
@@ -41,7 +41,6 @@ export function useArtifacts({
   const [viewMode, setViewMode] = useState<ViewMode>("artifacts");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-
   // Track previous session status to detect when session finishes
   const prevStatusRef = useRef<typeof sessionStatus>(undefined);
 
@@ -51,7 +50,7 @@ export function useArtifacts({
 
     try {
       setIsRefreshing(true);
-      const data = await chatService.getFiles(sessionId);
+      const data = await getFilesAction({ sessionId });
       setFiles(data);
     } catch (error) {
       console.error("[Artifacts] Failed to fetch workspace files:", error);
@@ -83,7 +82,7 @@ export function useArtifacts({
     const doFetch = async () => {
       try {
         setIsRefreshing(true);
-        const data = await chatService.getFiles(sessionId);
+        const data = await getFilesAction({ sessionId });
         setFiles(data);
       } catch (error) {
         console.error("[Artifacts] Failed to fetch workspace files:", error);
