@@ -253,7 +253,7 @@ const useFileTextContent = ({
           const isSameOrigin =
             typeof window !== "undefined" &&
             new URL(fallbackUrl, window.location.origin).origin ===
-              window.location.origin;
+            window.location.origin;
 
           const response = await fetch(fallbackUrl, {
             signal: controller.signal,
@@ -791,6 +791,29 @@ const DocumentViewerComponent = ({
   const extension = extractExtension(file);
   const docType = DOC_VIEWER_TYPE_MAP[extension];
   const textLanguage = getTextLanguage(extension, file.mimeType);
+
+  if (extension === "html" || extension === "htm") {
+    return (
+      <div
+        className={cn(
+          VIEW_CLASSNAME,
+          "flex min-w-0 flex-col rounded-xl border bg-card shadow-sm",
+        )}
+      >
+        <DocumentViewerToolbar
+          file={file}
+          subtitle="HTML PREVIEW"
+          resolvedUrl={resolvedUrl}
+        />
+        <iframe
+          src={resolvedUrl}
+          className="h-full w-full border-0 bg-white"
+          title={file.name}
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+        />
+      </div>
+    );
+  }
 
   if (docType) {
     const subtitle = (extension || docType).toUpperCase();

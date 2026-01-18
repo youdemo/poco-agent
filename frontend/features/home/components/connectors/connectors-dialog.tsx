@@ -43,7 +43,7 @@ export function ConnectorsDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-4xl p-0 h-[600px] flex flex-col gap-0 bg-[#1e1e1e] border-[#333] text-foreground overflow-hidden">
+      <DialogContent className="max-w-4xl p-0 h-[600px] flex flex-col gap-0 bg-background border-border text-foreground overflow-hidden">
         {selectedConnector ? (
           <ConnectorDetail
             connector={selectedConnector}
@@ -52,7 +52,7 @@ export function ConnectorsDialog({
         ) : (
           <>
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#333]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
               <DialogTitle>连接器</DialogTitle>
             </div>
 
@@ -91,12 +91,12 @@ export function ConnectorsDialog({
                     <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
                     <Input
                       placeholder="搜索"
-                      className="pl-9 h-9 bg-[#252525] border-[#333] focus-visible:ring-1 focus-visible:ring-primary"
+                      className="pl-9 h-9 bg-muted/50 border-border focus-visible:ring-1 focus-visible:ring-primary"
                     />
                   </div>
                 </div>
               </div>
-              <Separator className="bg-[#333]" />
+              <Separator className="bg-border" />
 
               <div className="flex-1 w-full overflow-y-auto custom-scrollbar">
                 <div className="p-6 grid grid-cols-2 gap-4 pb-20">

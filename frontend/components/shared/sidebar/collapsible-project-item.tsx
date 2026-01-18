@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useDroppable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils";
-import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
+import { SidebarMenuButton, SidebarMenuItem, SidebarMenuAction, SidebarMenuBadge } from "@/components/ui/sidebar";
 import type { ProjectItem, TaskHistoryItem } from "@/features/projects/types";
 import { TaskHistoryList } from "./task-history-list";
 import {
@@ -142,6 +142,7 @@ export function CollapsibleProjectItem({
       >
         {/* 项目标题行 */}
         <SidebarMenuButton
+          asChild
           className={cn(
             "h-8 justify-start gap-3 text-sm hover:bg-sidebar-accent pr-8",
             isOver && "bg-primary/20",
@@ -151,86 +152,86 @@ export function CollapsibleProjectItem({
           onPointerUp={clearPointerTimer}
           onPointerLeave={clearPointerTimer}
         >
-          {isSelectionMode && (
-            <Checkbox
-              checked={isSelected}
-              onCheckedChange={() => onToggleProjectSelection?.(project.id)}
-              className="size-4"
-              onClick={(e) => e.stopPropagation()}
-            />
-          )}
-          {/* 折叠按钮 */}
-          <span
-            role="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggle();
-            }}
-            className="size-4 shrink-0 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-          >
-            {isExpanded ? (
-              <ChevronDown className="size-3 transition-transform" />
-            ) : (
-              <ChevronRight className="size-3 transition-transform" />
+          <div className="cursor-pointer">
+            {isSelectionMode && (
+              <Checkbox
+                checked={isSelected}
+                onCheckedChange={() => onToggleProjectSelection?.(project.id)}
+                className="size-4"
+                onClick={(e) => e.stopPropagation()}
+              />
             )}
-          </span>
-
-          {/* 项目图标和名称 */}
-          <div
-            className="flex flex-1 items-center gap-3 min-w-0"
-            onClick={(e) => {
-              if (longPressTriggeredRef.current) {
-                e.preventDefault();
+            {/* 折叠按钮 */}
+            <span
+              role="button"
+              onClick={(e) => {
                 e.stopPropagation();
-                longPressTriggeredRef.current = false;
-                return;
-              }
-              e.stopPropagation();
-              if (isSelectionMode) {
-                onToggleProjectSelection?.(project.id);
-              } else {
-                onProjectClick();
-              }
-            }}
-          >
-            <Folder
-              className={cn(
-                "size-4 text-muted-foreground group-data-[collapsible=icon]:hidden",
-                isOver && "text-primary",
+                onToggle();
+              }}
+              className="size-4 shrink-0 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              {isExpanded ? (
+                <ChevronDown className="size-3 transition-transform" />
+              ) : (
+                <ChevronRight className="size-3 transition-transform" />
               )}
-            />
-            <span className={cn("flex-1 truncate", isOver && "text-primary")}>
-              {project.name}
             </span>
-          </div>
 
-          {isOver && (
-            <span className="ml-auto text-xs text-primary shrink-0">
-              移动到这里
-            </span>
-          )}
+            {/* 项目图标和名称 */}
+            <div
+              className="flex flex-1 items-center gap-3 min-w-0"
+              onClick={(e) => {
+                if (longPressTriggeredRef.current) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  longPressTriggeredRef.current = false;
+                  return;
+                }
+                e.stopPropagation();
+                if (isSelectionMode) {
+                  onToggleProjectSelection?.(project.id);
+                } else {
+                  onProjectClick();
+                }
+              }}
+            >
+              <Folder
+                className={cn(
+                  "size-4 text-muted-foreground group-data-[collapsible=icon]:hidden",
+                  isOver && "text-primary",
+                )}
+              />
+              <span className={cn("flex-1 truncate", isOver && "text-primary")}>
+                {project.name}
+              </span>
+            </div>
+
+            {isOver && (
+              <span className="ml-auto text-xs text-primary shrink-0">
+                移动到这里
+              </span>
+            )}
+          </div>
         </SidebarMenuButton>
 
         {/* 任务数量 - 默认显示，悬浮或下拉菜单打开时隐藏 */}
         {!isDropdownOpen && (
-          <div className="absolute top-1/2 right-2 -translate-y-1/2 flex items-center justify-center opacity-100 transition-opacity group-hover/project-item:opacity-0 pointer-events-none group-data-[collapsible=icon]:hidden">
-            <span className="text-xs text-muted-foreground">
-              {tasks.length}
-            </span>
-          </div>
+          <SidebarMenuBadge className="opacity-100 transition-opacity group-hover/project-item:opacity-0 group-data-[collapsible=icon]:hidden">
+            {tasks.length}
+          </SidebarMenuBadge>
         )}
 
         {/* 更多按钮 - 默认隐藏，悬浮时显示 */}
         {onRenameProject && !isSelectionMode && (
           <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
             <DropdownMenuTrigger asChild>
-              <button
-                type="button"
+              <SidebarMenuAction
+                showOnHover
                 onClick={(e) => e.stopPropagation()}
-                className="absolute top-1/2 right-2 -translate-y-1/2 flex size-6 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-opacity hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring group-hover/project-item:opacity-100 group-data-[collapsible=icon]:hidden"
+                className="right-2"
               >
-                <MoreHorizontal className="size-4" />
-              </button>
+                <MoreHorizontal />
+              </SidebarMenuAction>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" side="right">
               <DropdownMenuItem

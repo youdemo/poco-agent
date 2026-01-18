@@ -72,10 +72,10 @@ export function AppSidebar({
         onDeleteTask={onDeleteTask ?? noop}
         onRenameTask={onRenameTask}
         onMoveTaskToProject={onMoveTaskToProject}
-        onCreateProject={handleCreateProject}
         onRenameProject={onRenameProject}
         onDeleteProject={onDeleteProject}
         onOpenSettings={onOpenSettings}
+        onOpenCreateProjectDialog={() => setIsCreateProjectDialogOpen(true)}
       />
 
       {/* Global Search Dialog */}

@@ -133,6 +133,7 @@ export function MainSidebar({
   onRenameProject,
   onDeleteProject,
   onOpenSettings,
+  onOpenCreateProjectDialog,
 }: {
   projects: ProjectItem[];
   taskHistory: TaskHistoryItem[];
@@ -143,13 +144,13 @@ export function MainSidebar({
   onRenameProject?: (projectId: string, newName: string) => void;
   onDeleteProject?: (projectId: string) => Promise<void> | void;
   onOpenSettings?: () => void;
+  onOpenCreateProjectDialog?: () => void;
 }) {
   const { t } = useT("translation");
   const router = useRouter();
   const params = useParams();
   const { toggleSidebar } = useSidebar();
   const { searchKey } = useSearchDialog();
-  const [, setIsCreateProjectDialogOpen] = React.useState(false);
 
   // Selection Mode State
   const [isSelectionMode, setIsSelectionMode] = React.useState(false);
@@ -478,15 +479,15 @@ export function MainSidebar({
 
             {/* 项目列表 */}
             <SidebarGroup className="py-2 overflow-hidden group-data-[collapsible=icon]:hidden">
-              <div className="group/projects-header flex items-center justify-between pr-2">
+              <div className="group/projects-header relative flex items-center justify-between pr-2">
                 <SidebarGroupLabel className="text-xs font-medium text-muted-foreground group-data-[collapsible=icon]:hidden">
                   {t("sidebar.projects")}
                 </SidebarGroupLabel>
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => setIsCreateProjectDialogOpen(true)}
-                  className="size-5 text-muted-foreground hover:bg-sidebar-accent"
+                  onClick={() => onOpenCreateProjectDialog?.()}
+                  className="relative z-10 size-5 text-muted-foreground hover:bg-sidebar-accent"
                   title={t("sidebar.newProject")}
                 >
                   <Plus className="size-3" />

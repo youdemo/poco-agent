@@ -34,13 +34,13 @@ export function ConnectorDetail({ connector, onBack }: ConnectorDetailProps) {
   return (
     <div className="flex-1 flex flex-col h-full animate-in fade-in slide-in-from-right-8 duration-300">
       {/* Header with Back */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-[#1a1a1a]/50 backdrop-blur-md sticky top-0 z-10">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-background/50 backdrop-blur-md sticky top-0 z-10">
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="sm"
             onClick={onBack}
-            className="h-8 w-8 p-0 rounded-full hover:bg-white/10"
+            className="h-8 w-8 p-0 rounded-full hover:bg-accent"
           >
             <X className="size-4" />
           </Button>
@@ -59,8 +59,8 @@ export function ConnectorDetail({ connector, onBack }: ConnectorDetailProps) {
                 className={cn(
                   "flex size-16 items-center justify-center rounded-xl shadow-lg transition-all duration-500",
                   isGithub
-                    ? "bg-gradient-to-br from-[#333] to-[#000] border border-white/20"
-                    : "bg-white/[0.05] border border-white/10",
+                    ? "bg-gradient-to-br from-muted to-background border border-border"
+                    : "bg-muted/50 border border-border",
                   isConnected && "ring-2 ring-green-500/50",
                 )}
               >
@@ -70,7 +70,7 @@ export function ConnectorDetail({ connector, onBack }: ConnectorDetailProps) {
                     isConnected
                       ? "text-green-500"
                       : isGithub
-                        ? "text-white"
+                        ? "text-foreground"
                         : "text-muted-foreground",
                   )}
                 />
@@ -99,7 +99,7 @@ export function ConnectorDetail({ connector, onBack }: ConnectorDetailProps) {
                 "h-10 px-6 rounded-full transition-all duration-300 font-bold text-sm",
                 isConnected
                   ? "bg-green-500/10 text-green-500 border border-green-500/30"
-                  : "bg-white text-black hover:bg-gray-200",
+                  : "bg-primary text-primary-foreground hover:bg-primary/90",
               )}
             >
               {isConnecting ? (
@@ -115,7 +115,7 @@ export function ConnectorDetail({ connector, onBack }: ConnectorDetailProps) {
             </Button>
           </div>
 
-          <Separator className="bg-white/5 mb-8" />
+          <Separator className="bg-border mb-8" />
 
           {/* Capabilities Section */}
           <div className="space-y-6">
@@ -138,7 +138,7 @@ export function ConnectorDetail({ connector, onBack }: ConnectorDetailProps) {
             </div>
           </div>
 
-          <div className="mt-12 pt-6 border-t border-white/5 flex items-center justify-between text-muted-foreground/30">
+          <div className="mt-12 pt-6 border-t border-border flex items-center justify-between text-muted-foreground/30">
             <div className="flex gap-4 text-[9px] font-bold uppercase tracking-widest">
               <a
                 href={connector.website}

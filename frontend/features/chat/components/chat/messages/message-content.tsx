@@ -76,6 +76,19 @@ const PreBlock = ({
   );
 };
 
+const ImgBlock = ({
+  src,
+  alt,
+  ...props
+}: React.DetailedHTMLProps<
+  React.ImgHTMLAttributes<HTMLImageElement>,
+  HTMLImageElement
+>) => {
+  if (!src) return null;
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={src} alt={alt} {...props} />;
+};
+
 export function MessageContent({
   content,
 }: {
@@ -150,6 +163,7 @@ export function MessageContent({
               </h3>
             ),
             hr: () => <hr className="my-6 border-border" />,
+            img: ImgBlock,
           }}
         >
           {textContent}
@@ -238,6 +252,7 @@ export function MessageContent({
                     </h3>
                   ),
                   hr: () => <hr className="my-6 border-border" />,
+                  img: ImgBlock,
                 }}
               >
                 {text}

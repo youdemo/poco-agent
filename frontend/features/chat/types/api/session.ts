@@ -74,7 +74,7 @@ export interface UsageResponse {
 
 export interface InputFile {
   id?: string | null;
-  type?: "file" | "url";
+  type?: string;
   name: string;
   source: string;
   size?: number | null;

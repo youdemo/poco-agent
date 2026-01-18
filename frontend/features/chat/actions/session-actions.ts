@@ -3,13 +3,13 @@ import { chatService } from "@/features/chat/services/chat-service";
 
 const inputFileSchema = z.object({
   id: z.string().optional().nullable(),
-  type: z.enum(["file", "url"]).optional(),
+  type: z.string().optional(),
   name: z.string(),
   source: z.string(),
   size: z.number().optional().nullable(),
   content_type: z.string().optional().nullable(),
   path: z.string().optional().nullable(),
-});
+}).passthrough();
 
 const configSchema = z.object({
   repo_url: z.string().optional(),
@@ -17,13 +17,25 @@ const configSchema = z.object({
   mcp_config: z.record(z.string(), z.unknown()).optional(),
   skill_files: z.record(z.string(), z.unknown()).optional(),
   input_files: z.array(inputFileSchema).optional(),
-});
+}).passthrough();
 
-const createSessionSchema = z.object({
-  prompt: z.string().trim().min(1, "请输入任务内容"),
-  config: configSchema.optional(),
-  projectId: z.string().uuid().optional(),
-});
+const createSessionSchema = z
+  .object({
+    prompt: z.string(),
+    config: configSchema.optional(),
+    projectId: z.string().uuid().optional(),
+  })
+  .refine(
+    (data) => {
+      const hasPrompt = data.prompt.trim().length > 0;
+      const hasFiles = Boolean(data.config?.input_files?.length);
+      return hasPrompt || hasFiles;
+    },
+    {
+      message: "请输入任务内容",
+      path: ["prompt"],
+    },
+  );
 
 const sendMessageSchema = z
   .object({
@@ -46,7 +58,13 @@ export type SendMessageInput = z.infer<typeof sendMessageSchema>;
 
 export async function createSessionAction(input: CreateSessionInput) {
   const { prompt, config, projectId } = createSessionSchema.parse(input);
-  const result = await chatService.createSession(prompt, config, projectId);
+  const hasInputFiles = Boolean(config?.input_files?.length);
+  const finalPrompt = prompt.trim() || (hasInputFiles ? "Uploaded files" : prompt);
+  const result = await chatService.createSession(
+    finalPrompt,
+    config,
+    projectId,
+  );
   return {
     sessionId: result.session_id,
     runId: result.run_id,

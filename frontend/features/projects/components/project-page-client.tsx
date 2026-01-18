@@ -44,7 +44,6 @@ export function ProjectPageClient({ projectId }: ProjectPageClientProps) {
 
   const [inputValue, setInputValue] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [attachments, setAttachments] = React.useState<InputFile[]>([]);
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
 
   useAutosizeTextarea(textareaRef, inputValue);
@@ -57,40 +56,44 @@ export function ProjectPageClient({ projectId }: ProjectPageClientProps) {
     router.push(`/chat/new?projectId=${projectId}`);
   }, [router, projectId]);
 
-  const handleSendTask = React.useCallback(async () => {
-    if (!inputValue.trim() || isSubmitting) return;
+  const handleSendTask = React.useCallback(
+    async (files?: InputFile[]) => {
+      const inputFiles = files ?? [];
+      if ((inputValue.trim() === "" && inputFiles.length === 0) || isSubmitting)
+        return;
 
-    setIsSubmitting(true);
-    try {
-      const session = await createSessionAction({
-        prompt: inputValue,
-        projectId,
-        config: attachments.length
-          ? {
-              input_files: attachments,
-            }
-          : undefined,
-      });
+      setIsSubmitting(true);
+      try {
+        const session = await createSessionAction({
+          prompt: inputValue,
+          projectId,
+          config: inputFiles.length
+            ? {
+                input_files: inputFiles,
+              }
+            : undefined,
+        });
 
-      localStorage.setItem(`session_prompt_${session.sessionId}`, inputValue);
+        localStorage.setItem(`session_prompt_${session.sessionId}`, inputValue);
 
-      addTask(inputValue, {
-        id: session.sessionId,
-        timestamp: new Date().toISOString(),
-        status: "running",
-        projectId,
-      });
+        addTask(inputValue, {
+          id: session.sessionId,
+          timestamp: new Date().toISOString(),
+          status: "running",
+          projectId,
+        });
 
-      setInputValue("");
-      setAttachments([]);
+        setInputValue("");
 
-      router.push(`/chat/${session.sessionId}`);
-    } catch (error) {
-      console.error("[Project] Failed to create session", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [addTask, attachments, inputValue, isSubmitting, projectId, router]);
+        router.push(`/chat/${session.sessionId}`);
+      } catch (error) {
+        console.error("[Project] Failed to create session", error);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [addTask, inputValue, isSubmitting, projectId, router],
+  );
 
   const handleQuickActionPick = React.useCallback(
     (prompt: string) => {
@@ -167,7 +170,6 @@ export function ProjectPageClient({ projectId }: ProjectPageClientProps) {
                 onChange={setInputValue}
                 onSend={handleSendTask}
                 isSubmitting={isSubmitting}
-                onAttachmentsChange={setAttachments}
               />
 
               <QuickActions onPick={handleQuickActionPick} />

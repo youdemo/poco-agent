@@ -51,49 +51,49 @@ export function HomePageClient() {
     setIsSettingsOpen(true);
   }, []);
 
-  const [attachments, setAttachments] = React.useState<InputFile[]>([]);
+  const handleSendTask = React.useCallback(
+    async (files?: InputFile[]) => {
+      const inputFiles = files ?? [];
+      if ((inputValue.trim() === "" && inputFiles.length === 0) || isSubmitting) {
+        return;
+      }
 
-  const handleSendTask = React.useCallback(async () => {
-    if (!inputValue.trim() || isSubmitting) return;
+      setIsSubmitting(true);
+      console.log("[Home] Sending task:", inputValue);
 
-    setIsSubmitting(true);
-    console.log("[Home] Sending task:", inputValue);
+      try {
+        // 1. Call create session API
+        const session = await createSessionAction({
+          prompt: inputValue,
+          config: inputFiles.length > 0 ? { input_files: inputFiles } : undefined,
+        });
+        console.log("session", session);
+        const sessionId = session.sessionId;
+        console.log("sessionId", sessionId);
 
-    try {
-      // 1. Call create session API
-      console.log(inputValue);
-      const session = await createSessionAction({
-        prompt: inputValue,
-        config: {
-          input_files: attachments.length > 0 ? attachments : undefined,
-        },
-      });
-      console.log("session", session);
-      const sessionId = session.sessionId;
-      console.log("sessionId", sessionId);
+        // 2. Save prompt to localStorage for compatibility/fallback
+        localStorage.setItem(`session_prompt_${sessionId}`, inputValue);
 
-      // 2. Save prompt to localStorage for compatibility/fallback
-      localStorage.setItem(`session_prompt_${sessionId}`, inputValue);
+        // 3. Add to local history (persisted via localStorage in hook)
+        addTask(inputValue, {
+          id: sessionId,
+          timestamp: new Date().toISOString(),
+          status: "running",
+        });
 
-      // 3. Add to local history (persisted via localStorage in hook)
-      addTask(inputValue, {
-        id: sessionId,
-        timestamp: new Date().toISOString(),
-        status: "running",
-      });
+        console.log("[Home] Navigating to chat session:", sessionId);
+        setInputValue("");
 
-      console.log("[Home] Navigating to chat session:", sessionId);
-      setInputValue("");
-      setAttachments([]);
-
-      // 4. Navigate to the chat page
-      router.push(`/chat/${sessionId}`);
-    } catch (error) {
-      console.error("[Home] Failed to create session:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [addTask, attachments, inputValue, isSubmitting, router]);
+        // 4. Navigate to the chat page
+        router.push(`/chat/${sessionId}`);
+      } catch (error) {
+        console.error("[Home] Failed to create session:", error);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [addTask, inputValue, isSubmitting, router],
+  );
 
   const handleCreateProject = React.useCallback(
     (name: string) => {
@@ -165,7 +165,6 @@ export function HomePageClient() {
                 onChange={setInputValue}
                 onSend={handleSendTask}
                 isSubmitting={isSubmitting}
-                onAttachmentsChange={setAttachments}
               />
 
               <ConnectorsBar />

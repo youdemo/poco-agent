@@ -34,14 +34,12 @@ export function TaskComposer({
   onChange,
   onSend,
   isSubmitting,
-  onAttachmentsChange,
 }: {
   textareaRef: React.RefObject<HTMLTextAreaElement | null>;
   value: string;
   onChange: (value: string) => void;
-  onSend: () => void;
+  onSend: (attachments?: InputFile[]) => void | Promise<void>;
   isSubmitting?: boolean;
-  onAttachmentsChange?: (files: InputFile[]) => void;
 }) {
   const { t } = useT("translation");
   const isComposing = React.useRef(false);
@@ -69,7 +67,6 @@ export function TaskComposer({
       const uploadedFile = await uploadAttachment(file);
       const newAttachments = [...attachments, uploadedFile];
       setAttachments(newAttachments);
-      onAttachmentsChange?.(newAttachments); // Notify parent of ALL attachments
       toast.success(t("hero.toasts.uploadSuccess", "文件上传成功"));
     } catch (error) {
       console.error("Upload failed:", error);
@@ -85,7 +82,6 @@ export function TaskComposer({
   const removeAttachment = (index: number) => {
     const newAttachments = attachments.filter((_, i) => i !== index);
     setAttachments(newAttachments);
-    onAttachmentsChange?.(newAttachments);
   };
 
   const handlePaste = async (e: React.ClipboardEvent) => {
@@ -108,7 +104,6 @@ export function TaskComposer({
       const uploadedFile = await uploadAttachment(file);
       const newAttachments = [...attachments, uploadedFile];
       setAttachments(newAttachments);
-      onAttachmentsChange?.(newAttachments);
       toast.success(t("hero.toasts.uploadSuccess", "文件上传成功"));
     } catch (error) {
       console.error("Upload failed:", error);
@@ -118,31 +113,13 @@ export function TaskComposer({
     }
   };
 
-  // Reset attachments when value is cleared (successful send)
-  React.useEffect(() => {
-    if (value === "" && !isSubmitting) {
-      // Wait, value is controlled by parent. We need a way to know when to clear.
-      // Actually TaskComposer is usually remounted or its props changed.
-      // Let's rely on parent passing empty list or re-mounting?
-      // For now, let's just make sure we clear if the parent resets via key or something.
-      // But wait, "value" is text. Attachments are separate.
-      // The parent (home-page-client) clears its 'attachments' state on send?
-      // We should accept attachments as a prop if we want full control,
-      // OR we assume this component is uncontrolled for attachments mostly, BUT
-      // the parent creates the session.
-      // Let's check home-page-client.tsx again. It has 'attachments' state.
-      // Ideally we should receive 'attachments' as prop to be fully controlled.
-    }
-  }, [value, isSubmitting]);
+  const handleSubmit = React.useCallback(() => {
+    if (isSubmitting || isUploading) return;
+    if (!value.trim() && attachments.length === 0) return;
 
-  // Actually, let's keep it simple: we emitted the change. The parent has the state.
-  // We should prob accept 'attachments' as a prop to display them?
-  // But the existing signature was onAttachmentsChange only?
-  // Let's update the signature to accept 'attachments' if we want to be pure.
-  // But for now, let's look at how it was implemented.
-  // Parent: onAttachmentsChange={(files) => setAttachments(prev => [...prev, ...files])}
-  // This implies the parent is accumulating.
-  // If we want to delete, we need to tell parent "here is the new list".
+    onSend(attachments);
+    setAttachments([]);
+  }, [attachments, isSubmitting, isUploading, onSend, value]);
 
   const sortedConnectors = React.useMemo(() => {
     const order: Record<ConnectorType, number> = {
@@ -207,10 +184,7 @@ export function TaskComposer({
                 return;
               }
               e.preventDefault();
-              if (!isSubmitting && !isUploading) {
-                onSend();
-                setAttachments([]); // Clear local state on send
-              }
+              handleSubmit();
             }
           }}
           placeholder={t("hero.placeholder")}
@@ -309,8 +283,8 @@ export function TaskComposer({
             <Mic className="size-4" />
           </Button>
           <Button
-            onClick={onSend}
-            disabled={!value.trim() || isSubmitting}
+            onClick={handleSubmit}
+            disabled={(!value.trim() && attachments.length === 0) || isSubmitting || isUploading}
             size="icon"
             className="size-9 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground"
             title={t("hero.send")}
