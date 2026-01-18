@@ -51,7 +51,7 @@ export function ArtifactsPanel({
     useArtifacts({ sessionId, sessionStatus });
   const mainContent = (() => {
     if (viewMode === "document") {
-      return <DocumentViewer file={selectedFile} sessionId={sessionId} />;
+      return <DocumentViewer file={selectedFile} />;
     }
 
     if (fileChanges.length === 0) {

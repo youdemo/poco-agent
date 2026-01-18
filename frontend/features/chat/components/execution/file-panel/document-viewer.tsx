@@ -253,7 +253,7 @@ const useFileTextContent = ({
           const isSameOrigin =
             typeof window !== "undefined" &&
             new URL(fallbackUrl, window.location.origin).origin ===
-            window.location.origin;
+              window.location.origin;
 
           const response = await fetch(fallbackUrl, {
             signal: controller.signal,
@@ -470,14 +470,12 @@ const MarkdownPreBlock = ({
 interface TextDocumentViewerProps {
   file: FileNode;
   language?: string;
-  sessionId?: string;
   resolvedUrl?: string;
 }
 
 const TextDocumentViewer = ({
   file,
   language = DEFAULT_TEXT_LANGUAGE,
-  sessionId,
   resolvedUrl,
 }: TextDocumentViewerProps) => {
   const { t } = useT("translation");
@@ -544,6 +542,10 @@ const TextDocumentViewer = ({
     );
   }
 
+  if (state.status !== "success") {
+    return null;
+  }
+
   return (
     <div
       className={cn(
@@ -556,7 +558,7 @@ const TextDocumentViewer = ({
         subtitle={subtitle}
         resolvedUrl={resolvedUrl}
         onCopy={handleCopy}
-        copyDisabled={state.status !== "success"}
+        copyDisabled={false}
         copyState={copyState}
       />
       <div className="flex-1 overflow-auto min-h-0 p-4">
@@ -607,11 +609,9 @@ const TextDocumentViewer = ({
 
 const MarkdownDocumentViewer = ({
   file,
-  sessionId,
   resolvedUrl,
 }: {
   file: FileNode;
-  sessionId?: string;
   resolvedUrl?: string;
 }) => {
   const { t } = useT("translation");
@@ -675,6 +675,10 @@ const MarkdownDocumentViewer = ({
     );
   }
 
+  if (state.status !== "success") {
+    return null;
+  }
+
   return (
     <div
       className={cn(
@@ -687,7 +691,7 @@ const MarkdownDocumentViewer = ({
         subtitle="MARKDOWN"
         resolvedUrl={resolvedUrl}
         onCopy={handleCopy}
-        copyDisabled={state.status !== "success"}
+        copyDisabled={false}
         copyState={copyState}
       />
       <div className="flex-1 overflow-auto bg-background min-h-0">
@@ -698,14 +702,21 @@ const MarkdownDocumentViewer = ({
               rehypePlugins={[rehypeHighlight]}
               components={{
                 pre: MarkdownPreBlock,
-                code: ({ inline, className, children }) =>
-                  inline ? (
-                    <code className="px-1.5 py-0.5 rounded bg-muted text-muted-foreground text-[0.85rem]">
+                code: ({ className, children, ...props }) => {
+                  const isInline = !className;
+                  return isInline ? (
+                    <code
+                      className="px-1.5 py-0.5 rounded bg-muted text-muted-foreground text-[0.85rem]"
+                      {...props}
+                    >
                       {children}
                     </code>
                   ) : (
-                    <code className={className}>{children}</code>
-                  ),
+                    <code className={className} {...props}>
+                      {children}
+                    </code>
+                  );
+                },
                 a: ({ children, href, ...props }) => (
                   <a
                     className="text-primary underline underline-offset-4 decoration-primary/30 hover:decoration-primary"
@@ -756,13 +767,7 @@ const MarkdownDocumentViewer = ({
   );
 };
 
-const DocumentViewerComponent = ({
-  file,
-  sessionId,
-}: {
-  file?: FileNode;
-  sessionId?: string;
-}) => {
+const DocumentViewerComponent = ({ file }: { file?: FileNode }) => {
   const { t } = useT("translation");
 
   if (!file)
@@ -843,13 +848,7 @@ const DocumentViewerComponent = ({
   }
 
   if (textLanguage === "markdown") {
-    return (
-      <MarkdownDocumentViewer
-        file={file}
-        sessionId={sessionId}
-        resolvedUrl={resolvedUrl}
-      />
-    );
+    return <MarkdownDocumentViewer file={file} resolvedUrl={resolvedUrl} />;
   }
 
   if (textLanguage) {
@@ -857,7 +856,6 @@ const DocumentViewerComponent = ({
       <TextDocumentViewer
         file={file}
         language={textLanguage}
-        sessionId={sessionId}
         resolvedUrl={resolvedUrl}
       />
     );

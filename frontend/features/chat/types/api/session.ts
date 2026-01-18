@@ -73,6 +73,7 @@ export interface UsageResponse {
 }
 
 export interface InputFile {
+  [x: string]: unknown;
   id?: string | null;
   type?: string;
   name: string;

@@ -22,12 +22,6 @@ Poco is a cloud-based AI agent execution platform inspired by Anthropic's [Cowor
 
 ![home](assets/home.png)
 
-Demo1: use three prompts to build a classic google game with doubao's head 😂
-
-https://github.com/user-attachments/assets/af80fb79-31cb-418d-abbb-694499dc852e
-
-![demo2](https://github.com/user-attachments/assets/f373615f-242d-4856-b794-daebd066c633)
-
 ### What is Cowork?
 
 When Anthropic launched Claude Code (an AI coding assistant), they discovered something unexpected: developers weren't just using it to write code. They were using it to organize materials, write documentation, generate reports, analyze data, and even as a "digital colleague" for all kinds of work.
@@ -41,12 +35,17 @@ This insight led to **Cowork**, a product that extends Claude's capabilities fro
 
 Poco brings this powerful collaboration paradigm to the cloud, enabling teams to deploy AI agents at scale.
 
+Demo1: use three prompts to build a classic google game with doubao's head 😂
+
 ![demo](https://github.com/user-attachments/assets/0ef59c4c-8363-44a6-b9ed-7005ccfd71cb)
+
+Demo2: poco can handle different types of files.
 
 ![demo2-2](https://github.com/user-attachments/assets/8135dab4-6396-4af8-97af-6f665853fb56)
 
-![mobile-1](https://github.com/user-attachments/assets/ccf680bb-358c-4fc9-ad97-50f75b5ea3ac)
+Demo3: works fine on mobile devices.
 
+![mobile-1](https://github.com/user-attachments/assets/ccf680bb-358c-4fc9-ad97-50f75b5ea3ac)
 
 ### Key Features
 

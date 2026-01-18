@@ -34,7 +34,9 @@ export function ArtifactsHeader({
         onToggleSidebar ? (
           <PanelHeaderAction
             onClick={onToggleSidebar}
-            title={isSidebarCollapsed ? "展开文件侧边栏" : "折叠文件侧边栏"}
+            aria-label={
+              isSidebarCollapsed ? "展开文件侧边栏" : "折叠文件侧边栏"
+            }
           >
             {isSidebarCollapsed ? (
               <ChevronLeft className="size-4" />

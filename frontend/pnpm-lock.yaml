@@ -212,6 +212,9 @@ importers:
       "@types/react-dom":
         specifier: ^19
         version: 19.2.3(@types/react@19.2.7)
+      "@types/react-syntax-highlighter":
+        specifier: ^15.5.13
+        version: 15.5.13
       eslint:
         specifier: ^9
         version: 9.39.2(jiti@2.6.1)
@@ -2223,6 +2226,12 @@ packages:
       }
     peerDependencies:
       "@types/react": ^19.2.0
+
+  "@types/react-syntax-highlighter@15.5.13":
+    resolution:
+      {
+        integrity: sha512-uLGJ87j6Sz8UaBAooU0T6lWJ0dBmjZgN1PZTrj05TNql2/XpC6+4HhMT5syIdFUUt+FASfCeLLv4kBygNU+8qA==,
+      }
 
   "@types/react@19.2.7":
     resolution:
@@ -7679,6 +7688,10 @@ snapshots:
   "@types/prismjs@1.26.5": {}
 
   "@types/react-dom@19.2.3(@types/react@19.2.7)":
+    dependencies:
+      "@types/react": 19.2.7
+
+  "@types/react-syntax-highlighter@15.5.13":
     dependencies:
       "@types/react": 19.2.7
 
