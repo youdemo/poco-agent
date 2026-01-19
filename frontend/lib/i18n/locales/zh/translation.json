@@ -194,14 +194,32 @@
       "otherTitle": "已有变量",
       "empty": "暂未配置任何环境变量",
       "addTitle": "新增环境变量",
+      "editTitle": "更新环境变量",
+      "overrideTitle": "覆盖系统变量",
       "addDescription": "输入键值对，API Key 请勾选敏感显示。",
       "keyLabel": "变量名",
       "valueLabel": "变量值",
+      "valueCreateHint": "不会显示旧值；请输入要设置的新值",
+      "valueUpdateHint": "不会显示旧值；留空表示不修改当前值",
       "descriptionLabel": "备注",
       "descriptionPlaceholder": "可填写变量用途",
       "secretToggle": "隐藏值（API Key）",
+      "secretHelp": "环境变量不会在前端展示明文，只能重新设置",
       "addButton": "添加变量",
       "refresh": "刷新",
+      "systemHint": "系统变量仅展示是否已设置；可通过创建同名个人变量来覆盖",
+      "userHint": "个人变量不会在前端展示明文；更新时请输入新值（留空表示不修改）",
+      "status": {
+        "set": "已设置",
+        "unset": "未设置",
+        "overridden": "已被个人覆盖",
+        "overridesSystem": "覆盖系统"
+      },
+      "actions": {
+        "override": "覆盖",
+        "editOverride": "更新个人值",
+        "edit": "更新"
+      },
       "toasts": {
         "created": "环境变量已创建",
         "updated": "环境变量已更新",

@@ -1,267 +1,226 @@
 "use client";
 
 import * as React from "react";
-import {
-  Trash2,
-  Loader2,
-  Eye,
-  EyeOff,
-  Copy,
-  Check,
-  Globe,
-  Key,
-  Lock,
-} from "lucide-react";
-import { toast } from "sonner";
+import { Loader2, Pencil, Trash2, User, Wrench } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import { Badge } from "@/components/ui/badge";
 import { useT } from "@/lib/i18n/client";
-import { cn } from "@/lib/utils";
 import type { EnvVar } from "@/features/env-vars/types";
+
+const EMPTY_ENV_VARS: EnvVar[] = [];
 
 interface EnvVarsGridProps {
   envVars?: EnvVar[];
   savingKey?: string | null;
   onDelete?: (id: number) => void;
-  onSave?: (envVar: EnvVar) => Promise<void>;
+  onEdit?: (envVar: EnvVar) => void;
+  onOverrideSystem?: (key: string) => void;
+}
+
+function EnvVarsSection({
+  title,
+  icon,
+  children,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="space-y-3">
+      <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground/80 px-1">
+        {icon}
+        <span>{title}</span>
+      </div>
+      <div className="space-y-2">{children}</div>
+    </section>
+  );
 }
 
 export function EnvVarsGrid({
   envVars: propEnvVars,
   savingKey,
   onDelete,
-  onSave,
+  onEdit,
+  onOverrideSystem,
 }: EnvVarsGridProps) {
   const { t } = useT("translation");
-  const [visibleKeys, setVisibleKeys] = React.useState<Set<string>>(new Set());
-  const [copiedKey, setCopiedKey] = React.useState<string | null>(null);
-  const [editingId, setEditingId] = React.useState<number | null>(null);
-  const inputRefs = React.useRef<Map<number, HTMLInputElement>>(new Map());
+  const vars = propEnvVars?.length ? propEnvVars : EMPTY_ENV_VARS;
 
-  const toggleVisibility = (key: string) => {
-    setVisibleKeys((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) {
-        next.delete(key);
-      } else {
-        next.add(key);
-      }
-      return next;
-    });
-  };
+  const systemVars = React.useMemo(
+    () => vars.filter((v) => v.scope === "system"),
+    [vars],
+  );
+  const userVars = React.useMemo(
+    () => vars.filter((v) => v.scope === "user"),
+    [vars],
+  );
 
-  const handleCopy = async (value: string | null, key: string) => {
-    if (!value) return;
-    try {
-      await navigator.clipboard.writeText(value);
-      setCopiedKey(key);
-      toast.success(t("library.envVars.toasts.copied"));
-      setTimeout(() => setCopiedKey(null), 1500);
-    } catch {
-      toast.error(t("library.envVars.toasts.copyFailed"));
-    }
-  };
+  const systemKeys = React.useMemo(
+    () => new Set(systemVars.map((v) => v.key)),
+    [systemVars],
+  );
+  const userKeys = React.useMemo(
+    () => new Set(userVars.map((v) => v.key)),
+    [userVars],
+  );
 
-  const startEditing = (id: number) => {
-    setEditingId(id);
-    // Timeout to allow render to complete before selecting
-    setTimeout(() => {
-      const input = inputRefs.current.get(id);
-      if (input) {
-        input.focus();
-        input.select();
-      }
-    }, 0);
-  };
-
-  const handleSave = async (envVar: EnvVar, newValue: string) => {
-    if (newValue === envVar.value) {
-      setEditingId(null);
-      return;
-    }
-    if (onSave) {
-      await onSave({ ...envVar, value: newValue });
-    }
-    setEditingId(null);
-  };
-
-  const handleKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    envVar: EnvVar,
-  ) => {
-    if (e.key === "Enter") {
-      handleSave(envVar, e.currentTarget.value);
-      e.currentTarget.blur();
-    } else if (e.key === "Escape") {
-      setEditingId(null);
-      if (inputRefs.current.get(envVar.id)) {
-        inputRefs.current.get(envVar.id)!.value = envVar.value || "";
-      }
-    }
-  };
-
-  // Grouping Logic
-  const groupedVars = React.useMemo(() => {
-    const vars = propEnvVars?.length ? propEnvVars : [];
-    const groups = {
-      mcp: [] as EnvVar[],
-      user: [] as EnvVar[],
-      global: [] as EnvVar[],
-    };
-    vars.forEach((v) => {
-      const scope = (v.scope || "user") as keyof typeof groups;
-      if (groups[scope]) {
-        groups[scope].push(v);
-      } else {
-        groups.user.push(v); // Fallback
-      }
-    });
-    return groups;
-  }, [propEnvVars]);
-
-  const getScopeLabel = (scope: string) => {
-    switch (scope) {
-      case "global":
-        return t("library.envVars.scope.global");
-      case "mcp":
-        return t("library.envVars.scope.mcp");
-      case "user":
-        return t("library.envVars.scope.user");
-      default:
-        return scope;
-    }
-  };
-
-  const getScopeIcon = (scope: string) => {
-    switch (scope) {
-      case "global":
-        return <Globe className="size-4" />;
-      case "mcp":
-        return <Key className="size-4" />;
-      default:
-        return <Lock className="size-4" />;
-    }
-  };
+  if (!vars.length) {
+    return (
+      <div className="text-sm text-muted-foreground border border-dashed border-border/50 rounded-lg p-6 text-center">
+        {t("library.envVars.empty", "暂未配置任何环境变量")}
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
-      {Object.entries(groupedVars).map(([scope, vars]) => {
-        if (vars.length === 0) return null;
-
-        return (
-          <div key={scope} className="space-y-3">
-            {/* Scope Header - Subtle */}
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground/70 px-1">
-              {getScopeIcon(scope)}
-              <span>{getScopeLabel(scope)}</span>
-            </div>
-
-            <div className="space-y-3">
-              {vars.map((envVar) => {
-                const isLoading = savingKey === envVar.key;
-                const isVisible = visibleKeys.has(envVar.key);
-                const isCopied = copiedKey === envVar.key;
-                const isEditing = editingId === envVar.id;
-
-                return (
-                  <div key={envVar.id} className="flex items-center gap-3">
-                    <div className="flex-1">
-                      <InputGroup className="focus-within:ring-border focus-within:border-foreground/20 transition-all">
-                        <InputGroupAddon className="bg-muted/30 min-w-[140px] px-3 justify-start font-mono text-xs text-muted-foreground font-medium border-r select-text">
-                          {envVar.key}
-                        </InputGroupAddon>
-                        <InputGroupInput
-                          ref={(el) => {
-                            if (el) inputRefs.current.set(envVar.id, el);
-                            else inputRefs.current.delete(envVar.id);
-                          }}
-                          type={
-                            !isEditing && envVar.is_secret && !isVisible
-                              ? "password"
-                              : "text"
-                          }
-                          defaultValue={envVar.value || ""}
-                          readOnly={!isEditing}
-                          className={cn(
-                            "font-mono text-sm",
-                            !isEditing &&
-                              "cursor-pointer text-muted-foreground",
-                            isEditing && "text-foreground",
-                          )}
-                          onClick={() => {
-                            if (!isEditing) {
-                              startEditing(envVar.id);
-                            }
-                          }}
-                          onKeyDown={(e) => handleKeyDown(e, envVar)}
-                          onBlur={(e) => {
-                            if (isEditing) {
-                              handleSave(envVar, e.target.value);
-                            }
-                          }}
-                        />
-                        {envVar.is_secret && (
-                          <InputGroupButton
-                            onClick={() => toggleVisibility(envVar.key)}
-                            title={
-                              isVisible
-                                ? t("library.envVars.viewer.hide", "Hide")
-                                : t("library.envVars.viewer.show", "Show")
-                            }
-                            className="text-muted-foreground hover:text-foreground"
-                          >
-                            {isVisible ? (
-                              <EyeOff className="size-4" />
-                            ) : (
-                              <Eye className="size-4" />
-                            )}
-                          </InputGroupButton>
-                        )}
-                        <InputGroupButton
-                          onClick={() => handleCopy(envVar.value, envVar.key)}
-                          title={t("library.envVars.copy")}
-                          className="text-muted-foreground hover:text-foreground"
-                        >
-                          {isCopied ? (
-                            <Check className="size-4" />
-                          ) : (
-                            <Copy className="size-4" />
-                          )}
-                        </InputGroupButton>
-                      </InputGroup>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex items-center gap-1">
-                      {isLoading ? (
-                        <Loader2 className="size-4 animate-spin text-muted-foreground" />
-                      ) : (
-                        <>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="size-8 text-muted-foreground hover:text-destructive"
-                            onClick={() => onDelete?.(envVar.id)}
-                            title={t("common.delete")}
-                          >
-                            <Trash2 className="size-4" />
-                          </Button>
-                        </>
-                      )}
-                    </div>
+    <div className="space-y-8">
+      {systemVars.length > 0 && (
+        <EnvVarsSection
+          title={t("library.envVars.scope.system", "系统")}
+          icon={<Wrench className="size-4" />}
+        >
+          {systemVars.map((envVar) => {
+            const isOverridden = userKeys.has(envVar.key);
+            const isBusy = savingKey === envVar.key;
+            return (
+              <div
+                key={envVar.id}
+                className="flex flex-col gap-2 rounded-lg border border-border/50 bg-background p-4 md:flex-row md:items-center md:justify-between"
+              >
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-mono text-sm">{envVar.key}</span>
+                    <Badge variant="outline" className="text-xs">
+                      {t("library.envVars.scope.system", "系统")}
+                    </Badge>
+                    <Badge
+                      variant={envVar.is_set ? "secondary" : "outline"}
+                      className="text-xs"
+                    >
+                      {envVar.is_set
+                        ? t("library.envVars.status.set", "已设置")
+                        : t("library.envVars.status.unset", "未设置")}
+                    </Badge>
+                    {isOverridden && (
+                      <Badge variant="secondary" className="text-xs">
+                        {t("library.envVars.status.overridden", "已被个人覆盖")}
+                      </Badge>
+                    )}
                   </div>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })}
+                  {envVar.description && (
+                    <p className="mt-1 text-xs text-muted-foreground break-words">
+                      {envVar.description}
+                    </p>
+                  )}
+                  <p className="mt-1 text-xs text-muted-foreground/80">
+                    {t(
+                      "library.envVars.systemHint",
+                      "系统变量仅展示是否已设置；可通过创建同名个人变量来覆盖",
+                    )}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    onClick={() => onOverrideSystem?.(envVar.key)}
+                    disabled={isBusy}
+                  >
+                    {isBusy ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <User className="size-4" />
+                    )}
+                    {isOverridden
+                      ? t("library.envVars.actions.editOverride", "更新个人值")
+                      : t("library.envVars.actions.override", "覆盖")}
+                  </Button>
+                </div>
+              </div>
+            );
+          })}
+        </EnvVarsSection>
+      )}
+
+      {userVars.length > 0 && (
+        <EnvVarsSection
+          title={t("library.envVars.scope.user", "个人")}
+          icon={<User className="size-4" />}
+        >
+          {userVars.map((envVar) => {
+            const overridesSystem = systemKeys.has(envVar.key);
+            const isBusy = savingKey === envVar.key;
+            return (
+              <div
+                key={envVar.id}
+                className="flex flex-col gap-2 rounded-lg border border-border/50 bg-background p-4 md:flex-row md:items-center md:justify-between"
+              >
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-mono text-sm">{envVar.key}</span>
+                    <Badge variant="outline" className="text-xs">
+                      {t("library.envVars.scope.user", "个人")}
+                    </Badge>
+                    <Badge variant="secondary" className="text-xs">
+                      {t("library.envVars.status.set", "已设置")}
+                    </Badge>
+                    {overridesSystem && (
+                      <Badge variant="secondary" className="text-xs">
+                        {t(
+                          "library.envVars.status.overridesSystem",
+                          "覆盖系统",
+                        )}
+                      </Badge>
+                    )}
+                  </div>
+                  {envVar.description && (
+                    <p className="mt-1 text-xs text-muted-foreground break-words">
+                      {envVar.description}
+                    </p>
+                  )}
+                  <p className="mt-1 text-xs text-muted-foreground/80">
+                    {t(
+                      "library.envVars.userHint",
+                      "个人变量不会在前端展示明文；更新时请输入新值（留空表示不修改）",
+                    )}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    onClick={() => onEdit?.(envVar)}
+                    disabled={isBusy}
+                  >
+                    {isBusy ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <Pencil className="size-4" />
+                    )}
+                    {t("library.envVars.actions.edit", "更新")}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-9 text-muted-foreground hover:text-destructive"
+                    onClick={() => onDelete?.(envVar.id)}
+                    title={t("common.delete", "删除")}
+                    disabled={isBusy}
+                  >
+                    <Trash2 className="size-4" />
+                  </Button>
+                </div>
+              </div>
+            );
+          })}
+        </EnvVarsSection>
+      )}
     </div>
   );
 }

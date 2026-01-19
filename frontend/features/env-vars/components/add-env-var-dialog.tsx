@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Plus, Loader2 } from "lucide-react";
+import { Loader2, Plus, Save } from "lucide-react";
 
 import { useT } from "@/lib/i18n/client";
 import {
@@ -14,20 +14,19 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import type { EnvVarUpsertInput } from "@/features/env-vars/hooks/use-env-vars-store";
 
-interface AddEnvVarDialogProps {
+export type EnvVarDialogMode = "create" | "edit" | "override";
+
+interface EnvVarUpsertDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSave: (payload: EnvVarUpsertInput) => Promise<void> | void;
   isSaving?: boolean;
+  mode?: EnvVarDialogMode;
+  initialKey?: string;
+  initialDescription?: string | null;
+  keyReadOnly?: boolean;
 }
 
 export function AddEnvVarDialog({
@@ -35,32 +34,46 @@ export function AddEnvVarDialog({
   onOpenChange,
   onSave,
   isSaving = false,
-}: AddEnvVarDialogProps) {
+  mode = "create",
+  initialKey,
+  initialDescription,
+  keyReadOnly,
+}: EnvVarUpsertDialogProps) {
   const { t } = useT("translation");
-  const [key, setKey] = React.useState("");
+  const [key, setKey] = React.useState(initialKey || "");
   const [value, setValue] = React.useState("");
-  const [description, setDescription] = React.useState("");
-  const [isSecret, setIsSecret] = React.useState(true);
-  const [scope, setScope] = React.useState<"global" | "user">("user");
+  const [description, setDescription] = React.useState(
+    initialDescription || "",
+  );
 
-  // Auto-detect if key should be secret based on name
-  React.useEffect(() => {
-    if (key) {
-      const shouldBeSecret = /(api|key|token|secret|password)/i.test(key);
-      setIsSecret(shouldBeSecret);
-    }
-  }, [key]);
+  const isKeyReadOnly = Boolean(keyReadOnly ?? mode !== "create");
+  const requiresValue = mode !== "edit";
 
-  // Reset form when dialog closes
+  // Reset form when dialog opens / mode changes
   React.useEffect(() => {
-    if (!open) {
-      setKey("");
-      setValue("");
-      setDescription("");
-      setIsSecret(true);
-      setScope("user");
-    }
-  }, [open]);
+    if (!open) return;
+    setKey(initialKey || "");
+    setValue("");
+    setDescription(initialDescription || "");
+  }, [open, initialDescription, initialKey]);
+
+  const title =
+    mode === "create"
+      ? t("library.envVars.addTitle", "新增环境变量")
+      : mode === "override"
+        ? t("library.envVars.overrideTitle", "覆盖系统变量")
+        : t("library.envVars.editTitle", "更新环境变量");
+
+  const valueHint =
+    mode === "edit"
+      ? t(
+          "library.envVars.valueUpdateHint",
+          "不会显示旧值；留空表示不修改当前值",
+        )
+      : t(
+          "library.envVars.valueCreateHint",
+          "不会显示旧值；请输入要设置的新值",
+        );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,26 +81,26 @@ export function AddEnvVarDialog({
     const trimmedKey = key.trim();
     const trimmedValue = value.trim();
 
-    if (!trimmedKey || !trimmedValue) return;
+    if (!trimmedKey) return;
+    if (requiresValue && !trimmedValue) return;
 
     await onSave({
       key: trimmedKey,
-      value: trimmedValue,
-      isSecret,
+      value: trimmedValue ? trimmedValue : undefined,
       description: description.trim() || undefined,
-      scope,
     });
 
     onOpenChange(false);
   };
 
-  const isValid = key.trim() && value.trim();
+  const isValid =
+    Boolean(key.trim()) && (requiresValue ? Boolean(value.trim()) : true);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{t("library.envVars.addTitle")}</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
@@ -101,7 +114,8 @@ export function AddEnvVarDialog({
                 onChange={(e) => setKey(e.target.value)}
                 placeholder="OPENAI_API_KEY"
                 autoCapitalize="characters"
-                disabled={isSaving}
+                disabled={isSaving || isKeyReadOnly}
+                className="font-mono"
               />
             </div>
 
@@ -112,12 +126,13 @@ export function AddEnvVarDialog({
               </Label>
               <Input
                 id="env-value"
-                type={isSecret ? "password" : "text"}
+                type="password"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 placeholder={t("library.envVars.valuePlaceholder")}
                 disabled={isSaving}
               />
+              <p className="text-xs text-muted-foreground">{valueHint}</p>
             </div>
 
             {/* Description */}
@@ -134,29 +149,12 @@ export function AddEnvVarDialog({
               />
             </div>
 
-            {/* Scope */}
-            <div className="space-y-2">
-              <Label htmlFor="env-scope">
-                {t("library.envVars.scopeLabel")}
-              </Label>
-              <Select
-                value={scope}
-                onValueChange={(value) => setScope(value as "global" | "user")}
-                disabled={isSaving}
-              >
-                <SelectTrigger id="env-scope">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="user">
-                    {t("library.envVars.scope.user")}
-                  </SelectItem>
-                  <SelectItem value="global">
-                    {t("library.envVars.scope.system")}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <p className="text-xs text-muted-foreground">
+              {t(
+                "library.envVars.secretHelp",
+                "环境变量不会在前端展示明文，只能重新设置",
+              )}
+            </p>
           </div>
 
           <DialogFooter>
@@ -176,8 +174,14 @@ export function AddEnvVarDialog({
                 </>
               ) : (
                 <>
-                  <Plus className="mr-2 size-4" />
-                  {t("library.envVars.addButton")}
+                  {mode === "create" ? (
+                    <Plus className="mr-2 size-4" />
+                  ) : (
+                    <Save className="mr-2 size-4" />
+                  )}
+                  {mode === "create"
+                    ? t("library.envVars.addButton")
+                    : t("library.envVars.save", "保存")}
                 </>
               )}
             </Button>

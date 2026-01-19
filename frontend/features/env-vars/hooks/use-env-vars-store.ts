@@ -9,10 +9,8 @@ import type { EnvVar } from "@/features/env-vars/types";
 
 export interface EnvVarUpsertInput {
   key: string;
-  value: string;
-  isSecret?: boolean;
+  value?: string;
   description?: string | null;
-  scope?: string | null;
 }
 
 export function useEnvVarsStore() {
@@ -26,7 +24,7 @@ export function useEnvVarsStore() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const data = await envVarsService.list({ includeSecrets: true });
+        const data = await envVarsService.list();
         setEnvVars(data);
       } catch (error) {
         console.error("[EnvVars] Failed to fetch:", error);
@@ -38,7 +36,7 @@ export function useEnvVarsStore() {
   }, []);
 
   const upsertEnvVar = useCallback(
-    async ({ key, value, isSecret, description, scope }: EnvVarUpsertInput) => {
+    async ({ key, value, description }: EnvVarUpsertInput) => {
       const normalizedKey = key.trim();
       if (!normalizedKey) {
         toast.error(t("library.envVars.toasts.keyRequired"));
@@ -48,25 +46,28 @@ export function useEnvVarsStore() {
       setSavingEnvKey(normalizedKey);
 
       try {
-        const existing = envVars.find((item) => item.key === normalizedKey);
+        const existing = envVars.find(
+          (item) => item.key === normalizedKey && item.scope === "user",
+        );
         if (existing) {
           const updated = await envVarsService.update(existing.id, {
-            value,
-            is_secret: isSecret ?? existing.is_secret,
+            value: value?.trim() ? value.trim() : undefined,
             description: description ?? existing.description,
-            scope: scope ?? existing.scope,
           });
           setEnvVars((prev) =>
             prev.map((item) => (item.id === existing.id ? updated : item)),
           );
           toast.success(t("library.envVars.toasts.updated"));
         } else {
+          const trimmedValue = (value ?? "").trim();
+          if (!trimmedValue) {
+            toast.error(t("library.envVars.toasts.error"));
+            return;
+          }
           const created = await envVarsService.create({
             key: normalizedKey,
-            value,
-            is_secret: isSecret ?? true,
+            value: trimmedValue,
             description: description ?? undefined,
-            scope: scope ?? undefined,
           });
           setEnvVars((prev) => [...prev, created]);
           toast.success(t("library.envVars.toasts.created"));
@@ -97,7 +98,7 @@ export function useEnvVarsStore() {
 
   const refreshEnvVars = useCallback(async () => {
     try {
-      const latest = await envVarsService.list({ includeSecrets: true });
+      const latest = await envVarsService.list();
       setEnvVars(latest);
       toast.success(t("library.envVars.toasts.refreshed"));
     } catch (error) {

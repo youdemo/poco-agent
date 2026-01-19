@@ -194,14 +194,32 @@
       "otherTitle": "Existing variables",
       "empty": "No environment variables yet",
       "addTitle": "Add environment variable",
+      "editTitle": "Update environment variable",
+      "overrideTitle": "Override system variable",
       "addDescription": "Provide a key/value pair and mark it secret if it is an API key.",
       "keyLabel": "Key",
       "valueLabel": "Value",
+      "valueCreateHint": "The old value is never shown. Enter the new value to set.",
+      "valueUpdateHint": "The old value is never shown. Leave blank to keep the current value.",
       "descriptionLabel": "Description",
       "descriptionPlaceholder": "Optional description",
       "secretToggle": "Mask value (API key)",
+      "secretHelp": "Environment values are never shown in plaintext. You can only set a new value.",
       "addButton": "Add Variable",
       "refresh": "Refresh",
+      "systemHint": "System variables only show whether they are set. Create a user variable with the same key to override.",
+      "userHint": "User variables never show plaintext in the UI. Enter a new value to update (leave blank to keep).",
+      "status": {
+        "set": "Set",
+        "unset": "Unset",
+        "overridden": "Overridden by user",
+        "overridesSystem": "Overrides system"
+      },
+      "actions": {
+        "override": "Override",
+        "editOverride": "Edit user override",
+        "edit": "Edit"
+      },
       "toasts": {
         "created": "Environment variable created",
         "updated": "Environment variable updated",
