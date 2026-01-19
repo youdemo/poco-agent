@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     )
 
     secret_key: str = Field(default="change-this-secret-key-in-production")
+    internal_api_token: str = Field(
+        default="change-this-token-in-production", alias="INTERNAL_API_TOKEN"
+    )
 
     # External services
     executor_manager_url: str = Field(

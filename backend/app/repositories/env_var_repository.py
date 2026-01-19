@@ -33,5 +33,16 @@ class EnvVarRepository:
         )
 
     @staticmethod
+    def list_by_user_and_scope(
+        session_db: Session, user_id: str, scope: str
+    ) -> list[UserEnvVar]:
+        return (
+            session_db.query(UserEnvVar)
+            .filter(UserEnvVar.user_id == user_id, UserEnvVar.scope == scope)
+            .order_by(UserEnvVar.created_at.desc())
+            .all()
+        )
+
+    @staticmethod
     def delete(session_db: Session, env_var: UserEnvVar) -> None:
         session_db.delete(env_var)
