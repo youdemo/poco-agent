@@ -1,4 +1,4 @@
-from sqlalchemy import or_
+from sqlalchemy import and_, or_
 from sqlalchemy.orm import Session
 
 from app.models.mcp_server import McpServer
@@ -34,8 +34,17 @@ class McpServerRepository:
 
     @staticmethod
     def list_visible(session_db: Session, user_id: str) -> list[McpServer]:
+        user_mcp_names = (
+            session_db.query(McpServer.name)
+            .filter(McpServer.scope == "user", McpServer.owner_user_id == user_id)
+            .scalar_subquery()
+        )
+
         query = session_db.query(McpServer).filter(
-            or_(McpServer.scope == "system", McpServer.owner_user_id == user_id)
+            or_(
+                McpServer.scope == "user",
+                and_(McpServer.scope == "system", ~McpServer.name.in_(user_mcp_names)),
+            )
         )
         return query.order_by(McpServer.created_at.desc()).all()
 
