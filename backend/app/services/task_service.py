@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 from app.core.errors.error_codes import ErrorCode
 from app.core.errors.exceptions import AppException
 from app.repositories.message_repository import MessageRepository
-from app.repositories.mcp_server_repository import McpServerRepository
 from app.repositories.project_repository import ProjectRepository
 from app.repositories.run_repository import RunRepository
 from app.repositories.session_repository import SessionRepository
@@ -171,16 +170,33 @@ class TaskService:
         base_config: dict | None = None,
     ) -> dict | None:
         merged_base: dict = dict(base_config or {})
+        # Never persist full MCP server configs inside session/run snapshots.
+        # They may contain sensitive values and are not needed for the UI.
+        merged_base.pop("mcp_config", None)
+
+        base_mcp_server_ids = self._normalize_mcp_server_ids(
+            merged_base.get("mcp_server_ids")
+        )
+
+        mcp_toggles: dict[str, bool] | None = None
         if task_config is not None:
-            request_config = task_config.model_dump()
+            # Only merge fields explicitly provided by the caller to avoid
+            # overriding existing session config with schema defaults.
+            request_config = task_config.model_dump(exclude_unset=True)
             # Extract mcp_config toggles before merging (don't merge as dict)
-            mcp_toggles = request_config.pop("mcp_config", {})
+            mcp_toggles = request_config.pop("mcp_config", None)
             merged_base = self._merge_config_map(merged_base, request_config)
-            # Build MCP config based on toggles (returns {server_name: server_config})
-            merged_mcp = self._build_user_mcp_with_toggles(db, user_id, mcp_toggles)
-            merged_base["mcp_config"] = merged_mcp
+
+        if mcp_toggles is not None:
+            merged_base["mcp_server_ids"] = (
+                self._build_user_mcp_server_ids_with_toggles(db, user_id, mcp_toggles)
+            )
+        elif base_mcp_server_ids is not None:
+            merged_base["mcp_server_ids"] = base_mcp_server_ids
         else:
-            merged_base["mcp_config"] = self._build_user_mcp_defaults(db, user_id)
+            merged_base["mcp_server_ids"] = self._build_user_mcp_server_ids_defaults(
+                db, user_id
+            )
 
         merged_base["skill_files"] = self._merge_config_map(
             self._build_user_skill_defaults(db, user_id),
@@ -203,58 +219,49 @@ class TaskService:
                 merged[key] = value
         return merged
 
-    def _build_user_mcp_defaults(self, db: Session, user_id: str) -> dict:
-        """Build default MCP config from user's enabled installations.
-
-        Returns:
-            MCP server config dict: {server_name: server_config, ...}
-        """
-        result: dict = {}
-        installs = UserMcpInstallRepository.list_by_user(db, user_id)
-        for install in installs:
-            if not install.enabled:
+    @staticmethod
+    def _normalize_mcp_server_ids(value: object) -> list[int] | None:
+        if not isinstance(value, list):
+            return None
+        result: list[int] = []
+        for item in value:
+            if isinstance(item, int):
+                result.append(item)
                 continue
-            server = McpServerRepository.get_by_id(db, install.server_id)
-            if not server:
-                continue
-            # Extract mcpServers from server_config and merge
-            server_mcp = server.server_config.get("mcpServers", {})
-            result = {**result, **server_mcp}
+            if isinstance(item, str):
+                item = item.strip()
+                if not item:
+                    continue
+                try:
+                    result.append(int(item))
+                except ValueError:
+                    continue
         return result
 
-    def _build_user_mcp_with_toggles(
-        self, db: Session, user_id: str, toggles: dict[str, bool]
-    ) -> dict:
-        """Build MCP config from user's installations, applying task-level toggles.
-
-        Args:
-            db: Database session
-            user_id: User ID
-            toggles: MCP server id (as string) -> enabled flag (true=enabled, false=disabled)
-                    Servers not in this dict use their default enabled state.
-
-        Returns:
-            MCP server config dict: {server_name: server_config, ...}
-        """
-        result: dict = {}
+    def _build_user_mcp_server_ids_defaults(
+        self, db: Session, user_id: str
+    ) -> list[int]:
+        """Return enabled MCP server ids from user's installations."""
+        result: list[int] = []
         installs = UserMcpInstallRepository.list_by_user(db, user_id)
         for install in installs:
-            server = McpServerRepository.get_by_id(db, install.server_id)
-            if not server:
+            if install.enabled:
+                result.append(install.server_id)
+        return result
+
+    def _build_user_mcp_server_ids_with_toggles(
+        self, db: Session, user_id: str, toggles: dict[str, bool]
+    ) -> list[int]:
+        """Return enabled MCP server ids from user's installations with task-level toggles."""
+        result: list[int] = []
+        installs = UserMcpInstallRepository.list_by_user(db, user_id)
+        for install in installs:
+            if str(install.server_id) in toggles:
+                if toggles[str(install.server_id)]:
+                    result.append(install.server_id)
                 continue
-            # Determine if this server should be enabled:
-            # 1. If explicitly set in toggles, use that value
-            # 2. Otherwise, use the install's default enabled state
-            if str(server.id) in toggles:
-                if not toggles[str(server.id)]:
-                    continue  # Explicitly disabled
-            elif not install.enabled:
-                continue  # Default disabled
-
-            # Extract mcpServers from server_config and merge
-            server_mcp = server.server_config.get("mcpServers", {})
-            result = {**result, **server_mcp}
-
+            if install.enabled:
+                result.append(install.server_id)
         return result
 
     def _build_user_skill_defaults(self, db: Session, user_id: str) -> dict:

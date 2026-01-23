@@ -5,6 +5,7 @@ from app.api.v1 import (
     callback,
     env_vars,
     internal_env_vars,
+    internal_mcp_config,
     internal_user_input_requests,
     mcp_servers,
     messages,
@@ -35,6 +36,7 @@ api_v1_router.include_router(tool_executions.router)
 api_v1_router.include_router(attachments.router)
 api_v1_router.include_router(env_vars.router)
 api_v1_router.include_router(internal_env_vars.router)
+api_v1_router.include_router(internal_mcp_config.router)
 api_v1_router.include_router(internal_user_input_requests.router)
 api_v1_router.include_router(mcp_servers.router)
 api_v1_router.include_router(user_mcp_installs.router)
