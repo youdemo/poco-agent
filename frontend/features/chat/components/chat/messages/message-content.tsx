@@ -102,14 +102,10 @@ export function MessageContent({
               </div>
             ),
             thead: ({ children }) => (
-              <thead className="bg-muted/50">
-                {children}
-              </thead>
+              <thead className="bg-muted/50">{children}</thead>
             ),
             tbody: ({ children }) => (
-              <tbody className="divide-y divide-border">
-                {children}
-              </tbody>
+              <tbody className="divide-y divide-border">{children}</tbody>
             ),
             th: ({ children }) => (
               <th className="border-b border-border px-4 py-3 text-left font-semibold text-foreground">
@@ -209,14 +205,10 @@ export function MessageContent({
                     </div>
                   ),
                   thead: ({ children }) => (
-                    <thead className="bg-muted/50">
-                      {children}
-                    </thead>
+                    <thead className="bg-muted/50">{children}</thead>
                   ),
                   tbody: ({ children }) => (
-                    <tbody className="divide-y divide-border">
-                      {children}
-                    </tbody>
+                    <tbody className="divide-y divide-border">{children}</tbody>
                   ),
                   th: ({ children }) => (
                     <th className="border-b border-border px-4 py-3 text-left font-semibold text-foreground">

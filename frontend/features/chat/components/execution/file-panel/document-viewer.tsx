@@ -181,7 +181,7 @@ const useFileTextContent = ({
           const isSameOrigin =
             typeof window !== "undefined" &&
             new URL(fallbackUrl, window.location.origin).origin ===
-            window.location.origin;
+              window.location.origin;
 
           const response = await fetch(fallbackUrl, {
             signal: controller.signal,
@@ -618,14 +618,10 @@ const MarkdownDocumentViewer = ({
                   </div>
                 ),
                 thead: ({ children }) => (
-                  <thead className="bg-muted/50">
-                    {children}
-                  </thead>
+                  <thead className="bg-muted/50">{children}</thead>
                 ),
                 tbody: ({ children }) => (
-                  <tbody className="divide-y divide-border">
-                    {children}
-                  </tbody>
+                  <tbody className="divide-y divide-border">{children}</tbody>
                 ),
                 th: ({ children }) => (
                   <th className="border-b-2 border-border px-4 py-3 text-left font-semibold text-foreground">
@@ -633,9 +629,7 @@ const MarkdownDocumentViewer = ({
                   </th>
                 ),
                 td: ({ children }) => (
-                  <td className="px-4 py-3 text-foreground">
-                    {children}
-                  </td>
+                  <td className="px-4 py-3 text-foreground">{children}</td>
                 ),
                 blockquote: ({ children }) => (
                   <blockquote className="border-l-4 border-primary/20 bg-primary/5 pl-4 py-1 italic my-6 rounded-r-sm">

@@ -50,10 +50,11 @@ export function McpGrid({
           return (
             <div
               key={server.id}
-              className={`flex items-center gap-4 rounded-xl border px-4 py-3 ${install
-                ? "border-border/70 bg-card"
-                : "border-border/40 bg-muted/20"
-                }`}
+              className={`flex items-center gap-4 rounded-xl border px-4 py-3 ${
+                install
+                  ? "border-border/70 bg-card"
+                  : "border-border/40 bg-muted/20"
+              }`}
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">

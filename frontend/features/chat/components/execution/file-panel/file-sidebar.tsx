@@ -139,10 +139,7 @@ function FileTreeItem({
               : "text-sidebar-foreground/70",
           )}
         </span>
-        <span
-          className="text-sm flex-1 min-w-0 truncate"
-          title={node.name}
-        >
+        <span className="text-sm flex-1 min-w-0 truncate" title={node.name}>
           {node.name}
         </span>
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowLeft, Search } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { useT } from "@/lib/i18n/client";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,11 @@ interface SkillsHeaderProps {
 export function SkillsHeader({ onImport }: SkillsHeaderProps) {
   const { t } = useT("translation");
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { lng } = useAppShell();
+
+  const fromHome = searchParams.get("from") === "home";
+  const backPath = fromHome ? `/${lng}/home` : `/${lng}/capabilities`;
 
   return (
     <header className="flex h-16 shrink-0 items-center justify-between border-b border-border/50 bg-background/50 px-6 backdrop-blur-sm sticky top-0 z-10">
@@ -22,7 +26,7 @@ export function SkillsHeader({ onImport }: SkillsHeaderProps) {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => router.push(`/${lng}/capabilities`)}
+          onClick={() => router.push(backPath)}
           className="mr-2"
         >
           <ArrowLeft className="size-5" />

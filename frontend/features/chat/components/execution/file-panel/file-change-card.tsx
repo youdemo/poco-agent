@@ -15,12 +15,12 @@ import type { FileChange } from "@/features/chat/types";
 interface FileChangeCardProps {
   change: FileChange;
   sessionStatus?:
-  | "running"
-  | "accepted"
-  | "completed"
-  | "failed"
-  | "cancelled"
-  | "stopped";
+    | "running"
+    | "accepted"
+    | "completed"
+    | "failed"
+    | "cancelled"
+    | "stopped";
   onFileClick?: () => void;
 }
 
@@ -135,10 +135,11 @@ export function FileChangeCard({
         <Button
           variant="ghost"
           size="icon"
-          className={`shrink-0 size-8 ${isSessionRunning
+          className={`shrink-0 size-8 ${
+            isSessionRunning
               ? "opacity-50 cursor-not-allowed"
               : "hover:bg-muted"
-            }`}
+          }`}
           onClick={handlePreviewClick}
           disabled={isSessionRunning}
           title={isSessionRunning ? "执行中，暂不可预览" : "预览文件"}
@@ -182,9 +183,7 @@ export function FileChangeCard({
               查看差异
             </summary>
             <pre className="mt-2 text-xs font-mono bg-muted/50 rounded p-2 overflow-x-auto whitespace-pre max-h-40 overflow-y-auto">
-              <code className="block">
-                {change.diff}
-              </code>
+              <code className="block">{change.diff}</code>
             </pre>
           </details>
         </div>

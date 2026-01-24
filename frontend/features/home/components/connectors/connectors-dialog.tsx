@@ -15,6 +15,8 @@ import {
 interface ConnectorsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  defaultTab?: ConnectorType;
+  key?: string;
 }
 
 /**
@@ -23,8 +25,10 @@ interface ConnectorsDialogProps {
 export function ConnectorsDialog({
   open,
   onOpenChange,
+  defaultTab = "app",
+  key,
 }: ConnectorsDialogProps) {
-  const [activeTab, setActiveTab] = useState<ConnectorType>("app");
+  const [activeTab, setActiveTab] = useState<ConnectorType>(defaultTab);
   const [selectedConnector, setSelectedConnector] = useState<Connector | null>(
     null,
   );
@@ -42,7 +46,7 @@ export function ConnectorsDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange} key={key}>
       <DialogContent className="max-w-4xl p-0 h-[600px] flex flex-col gap-0 bg-background border-border text-foreground overflow-hidden">
         {selectedConnector ? (
           <ConnectorDetail

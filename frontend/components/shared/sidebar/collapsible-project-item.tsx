@@ -11,7 +11,12 @@ import {
 } from "lucide-react";
 import { useDroppable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils";
-import { SidebarMenuButton, SidebarMenuItem, SidebarMenuAction, SidebarMenuBadge } from "@/components/ui/sidebar";
+import {
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuAction,
+  SidebarMenuBadge,
+} from "@/components/ui/sidebar";
 import type { ProjectItem, TaskHistoryItem } from "@/features/projects/types";
 import { TaskHistoryList } from "./task-history-list";
 import {

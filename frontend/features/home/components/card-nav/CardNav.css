@@ -1,0 +1,308 @@
+/**
+ * CardNav - Expandable Navigation Card Component Styles
+ * 
+ * A single entry point that expands to show three distinct module cards
+ */
+
+.card-nav-container {
+  width: 100%;
+}
+
+.card-nav {
+  position: relative;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: hsl(var(--card) / 0.5);
+  overflow: hidden;
+  transition: box-shadow 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  backdrop-filter: blur(12px);
+}
+
+.card-nav:hover,
+.card-nav.open {
+  box-shadow: 0 12px 40px -12px hsl(var(--foreground) / 0.15);
+  background: hsl(var(--card) / 0.8);
+}
+
+/* Entry Bar */
+.card-nav-top {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.25rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.card-nav-top-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  color: hsl(var(--muted-foreground));
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease;
+}
+
+.card-nav:hover .card-nav-top-icon {
+  color: hsl(var(--primary));
+  transform: rotate(15deg);
+}
+
+.card-nav-top-text {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  transition: color 0.3s ease;
+}
+
+.card-nav:hover .card-nav-top-text {
+  color: hsl(var(--foreground));
+}
+
+/* Expandable Content Wrap */
+.card-nav-content-wrap {
+  overflow: hidden;
+}
+
+/* Content Grid */
+.card-nav-content {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+  border-top: 1px solid hsl(var(--border) / 0.5);
+}
+
+/* Individual Module Cards */
+.nav-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--background));
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  min-height: 140px;
+}
+
+.nav-card:hover {
+  transform: translateY(-2px);
+  border-color: hsl(var(--primary) / 0.3);
+  background: hsl(var(--accent) / 0.4);
+  box-shadow: 0 4px 12px -2px hsl(var(--foreground) / 0.05);
+}
+
+/* Module Header */
+.nav-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 0.75rem;
+}
+
+.nav-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+  transition: all 0.3s ease;
+}
+
+.nav-card:hover .nav-card-icon {
+  background: hsl(var(--primary) / 0.1);
+  color: hsl(var(--primary));
+  transform: scale(1.05);
+}
+
+.nav-card-icon svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.nav-card-label {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: hsl(var(--foreground));
+}
+
+/* Module Info */
+.nav-card-description {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 1rem;
+}
+
+/* Label button for navigation */
+.nav-card-label-button {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  margin: -0.25rem -0.5rem;
+}
+
+.nav-card-label-button:hover {
+  background: hsl(var(--accent) / 0.5);
+}
+
+.nav-card-label-button:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+.nav-card-label-chevron {
+  color: hsl(var(--muted-foreground));
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
+}
+
+.nav-card-label-button:hover .nav-card-label-chevron {
+  transform: translateX(2px);
+  color: hsl(var(--primary));
+}
+
+/* Module Badges/Items */
+.nav-card-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* Scrollable list for items */
+.nav-card-scrollable-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  max-height: 180px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.4) hsl(var(--muted) / 0.3);
+}
+
+.nav-card-scrollable-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.nav-card-scrollable-list::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.3);
+  border-radius: 3px;
+}
+
+.nav-card-scrollable-list::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.4);
+  border-radius: 3px;
+}
+
+.nav-card-scrollable-list::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.6);
+}
+
+.nav-card-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 6px;
+  background: hsl(var(--secondary) / 0.3);
+  color: hsl(var(--secondary-foreground));
+  border: 1px solid hsl(var(--border) / 0.5);
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.nav-card-item:hover {
+  background: hsl(var(--secondary) / 0.5);
+  border-color: hsl(var(--border));
+}
+
+.nav-card-item--enabled {
+  background: hsl(var(--primary) / 0.08);
+  color: hsl(var(--primary));
+  border-color: hsl(var(--primary) / 0.2);
+}
+
+.nav-card-item--enabled:hover {
+  background: hsl(var(--primary) / 0.12);
+  border-color: hsl(var(--primary) / 0.3);
+}
+
+.nav-card-item-dot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background: hsl(var(--foreground) / 0.3);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  border: 1px solid hsl(var(--foreground) / 0.1);
+}
+
+.nav-card-item-dot--active {
+  background: hsl(142 76% 36%);
+  border-color: hsl(142 76% 36% / 0.3);
+  box-shadow: 0 0 0 2px hsl(142 76% 36% / 0.15);
+}
+
+.nav-card-item-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-card-empty {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+}
+
+.nav-card-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Module Color Themes - unified style */
+.nav-card--mcp,
+.nav-card--skill,
+.nav-card--app {
+  background: hsl(var(--muted) / 0.5);
+  border-color: hsl(var(--border));
+}
+
+.dark .nav-card--mcp,
+.dark .nav-card--skill,
+.dark .nav-card--app {
+  background: hsl(var(--muted) / 0.3);
+  border-color: hsl(var(--border));
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .card-nav-content {
+    grid-template-columns: 1fr;
+  }
+}
