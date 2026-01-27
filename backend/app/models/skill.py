@@ -8,7 +8,7 @@ class Skill(Base, TimestampMixin):
     __tablename__ = "skills"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    # Name is used as the directory name under .claude/skills/<name>/.
+    # Name is used as the directory name under ~/.claude/skills/<name>/ (staged into workspace).
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     scope: Mapped[str] = mapped_column(String(20), default="user", nullable=False)
     owner_user_id: Mapped[str] = mapped_column(String(255), nullable=False)

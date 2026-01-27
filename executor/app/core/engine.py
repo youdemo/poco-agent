@@ -128,7 +128,9 @@ class AgentExecutor:
             options = ClaudeAgentOptions(
                 cwd=ctx.cwd,
                 resume=self.sdk_session_id,
-                setting_sources=["project"],
+                # Load both user-level (~/.claude) and project-level (.claude) settings.
+                # Skills are staged into user-level ~/.claude/skills (symlinked to /workspace/.claude_data).
+                setting_sources=["user", "project"],
                 allowed_tools=["Skill", "Read", "Write", "Bash", "TodoWrite"],
                 mcp_servers=config.mcp_config,
                 permission_mode="default",

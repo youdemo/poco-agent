@@ -35,7 +35,9 @@ class SkillStager:
             user_id=user_id, session_id=session_id, create=True
         )
         workspace_dir = session_dir / "workspace"
-        skills_root = workspace_dir / ".claude" / "skills"
+        # Stage skills into user-level Claude config so the executor can load them via
+        # `~/.claude/skills` (the executor symlinks `~/.claude` to `/workspace/.claude_data`).
+        skills_root = workspace_dir / ".claude_data" / "skills"
         skills_root.mkdir(parents=True, exist_ok=True)
 
         staged: dict[str, dict[str, Any]] = {}
