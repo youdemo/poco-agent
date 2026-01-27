@@ -50,7 +50,7 @@ export function ChatContainer({ taskId, isNewChat }: ChatContainerProps) {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="flex flex-col h-full overflow-hidden select-text">
       <ChatHeader
         model={selectedModel}
         onModelChange={handleModelChange}

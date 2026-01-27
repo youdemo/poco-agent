@@ -130,6 +130,8 @@ export function useChatMessages({
     // Only set loading if it's a NEW session
     if (lastLoadedSessionIdRef.current !== session.session_id) {
       setIsLoadingHistory(true);
+      setMessages([]);
+      setIsTyping(false);
       lastLoadedSessionIdRef.current = session.session_id;
     }
 

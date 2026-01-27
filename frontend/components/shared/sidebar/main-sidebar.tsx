@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import {
   MoreHorizontal,
@@ -382,7 +383,13 @@ export function MainSidebar({
                 className="group/logo relative flex size-8 items-center justify-center overflow-hidden rounded-lg bg-sidebar-primary text-sidebar-primary-foreground shadow-md transition-all hover:shadow-lg active:scale-95 active:shadow-sm"
                 type="button"
               >
-                <Sparkles className="size-4 transition-opacity group-data-[collapsible=icon]:group-hover/logo:opacity-0" />
+                <Image
+                  src="/logo.jpg"
+                  alt="Poco"
+                  width={20}
+                  height={20}
+                  className="size-5 object-contain transition-opacity group-data-[collapsible=icon]:group-hover/logo:opacity-0"
+                />
                 <PanelLeftOpen className="absolute hidden size-4 group-data-[collapsible=icon]:group-hover/logo:block" />
               </button>
               <span

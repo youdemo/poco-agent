@@ -143,6 +143,16 @@ export function useExecutionSession({
   const prevStatusRef = useRef<string | null>(null);
 
   useEffect(() => {
+    if (!sessionId) return;
+    progressRef.current = 0;
+    hasStoppedRef.current = false;
+    prevStatusRef.current = null;
+    setSession(null);
+    setError(null);
+    setIsLoading(true);
+  }, [sessionId]);
+
+  useEffect(() => {
     if (
       session &&
       ["completed", "failed", "stopped", "cancelled"].includes(session.status)

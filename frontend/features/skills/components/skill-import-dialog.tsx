@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { CheckCheck, ListChecks } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -100,6 +101,16 @@ export function SkillImportDialog({
     const start = (candidatePageClamped - 1) * CANDIDATES_PAGE_SIZE;
     return candidates.slice(start, start + CANDIDATES_PAGE_SIZE);
   }, [candidates, candidatePageClamped]);
+
+  const isPageFullySelected = useMemo(() => {
+    if (pagedCandidates.length === 0) return false;
+    return pagedCandidates.every((c) => selections[c.relative_path]?.selected);
+  }, [pagedCandidates, selections]);
+
+  const isAllSelected = useMemo(() => {
+    if (candidates.length === 0) return false;
+    return candidates.every((c) => selections[c.relative_path]?.selected);
+  }, [candidates, selections]);
 
   const overwriteCount = useMemo(() => {
     return selectedCandidates.filter((c) => c.will_overwrite).length;
@@ -218,10 +229,20 @@ export function SkillImportDialog({
   };
 
   const hasPreview = candidates.length > 0 && !!archiveKey;
+  const selectionDisabled = isCommitting || isDiscovering;
+  const pageSelectionTitle = isPageFullySelected
+    ? t("library.skillsImport.preview.selection.clearPage", "取消本页全选")
+    : t("library.skillsImport.preview.selection.selectPage", "全选本页");
+  const allSelectionTitle = isAllSelected
+    ? t("library.skillsImport.preview.selection.clearAll", "取消全选")
+    : t("library.skillsImport.preview.selection.selectAll", "全选全部");
 
   return (
     <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="max-w-3xl p-0 gap-0 max-h-[calc(100vh-4rem)] overflow-hidden flex flex-col">
+      <DialogContent
+        showCloseButton={false}
+        className="max-w-3xl p-0 gap-0 max-h-[calc(100vh-4rem)] overflow-hidden flex flex-col"
+      >
         <DialogHeader className="px-6 py-4 border-b bg-muted/5">
           <DialogTitle className="text-lg font-semibold">
             {t("library.skillsImport.title", "导入技能")}
@@ -303,88 +324,71 @@ export function SkillImportDialog({
                     </span>
                   )}
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setArchiveKey(null);
-                    setCandidates([]);
-                    setCandidatePage(1);
-                    setSelections({});
-                    setCommitResult(null);
-                  }}
-                >
-                  {t("library.skillsImport.actions.back", "返回")}
-                </Button>
-              </div>
-
-              {totalCandidatePages > 1 && (
-                <div className="flex items-center justify-between gap-3">
-                  <div className="text-xs text-muted-foreground">
-                    {t(
-                      "library.skillsImport.preview.pagination.range",
-                      "显示 {{from}}-{{to}} / {{total}}",
-                      {
-                        from:
-                          (candidatePageClamped - 1) * CANDIDATES_PAGE_SIZE + 1,
-                        to: Math.min(
-                          candidatePageClamped * CANDIDATES_PAGE_SIZE,
-                          candidates.length,
-                        ),
-                        total: candidates.length,
-                      },
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={
-                        isCommitting ||
-                        isDiscovering ||
-                        candidatePageClamped <= 1
-                      }
-                      onClick={() =>
-                        setCandidatePage((prev) => Math.max(1, prev - 1))
-                      }
-                    >
-                      {t(
-                        "library.skillsImport.preview.pagination.prev",
-                        "上一页",
-                      )}
-                    </Button>
-                    <div className="text-xs text-muted-foreground">
-                      {t(
-                        "library.skillsImport.preview.pagination.page",
-                        "第 {{page}} / {{pages}} 页",
-                        {
-                          page: candidatePageClamped,
-                          pages: totalCandidatePages,
-                        },
-                      )}
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={
-                        isCommitting ||
-                        isDiscovering ||
-                        candidatePageClamped >= totalCandidatePages
-                      }
-                      onClick={() =>
-                        setCandidatePage((prev) =>
-                          Math.min(totalCandidatePages, prev + 1),
-                        )
-                      }
-                    >
-                      {t(
-                        "library.skillsImport.preview.pagination.next",
-                        "下一页",
-                      )}
-                    </Button>
-                  </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    disabled={selectionDisabled || pagedCandidates.length === 0}
+                    onClick={() => {
+                      const targetSelected = !isPageFullySelected;
+                      setSelections((prev) => {
+                        const next = { ...prev };
+                        for (const c of pagedCandidates) {
+                          const current = next[c.relative_path] || {
+                            selected: false,
+                            nameOverride: "",
+                          };
+                          next[c.relative_path] = {
+                            ...current,
+                            selected: targetSelected,
+                          };
+                        }
+                        return next;
+                      });
+                    }}
+                    title={pageSelectionTitle}
+                    aria-label={pageSelectionTitle}
+                    className={
+                      isPageFullySelected
+                        ? "text-foreground"
+                        : "text-muted-foreground"
+                    }
+                  >
+                    <ListChecks className="size-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    disabled={selectionDisabled || candidates.length === 0}
+                    onClick={() => {
+                      const targetSelected = !isAllSelected;
+                      setSelections((prev) => {
+                        const next = { ...prev };
+                        for (const c of candidates) {
+                          const current = next[c.relative_path] || {
+                            selected: false,
+                            nameOverride: "",
+                          };
+                          next[c.relative_path] = {
+                            ...current,
+                            selected: targetSelected,
+                          };
+                        }
+                        return next;
+                      });
+                    }}
+                    title={allSelectionTitle}
+                    aria-label={allSelectionTitle}
+                    className={
+                      isAllSelected
+                        ? "text-foreground"
+                        : "text-muted-foreground"
+                    }
+                  >
+                    <CheckCheck className="size-4" />
+                  </Button>
                 </div>
-              )}
+              </div>
 
               <div className="space-y-2">
                 {pagedCandidates.map((c) => {
@@ -392,13 +396,14 @@ export function SkillImportDialog({
                     selected: false,
                     nameOverride: "",
                   };
-                  const disabled = isCommitting || isDiscovering;
+                  const disabled = selectionDisabled;
                   return (
                     <div
                       key={c.relative_path}
                       className="flex items-start gap-3 rounded-xl border border-border/50 bg-muted/10 px-4 py-3"
                     >
                       <Checkbox
+                        className="self-center"
                         checked={sel.selected}
                         disabled={disabled}
                         onCheckedChange={(checked) => {
@@ -480,6 +485,55 @@ export function SkillImportDialog({
                   );
                 })}
               </div>
+
+              {totalCandidatePages > 1 && (
+                <div className="flex items-center justify-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={
+                      isCommitting || isDiscovering || candidatePageClamped <= 1
+                    }
+                    onClick={() =>
+                      setCandidatePage((prev) => Math.max(1, prev - 1))
+                    }
+                  >
+                    {t(
+                      "library.skillsImport.preview.pagination.prev",
+                      "上一页",
+                    )}
+                  </Button>
+                  <div className="text-xs text-muted-foreground">
+                    {t(
+                      "library.skillsImport.preview.pagination.page",
+                      "第 {{page}} / {{pages}} 页",
+                      {
+                        page: candidatePageClamped,
+                        pages: totalCandidatePages,
+                      },
+                    )}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={
+                      isCommitting ||
+                      isDiscovering ||
+                      candidatePageClamped >= totalCandidatePages
+                    }
+                    onClick={() =>
+                      setCandidatePage((prev) =>
+                        Math.min(totalCandidatePages, prev + 1),
+                      )
+                    }
+                  >
+                    {t(
+                      "library.skillsImport.preview.pagination.next",
+                      "下一页",
+                    )}
+                  </Button>
+                </div>
+              )}
 
               {commitResult && (
                 <div className="rounded-xl border border-border/50 bg-muted/5 px-4 py-3 space-y-2">

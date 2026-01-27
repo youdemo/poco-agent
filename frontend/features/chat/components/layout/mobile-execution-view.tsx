@@ -31,7 +31,7 @@ export function MobileExecutionView({
   const swiperRef = React.useRef<SwiperType | null>(null);
 
   return (
-    <div className="h-full w-full flex flex-col overflow-hidden">
+    <div className="h-full w-full flex flex-col overflow-hidden select-text">
       {/* Main swiper content - takes available height */}
       <div className="flex-1 min-h-0">
         <Swiper

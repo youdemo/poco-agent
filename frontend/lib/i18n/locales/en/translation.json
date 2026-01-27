@@ -390,6 +390,12 @@
           "page": "Page {{page}} / {{pages}}",
           "prev": "Previous",
           "next": "Next"
+        },
+        "selection": {
+          "selectPage": "Select page",
+          "clearPage": "Clear page selection",
+          "selectAll": "Select all",
+          "clearAll": "Clear all selections"
         }
       },
       "result": {

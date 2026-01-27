@@ -390,6 +390,12 @@
           "page": "第 {{page}} / {{pages}} 页",
           "prev": "上一页",
           "next": "下一页"
+        },
+        "selection": {
+          "selectPage": "全选本页",
+          "clearPage": "取消本页全选",
+          "selectAll": "全选全部",
+          "clearAll": "取消全选"
         }
       },
       "result": {
