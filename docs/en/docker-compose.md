@@ -28,6 +28,7 @@ The script will:
 - Copy `.env.example` -> `.env` if missing
 - Write/fill `RUSTFS_DATA_DIR` / `S3_*` / `CORS_ORIGINS(JSON)` / `DOCKER_GID`
 - Create `oss_data/` and `tmp_workspace/` and try to fix permissions
+- Write `.gitignore` into `oss_data/` and `tmp_workspace/` (content is `*`)
 - Pull the executor image and start services by default
 - Create `S3_BUCKET` via `rustfs-init`
 

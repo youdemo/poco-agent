@@ -28,6 +28,7 @@
 - 复制 `.env.example` -> `.env`（若不存在）
 - 写入/补齐 `RUSTFS_DATA_DIR` / `S3_*` / `CORS_ORIGINS(JSON)` / `DOCKER_GID`
 - 创建 `oss_data/` 与 `tmp_workspace/` 并尝试修正权限
+- 为 `oss_data/` 与 `tmp_workspace/` 写入 `.gitignore`（内容为 `*`）
 - 默认拉取 executor 镜像并启动服务
 - 通过 `rustfs-init` 创建 `S3_BUCKET`
 

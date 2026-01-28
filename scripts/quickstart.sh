@@ -103,6 +103,14 @@ detect_docker_gid() {
   return 1
 }
 
+ensure_gitignore() {
+  local dir="$1"
+  local path="${dir}/.gitignore"
+  if [[ ! -f "$path" ]]; then
+    printf "*\n" > "$path"
+  fi
+}
+
 read_env_key() {
   local key="$1"
   if [[ -f "$ENV_FILE" ]]; then
@@ -224,6 +232,9 @@ fi
 
 mkdir -p "$DATA_DIR_ABS"
 mkdir -p "$WORKSPACE_DIR_ABS/active" "$WORKSPACE_DIR_ABS/archive" "$WORKSPACE_DIR_ABS/temp"
+
+ensure_gitignore "$DATA_DIR_ABS"
+ensure_gitignore "$WORKSPACE_DIR_ABS"
 
 chmod -R u+rwX "$DATA_DIR_ABS" "$WORKSPACE_DIR_ABS" 2>/dev/null || \
   warn "Failed to chmod workspace directories. You may need to run: sudo chown -R \"$(id -u)\":\"$(id -g)\" \"$WORKSPACE_DIR_ABS\" \"$DATA_DIR_ABS\""
