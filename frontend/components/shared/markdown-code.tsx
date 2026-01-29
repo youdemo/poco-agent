@@ -103,6 +103,7 @@ export const MarkdownPre = ({ node, children, ...props }: MarkdownPreProps) => {
         <SyntaxHighlighter
           language={language}
           style={syntaxTheme}
+          wrapLongLines
           customStyle={{
             margin: 0,
             padding: "1rem",
