@@ -12,6 +12,7 @@ import {
   Search,
   SlidersHorizontal,
   Sparkles,
+  Clock,
   Trash2,
   X,
   ChevronRight,
@@ -63,6 +64,12 @@ const TOP_NAV_ITEMS = [
     labelKey: "sidebar.library",
     icon: Sparkles,
     href: "/capabilities",
+  },
+  {
+    id: "scheduled-tasks",
+    labelKey: "sidebar.scheduledTasks",
+    icon: Clock,
+    href: "/capabilities/scheduled-tasks",
   },
 ] as const;
 

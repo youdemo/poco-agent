@@ -7,6 +7,7 @@
     "newTask": "New Task",
     "search": "Search",
     "library": "Capabilities",
+    "scheduledTasks": "Scheduled Tasks",
     "projects": "Projects",
     "newProject": "New Project",
     "newProjectPrompt": "Enter project name:",
@@ -147,6 +148,8 @@
     "emptyState": "Start a new conversation",
     "emptyStateDesc": "Enter a message to start chatting with the AI assistant",
     "stopGenerating": "Stop Generating",
+    "cancelTask": "Cancel task",
+    "cancelTaskConfirm": "Cancel the current task?",
     "regenerate": "Regenerate",
     "model": "Model",
     "tokens": "Tokens",
@@ -190,6 +193,7 @@
     "running": "Running",
     "completed": "Completed",
     "failed": "Failed",
+    "canceled": "Canceled",
     "loading": "Loading...",
     "progress": "Progress"
   },
@@ -259,7 +263,7 @@
   },
   "library": {
     "title": "Capabilities",
-    "subtitle": "Manage your skills, plugins and scheduled tasks",
+    "subtitle": "Manage your skills, plugins and tools",
     "comingSoon": "Coming Soon",
     "skillsStore": {
       "title": "Skills",
