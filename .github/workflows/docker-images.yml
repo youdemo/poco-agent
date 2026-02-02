@@ -23,9 +23,16 @@ jobs:
           - name: executor-manager
             image: ghcr.io/${{ github.repository_owner }}/poco-executor-manager
             dockerfile: docker/executor_manager/Dockerfile
-          - name: executor
+          - name: executor-lite
             image: ghcr.io/${{ github.repository_owner }}/poco-executor
             dockerfile: docker/executor/Dockerfile
+            sandbox_variant: lite
+            tags_suffix: lite
+          - name: executor-full
+            image: ghcr.io/${{ github.repository_owner }}/poco-executor
+            dockerfile: docker/executor/Dockerfile
+            sandbox_variant: full
+            tags_suffix: full
           - name: frontend
             image: ghcr.io/${{ github.repository_owner }}/poco-frontend
             dockerfile: docker/frontend/Dockerfile
@@ -50,9 +57,9 @@ jobs:
         with:
           images: ${{ matrix.image }}
           tags: |
-            type=ref,event=tag
-            type=sha
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=ref,event=tag,suffix=${{ matrix.tags_suffix || '' }}
+            type=sha,suffix=${{ matrix.tags_suffix || '' }}
+            type=raw,value=latest,enable={{is_default_branch}},suffix=${{ matrix.tags_suffix || '' }}
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -69,3 +76,4 @@ jobs:
             APP_UID=1000
             NEXT_PUBLIC_SESSION_POLLING_INTERVAL=2500
             NEXT_PUBLIC_MESSAGE_POLLING_INTERVAL=2500
+            SANDBOX_VARIANT=${{ matrix.sandbox_variant || 'lite' }}
