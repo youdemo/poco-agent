@@ -247,9 +247,35 @@
   "computer": {
     "title": "Poco Computer",
     "description": "Watch browser and terminal steps while running",
+    "status": {
+      "live": "Live",
+      "replay": "Replay"
+    },
     "tabs": {
       "browser": "Browser",
       "terminal": "Terminal"
+    },
+    "replay": {
+      "empty": "No replay steps yet",
+      "timeline": "Timeline",
+      "noSelection": "(no step selected)",
+      "stepCounter": "{{current}} / {{total}}",
+      "durationMs": "{{ms}} ms",
+      "durationSec": "{{sec}} s",
+      "controls": {
+        "first": "First",
+        "prev": "Prev",
+        "play": "Play",
+        "pause": "Pause",
+        "next": "Next",
+        "latest": "Latest"
+      },
+      "filter": {
+        "all": "All",
+        "browser": "Browser",
+        "terminal": "Terminal"
+      },
+      "limitHint": "Showing only the first {{limit}} steps"
     },
     "browser": {
       "screenshotAlt": "Browser screenshot",

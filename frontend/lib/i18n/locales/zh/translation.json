@@ -247,9 +247,35 @@
   "computer": {
     "title": "Poco 电脑",
     "description": "运行中查看浏览器与终端过程",
+    "status": {
+      "live": "实时同步",
+      "replay": "回放"
+    },
     "tabs": {
       "browser": "浏览器",
       "terminal": "终端"
+    },
+    "replay": {
+      "empty": "暂无回放",
+      "timeline": "时间线",
+      "noSelection": "（未选择步骤）",
+      "stepCounter": "{{current}} / {{total}}",
+      "durationMs": "{{ms}} ms",
+      "durationSec": "{{sec}} 秒",
+      "controls": {
+        "first": "从头",
+        "prev": "上一步",
+        "play": "播放",
+        "pause": "暂停",
+        "next": "下一步",
+        "latest": "到最新"
+      },
+      "filter": {
+        "all": "全部",
+        "browser": "浏览器",
+        "terminal": "终端"
+      },
+      "limitHint": "仅展示前 {{limit}} 步"
     },
     "browser": {
       "screenshotAlt": "浏览器截图",

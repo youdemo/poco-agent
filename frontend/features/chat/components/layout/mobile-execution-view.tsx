@@ -14,6 +14,8 @@ import type { ExecutionSession } from "@/features/chat/types";
 import { useT } from "@/lib/i18n/client";
 import { MessageSquare, Layers, Monitor } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 
 interface MobileExecutionViewProps {
   session: ExecutionSession | null;
@@ -36,6 +38,29 @@ export function MobileExecutionView({
     session?.config_snapshot?.browser_enabled ||
     session?.state_patch?.browser?.enabled,
   );
+
+  const defaultPanelTab = isSessionActive ? "computer" : "artifacts";
+  const [panelTab, setPanelTab] = React.useState<string>(defaultPanelTab);
+  const didManualSwitchRef = React.useRef(false);
+  const prevDefaultRef = React.useRef<string>(defaultPanelTab);
+  const lastSessionIdRef = React.useRef<string | null>(null);
+
+  React.useEffect(() => {
+    const key = sessionId || "";
+    if (lastSessionIdRef.current === key) return;
+    lastSessionIdRef.current = key;
+    didManualSwitchRef.current = false;
+    prevDefaultRef.current = defaultPanelTab;
+    setPanelTab(defaultPanelTab);
+  }, [defaultPanelTab, sessionId]);
+
+  React.useEffect(() => {
+    if (prevDefaultRef.current === defaultPanelTab) return;
+    prevDefaultRef.current = defaultPanelTab;
+    if (!didManualSwitchRef.current) {
+      setPanelTab(defaultPanelTab);
+    }
+  }, [defaultPanelTab]);
 
   return (
     <div className="h-full w-full flex flex-col overflow-hidden select-text">
@@ -81,21 +106,64 @@ export function MobileExecutionView({
             <div
               className={`h-full ${activeIndex === 1 ? "bg-background" : "bg-muted/50"}`}
             >
-              {isSessionActive && sessionId ? (
-                <ComputerPanel
-                  sessionId={sessionId}
-                  sessionStatus={session?.status}
-                  browserEnabled={browserEnabled}
-                />
-              ) : (
-                <ArtifactsPanel
-                  fileChanges={
-                    session?.state_patch.workspace_state?.file_changes
-                  }
-                  sessionId={sessionId}
-                  sessionStatus={session?.status}
-                />
-              )}
+              <Tabs
+                value={panelTab}
+                onValueChange={(value) => {
+                  didManualSwitchRef.current = true;
+                  setPanelTab(value);
+                }}
+                className="h-full min-h-0 flex flex-col"
+              >
+                <div className="px-3 pt-3">
+                  <TabsList>
+                    <TabsTrigger value="computer">
+                      <Monitor className="size-4" />
+                      {t("mobile.computer")}
+                      {session?.status ? (
+                        <Badge
+                          variant={isSessionActive ? "secondary" : "outline"}
+                          className="ml-1"
+                        >
+                          {isSessionActive
+                            ? t("computer.status.live")
+                            : t("computer.status.replay")}
+                        </Badge>
+                      ) : null}
+                    </TabsTrigger>
+                    <TabsTrigger value="artifacts">
+                      <Layers className="size-4" />
+                      {t("mobile.artifacts")}
+                    </TabsTrigger>
+                  </TabsList>
+                </div>
+
+                <div className="flex-1 min-h-0 overflow-hidden">
+                  <TabsContent
+                    value="computer"
+                    className="h-full min-h-0 data-[state=inactive]:hidden"
+                  >
+                    {sessionId ? (
+                      <ComputerPanel
+                        sessionId={sessionId}
+                        sessionStatus={session?.status}
+                        browserEnabled={browserEnabled}
+                      />
+                    ) : null}
+                  </TabsContent>
+                  <TabsContent
+                    value="artifacts"
+                    className="h-full min-h-0 data-[state=inactive]:hidden"
+                  >
+                    <ArtifactsPanel
+                      fileChanges={
+                        session?.state_patch.workspace_state?.file_changes
+                      }
+                      sessionId={sessionId}
+                      sessionStatus={session?.status}
+                    />
+                  </TabsContent>
+                </div>
+              </Tabs>
             </div>
           </SwiperSlide>
         </Swiper>
