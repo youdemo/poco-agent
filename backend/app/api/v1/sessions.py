@@ -201,7 +201,7 @@ async def cancel_session(
 ) -> JSONResponse:
     """Cancel a session (cancel all unfinished runs and stop executor container)."""
     db_session, canceled_runs, expired_requests = session_service.cancel_session(
-        db, session_id, user_id=user_id
+        db, session_id, user_id=user_id, reason=request.reason
     )
     executor_cancelled = _cancel_executor_manager(session_id, request.reason)
 

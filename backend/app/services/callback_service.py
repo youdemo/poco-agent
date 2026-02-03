@@ -146,7 +146,9 @@ class CallbackService:
                 if not tool_use_id:
                     continue
 
-                tool_output = {"content": result_content} if result_content else None
+                # Persist an explicit tool_output payload even when the tool returns an empty/None content.
+                # This lets the UI reliably treat the tool step as "done" once a ToolResultBlock arrives.
+                tool_output = {"content": result_content}
                 existing = ToolExecutionRepository.get_by_session_and_tool_use_id(
                     session_db=session_db,
                     session_id=session_id,
@@ -283,6 +285,15 @@ class CallbackService:
                 session_id=callback.session_id,
                 status="callback_received",
                 message="Session not found yet",
+            )
+
+        # Once a session is canceled, ignore subsequent callbacks so we don't keep
+        # persisting new messages/tool executions for a task that the user asked to stop.
+        if db_session.status == "canceled":
+            return CallbackResponse(
+                session_id=str(db_session.id),
+                status=db_session.status,
+                callback_status=callback.status,
             )
 
         derived_sdk_session_id = callback.sdk_session_id

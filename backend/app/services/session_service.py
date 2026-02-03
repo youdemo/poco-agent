@@ -11,6 +11,7 @@ from app.models.agent_run import AgentRun
 from app.repositories.project_repository import ProjectRepository
 from app.repositories.scheduled_task_repository import ScheduledTaskRepository
 from app.repositories.session_repository import SessionRepository
+from app.repositories.tool_execution_repository import ToolExecutionRepository
 from app.repositories.user_input_request_repository import UserInputRequestRepository
 from app.schemas.session import SessionCreateRequest, SessionUpdateRequest
 
@@ -152,6 +153,7 @@ class SessionService:
         session_id: uuid.UUID,
         *,
         user_id: str,
+        reason: str | None = None,
     ) -> tuple[AgentSession, int, int]:
         """Cancel a session by marking all unfinished runs as canceled.
 
@@ -206,6 +208,27 @@ class SessionService:
             # Ensure it is considered expired immediately.
             entry.expires_at = now
             expired_requests += 1
+
+        # Mark in-flight tool executions as ended so the UI doesn't keep showing spinners
+        # after the session is canceled (a ToolResultBlock may never arrive once we stop the executor).
+        unfinished_tools = ToolExecutionRepository.list_unfinished_by_session(
+            db, session_id
+        )
+        if unfinished_tools:
+            suffix = (
+                f": {reason.strip()}"
+                if isinstance(reason, str) and reason.strip()
+                else ""
+            )
+            for execution in unfinished_tools:
+                execution.is_error = True
+                execution.tool_output = {"content": f"Canceled{suffix}"}
+                if execution.duration_ms is None and execution.created_at is not None:
+                    started_at = execution.created_at
+                    if started_at.tzinfo is None:
+                        started_at = started_at.replace(tzinfo=timezone.utc)
+                    duration = now - started_at.astimezone(timezone.utc)
+                    execution.duration_ms = max(0, int(duration.total_seconds() * 1000))
 
         db_session.status = "canceled"
 
