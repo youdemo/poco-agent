@@ -171,6 +171,22 @@ class BackendClient:
                 return {}
             return {str(k): str(v) for k, v in resolved.items() if isinstance(v, str)}
 
+    async def get_claude_md(self, user_id: str) -> dict:
+        """Fetch user-level CLAUDE.md settings for execution staging."""
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                f"{self.base_url}/api/v1/internal/claude-md",
+                headers={
+                    "X-Internal-Token": self.settings.internal_api_token,
+                    "X-User-Id": user_id,
+                    **self._trace_headers(),
+                },
+            )
+            response.raise_for_status()
+            data = response.json()
+            result = data.get("data", {}) or {}
+            return result if isinstance(result, dict) else {}
+
     async def dispatch_due_scheduled_tasks(self, limit: int = 50) -> dict:
         """Trigger backend to dispatch due scheduled tasks into the run queue."""
         payload = {"limit": max(1, int(limit))}
