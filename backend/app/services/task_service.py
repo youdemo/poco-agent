@@ -9,6 +9,7 @@ from app.repositories.message_repository import MessageRepository
 from app.repositories.project_repository import ProjectRepository
 from app.repositories.run_repository import RunRepository
 from app.repositories.session_repository import SessionRepository
+from app.repositories.sub_agent_repository import SubAgentRepository
 from app.repositories.user_mcp_install_repository import UserMcpInstallRepository
 from app.repositories.user_skill_install_repository import UserSkillInstallRepository
 from app.schemas.session import TaskConfig
@@ -309,6 +310,16 @@ class TaskService:
             merged_base["skill_ids"] = base_skill_ids
         else:
             merged_base["skill_ids"] = self._build_user_skill_ids_defaults(db, user_id)
+
+        selected_subagent_ids = self._normalize_subagent_ids(
+            merged_base.get("subagent_ids")
+        )
+        if selected_subagent_ids is not None:
+            merged_base["subagent_ids"] = selected_subagent_ids
+        else:
+            merged_base["subagent_ids"] = self._build_user_subagent_ids_defaults(
+                db, user_id
+            )
         return merged_base or None
 
     @staticmethod
@@ -364,6 +375,25 @@ class TaskService:
                     continue
         return result
 
+    @staticmethod
+    def _normalize_subagent_ids(value: object) -> list[int] | None:
+        if not isinstance(value, list):
+            return None
+        result: list[int] = []
+        for item in value:
+            if isinstance(item, int):
+                result.append(item)
+                continue
+            if isinstance(item, str):
+                item = item.strip()
+                if not item:
+                    continue
+                try:
+                    result.append(int(item))
+                except ValueError:
+                    continue
+        return result
+
     def _build_user_mcp_server_ids_defaults(
         self, db: Session, user_id: str
     ) -> list[int]:
@@ -373,6 +403,14 @@ class TaskService:
         for install in installs:
             if install.enabled:
                 result.append(install.server_id)
+        return result
+
+    def _build_user_subagent_ids_defaults(self, db: Session, user_id: str) -> list[int]:
+        """Return enabled subagent ids for the user."""
+        result: list[int] = []
+        items = SubAgentRepository.list_enabled_by_user(db, user_id=user_id)
+        for subagent in items:
+            result.append(subagent.id)
         return result
 
     def _build_user_mcp_server_ids_with_toggles(

@@ -22,6 +22,9 @@ class TaskConfig(BaseModel):
     # Skill enable/disable toggles (true=enabled, false=disabled).
     # Skills not in this dict use their default enabled state from user installations.
     skill_config: dict[str, bool] = Field(default_factory=dict)
+    # Optional explicit subagent selection (by id). When omitted, backend resolves
+    # enabled subagents as defaults.
+    subagent_ids: list[int] = Field(default_factory=list)
     input_files: list[InputFile] = Field(default_factory=list)
 
 

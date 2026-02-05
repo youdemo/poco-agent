@@ -11,6 +11,7 @@ from app.models.project import Project
 from app.models.skill import Skill
 from app.models.skill_import_job import SkillImportJob
 from app.models.slash_command import SlashCommand
+from app.models.sub_agent import SubAgent
 from app.models.tool_execution import ToolExecution
 from app.models.usage_log import UsageLog
 from app.models.user_mcp_install import UserMcpInstall
@@ -31,6 +32,7 @@ __all__ = [
     "Skill",
     "SkillImportJob",
     "SlashCommand",
+    "SubAgent",
     "ToolExecution",
     "UsageLog",
     "UserMcpInstall",

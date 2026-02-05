@@ -11,6 +11,7 @@ from app.api.v1 import (
     internal_mcp_config,
     internal_scheduled_tasks,
     internal_skill_config,
+    internal_subagents,
     internal_user_input_requests,
     mcp_servers,
     messages,
@@ -23,6 +24,7 @@ from app.api.v1 import (
     skill_installs,
     skill_imports,
     skills,
+    subagents,
     tasks,
     tool_executions,
     user_input_requests,
@@ -51,12 +53,14 @@ api_v1_router.include_router(internal_skill_config.router)
 api_v1_router.include_router(internal_scheduled_tasks.router)
 api_v1_router.include_router(internal_user_input_requests.router)
 api_v1_router.include_router(internal_slash_commands.router)
+api_v1_router.include_router(internal_subagents.router)
 api_v1_router.include_router(mcp_servers.router)
 api_v1_router.include_router(user_mcp_installs.router)
 api_v1_router.include_router(skills.router)
 api_v1_router.include_router(skill_imports.router)
 api_v1_router.include_router(skill_installs.router)
 api_v1_router.include_router(slash_commands.router)
+api_v1_router.include_router(subagents.router)
 api_v1_router.include_router(user_input_requests.router)
 api_v1_router.include_router(scheduled_tasks.router)
 
