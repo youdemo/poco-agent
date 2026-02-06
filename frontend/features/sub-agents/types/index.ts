@@ -1,7 +1,5 @@
 export type SubAgentMode = "raw" | "structured";
 
-export type SubAgentModel = "sonnet" | "opus" | "haiku" | "inherit";
-
 export interface SubAgent {
   id: number;
   user_id: string;
@@ -12,7 +10,6 @@ export interface SubAgent {
   description?: string | null;
   prompt?: string | null;
   tools?: string[] | null;
-  model?: SubAgentModel | null;
   raw_markdown?: string | null;
 
   created_at: string;
@@ -27,7 +24,6 @@ export interface SubAgentCreateInput {
   description?: string | null;
   prompt?: string | null;
   tools?: string[] | null;
-  model?: SubAgentModel | null;
 
   raw_markdown?: string | null;
 }
@@ -40,7 +36,6 @@ export interface SubAgentUpdateInput {
   description?: string | null;
   prompt?: string | null;
   tools?: string[] | null;
-  model?: SubAgentModel | null;
 
   raw_markdown?: string | null;
 }

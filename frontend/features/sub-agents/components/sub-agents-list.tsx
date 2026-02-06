@@ -88,14 +88,6 @@ export function SubAgentsList({
                       >
                         {modeLabel}
                       </Badge>
-                      {agent.model ? (
-                        <Badge
-                          variant="outline"
-                          className="text-xs text-muted-foreground"
-                        >
-                          {agent.model}
-                        </Badge>
-                      ) : null}
                     </div>
                     {agent.description ? (
                       <p className="text-sm text-muted-foreground truncate">

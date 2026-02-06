@@ -4,46 +4,12 @@ from sqlalchemy.orm import Session
 
 from app.models.slash_command import SlashCommand
 from app.repositories.slash_command_repository import SlashCommandRepository
+from app.utils.markdown_front_matter import remove_model_from_yaml_front_matter
 
 
 def _json_string(value: str) -> str:
     # JSON strings are valid YAML scalars, and handle escaping reliably.
     return json.dumps(value)
-
-
-def _sanitize_raw_markdown(markdown: str) -> str:
-    """Remove unsupported keys (e.g. model) from YAML front matter."""
-    if not markdown:
-        return ""
-
-    text = markdown
-    if text.startswith("\ufeff"):
-        text = text[1:]
-
-    lines = text.splitlines()
-    if not lines or lines[0].strip() != "---":
-        return markdown
-
-    end_idx = None
-    for i in range(1, len(lines)):
-        if lines[i].strip() == "---":
-            end_idx = i
-            break
-    if end_idx is None:
-        return markdown
-
-    front = lines[1:end_idx]
-    body = lines[end_idx + 1 :]
-
-    filtered_front: list[str] = []
-    for line in front:
-        if line.strip().lower().startswith("model:"):
-            continue
-        filtered_front.append(line)
-
-    rebuilt = ["---", *filtered_front, "---", *body]
-    result = "\n".join(rebuilt).rstrip() + "\n"
-    return result
 
 
 class SlashCommandConfigService:
@@ -68,7 +34,7 @@ class SlashCommandConfigService:
         mode = (command.mode or "").strip() or "raw"
         if mode == "structured":
             return self._render_structured(command)
-        return _sanitize_raw_markdown(command.raw_markdown or "")
+        return remove_model_from_yaml_front_matter(command.raw_markdown or "")
 
     @staticmethod
     def _render_structured(command: SlashCommand) -> str:

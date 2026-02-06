@@ -17,18 +17,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import type {
   SubAgent,
   SubAgentCreateInput,
   SubAgentMode,
-  SubAgentModel,
   SubAgentUpdateInput,
 } from "@/features/sub-agents/types";
 
@@ -71,7 +63,6 @@ export function SubAgentDialog({
   const [agentMode, setAgentMode] = React.useState<SubAgentMode>("structured");
 
   const [description, setDescription] = React.useState("");
-  const [model, setModel] = React.useState<SubAgentModel | "">("");
   const [tools, setTools] = React.useState("");
   const [prompt, setPrompt] = React.useState("");
   const [rawMarkdown, setRawMarkdown] = React.useState("");
@@ -84,7 +75,6 @@ export function SubAgentDialog({
       setEnabled(Boolean(initialAgent.enabled));
       setAgentMode(initialAgent.mode || "structured");
       setDescription(initialAgent.description || "");
-      setModel((initialAgent.model as SubAgentModel) || "");
       setTools(
         Array.isArray(initialAgent.tools) ? initialAgent.tools.join(", ") : "",
       );
@@ -97,7 +87,6 @@ export function SubAgentDialog({
     setEnabled(true);
     setAgentMode("structured");
     setDescription("");
-    setModel("");
     setTools("");
     setPrompt("");
     setRawMarkdown("");
@@ -120,7 +109,6 @@ export function SubAgentDialog({
     const trimmedName = name.trim();
     if (!trimmedName) return;
 
-    const modelValue = model ? model : undefined;
     const toolsValue = parseTools(tools);
 
     if (mode === "create") {
@@ -137,7 +125,6 @@ export function SubAgentDialog({
               description: description,
               prompt,
               tools: toolsValue,
-              model: modelValue,
             }),
       });
       if (created) onOpenChange(false);
@@ -158,7 +145,6 @@ export function SubAgentDialog({
             description,
             prompt,
             tools: toolsValue,
-            model: modelValue,
           }),
     });
     if (updated) onOpenChange(false);
@@ -223,45 +209,20 @@ export function SubAgentDialog({
 
               <TabsContent value="structured">
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="subagent-description">
-                        {t("library.subAgents.fields.description", "描述")}
-                      </Label>
-                      <Input
-                        id="subagent-description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        placeholder={t(
-                          "library.subAgents.fields.descriptionPlaceholder",
-                          "用于质量、安全和可维护性审查。",
-                        )}
-                        disabled={isSaving}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>
-                        {t("library.subAgents.fields.model", "模型")}
-                      </Label>
-                      <Select
-                        value={model || "inherit"}
-                        onValueChange={(v) => setModel(v as SubAgentModel)}
-                        disabled={isSaving}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="inherit">
-                            {t("library.subAgents.models.inherit", "继承")}
-                          </SelectItem>
-                          <SelectItem value="sonnet">sonnet</SelectItem>
-                          <SelectItem value="opus">opus</SelectItem>
-                          <SelectItem value="haiku">haiku</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="subagent-description">
+                      {t("library.subAgents.fields.description", "描述")}
+                    </Label>
+                    <Input
+                      id="subagent-description"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder={t(
+                        "library.subAgents.fields.descriptionPlaceholder",
+                        "用于质量、安全和可维护性审查。",
+                      )}
+                      disabled={isSaving}
+                    />
                   </div>
 
                   <div className="space-y-2">
