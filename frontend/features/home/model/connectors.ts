@@ -30,7 +30,7 @@ export interface Connector {
   id: string;
   type: ConnectorType;
   title: string;
-  description: string;
+  descriptionKey: string;
   icon: React.ComponentType<{ className?: string }>;
   author: string;
   website: string;
@@ -44,7 +44,7 @@ export const AVAILABLE_CONNECTORS: Connector[] = [
     id: "gmail",
     type: "app",
     title: "Gmail",
-    description: "撰写邮件，搜索会话并快速生成摘要",
+    descriptionKey: "connectors.gmail.description",
     icon: ConnectorIcons.gmail,
     author: "Poco",
     website: "https://google.com/gmail",
@@ -54,7 +54,7 @@ export const AVAILABLE_CONNECTORS: Connector[] = [
     id: "gcal",
     type: "app",
     title: "Google Calendar",
-    description: "查看日程安排，优化时间与活动管理",
+    descriptionKey: "connectors.gcal.description",
     icon: ConnectorIcons.calendar,
     author: "Poco",
     website: "https://calendar.google.com",
@@ -64,7 +64,7 @@ export const AVAILABLE_CONNECTORS: Connector[] = [
     id: "gdrive",
     type: "app",
     title: "Google Drive",
-    description: "快速访问文件、智能搜索内容，并让 Poco 协助你更高效地管理文档",
+    descriptionKey: "connectors.gdrive.description",
     icon: ConnectorIcons.drive,
     author: "Poco",
     website: "https://drive.google.com",
@@ -74,7 +74,7 @@ export const AVAILABLE_CONNECTORS: Connector[] = [
     id: "outlook-mail",
     type: "app",
     title: "Outlook Mail",
-    description: "在 Poco 中无缝写作、搜索并管理你的 Outlook 电子邮件",
+    descriptionKey: "connectors.outlookMail.description",
     icon: ConnectorIcons.outlook,
     author: "Microsoft",
     website: "https://outlook.live.com",
@@ -84,7 +84,7 @@ export const AVAILABLE_CONNECTORS: Connector[] = [
     id: "github",
     type: "app",
     title: "GitHub",
-    description: "管理代码仓库，协作开发与代码审查",
+    descriptionKey: "connectors.github.description",
     icon: ConnectorIcons.github,
     author: "GitHub",
     website: "https://github.com",
@@ -94,7 +94,7 @@ export const AVAILABLE_CONNECTORS: Connector[] = [
     id: "slack",
     type: "app",
     title: "Slack",
-    description: "在 Poco 中读写 Slack 对话",
+    descriptionKey: "connectors.slack.description",
     icon: ConnectorIcons.slack,
     author: "Slack",
     website: "https://slack.com",
@@ -104,7 +104,7 @@ export const AVAILABLE_CONNECTORS: Connector[] = [
     id: "notion",
     type: "app",
     title: "Notion",
-    description: "搜索和更新内容，实现自动化流程",
+    descriptionKey: "connectors.notion.description",
     icon: ConnectorIcons.notion,
     author: "Notion",
     website: "https://notion.so",
@@ -116,7 +116,7 @@ export const AVAILABLE_CONNECTORS: Connector[] = [
     id: "filesystem",
     type: "mcp",
     title: "File System",
-    description: "Allow reading and writing files on the local file system",
+    descriptionKey: "connectors.filesystem.description",
     icon: ConnectorIcons.drive, // Reuse drive icon or similar
     author: "ModelContextProtocol",
     website: "https://modelcontextprotocol.io",
@@ -126,7 +126,7 @@ export const AVAILABLE_CONNECTORS: Connector[] = [
     id: "postgres",
     type: "mcp",
     title: "PostgreSQL",
-    description: "Read-only database access for PostgreSQL",
+    descriptionKey: "connectors.postgres.description",
     icon: ConnectorIcons.notion, // Reuse database icon
     author: "ModelContextProtocol",
     website: "https://modelcontextprotocol.io",
@@ -136,7 +136,7 @@ export const AVAILABLE_CONNECTORS: Connector[] = [
     id: "sentry",
     type: "mcp",
     title: "Sentry",
-    description: "Retrieve and analyze error reports from Sentry",
+    descriptionKey: "connectors.sentry.description",
     icon: ConnectorIcons.zapier, // Reuse command icon
     author: "Sentry",
     website: "https://sentry.io",
@@ -148,8 +148,7 @@ export const AVAILABLE_CONNECTORS: Connector[] = [
     id: "web-search",
     type: "skill",
     title: "Web Search",
-    description:
-      "Perform real-time web searches to retrieve up-to-date information.",
+    descriptionKey: "connectors.webSearch.description",
     icon: ConnectorIcons.search,
     author: "Poco",
     website: "https://open-cowork.com",
@@ -159,7 +158,7 @@ export const AVAILABLE_CONNECTORS: Connector[] = [
     id: "code-interpreter",
     type: "skill",
     title: "Code Interpreter",
-    description: "Execute Python code safely in a sandboxed environment.",
+    descriptionKey: "connectors.codeInterpreter.description",
     icon: ConnectorIcons.zapier, // Reuse command icon
     author: "Poco",
     website: "https://open-cowork.com",

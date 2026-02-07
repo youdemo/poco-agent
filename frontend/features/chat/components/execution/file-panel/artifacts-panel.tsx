@@ -9,6 +9,7 @@ import { ArtifactsEmpty } from "./artifacts-empty";
 import { useArtifacts } from "./hooks/use-artifacts";
 import type { FileChange, FileNode } from "@/features/chat/types";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/i18n/client";
 
 interface ArtifactsPanelProps {
   fileChanges?: FileChange[];
@@ -48,6 +49,7 @@ export function ArtifactsPanel({
   sessionStatus,
   headerAction,
 }: ArtifactsPanelProps) {
+  const { t } = useT("translation");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
   const {
     files,
@@ -131,7 +133,7 @@ export function ArtifactsPanel({
   return (
     <div className="flex h-full min-h-0 flex-col min-w-0 overflow-hidden">
       <ArtifactsHeader
-        title="文件变更"
+        title={t("artifactsPanel.fileChanges")}
         selectedFile={selectedFile}
         isSidebarCollapsed={isSidebarCollapsed}
         onToggleSidebar={handleToggleSidebar}

@@ -45,8 +45,8 @@ export function SubAgentsList({
     <div className="space-y-6">
       <div className="rounded-xl bg-muted/50 px-5 py-3">
         <span className="text-sm text-muted-foreground">
-          {t("library.subAgents.summary", "子代理")} {subAgents.length} ·{" "}
-          {t("library.subAgents.enabled", "已启用")} {enabledCount}
+          {t("library.subAgents.summary")} {subAgents.length} ·{" "}
+          {t("library.subAgents.enabled")} {enabledCount}
         </span>
       </div>
 
@@ -55,7 +55,7 @@ export function SubAgentsList({
           <SkeletonShimmer count={5} itemClassName="min-h-[64px]" gap="md" />
         ) : subAgents.length === 0 ? (
           <div className="rounded-xl border border-border/50 bg-muted/10 px-4 py-6 text-sm text-muted-foreground text-center">
-            {t("library.subAgents.empty", "暂无子代理")}
+            {t("library.subAgents.empty")}
           </div>
         ) : (
           <StaggeredList
@@ -68,8 +68,8 @@ export function SubAgentsList({
               const busy = savingId === agent.id;
               const modeLabel =
                 agent.mode === "structured"
-                  ? t("library.subAgents.mode.structured", "结构化")
-                  : t("library.subAgents.mode.raw", "Markdown");
+                  ? t("library.subAgents.mode.structured")
+                  : t("library.subAgents.mode.raw");
               const toolsLabel =
                 Array.isArray(agent.tools) && agent.tools.length > 0
                   ? agent.tools.join(", ")
@@ -108,7 +108,7 @@ export function SubAgentsList({
                       className="size-8"
                       onClick={() => onEdit?.(agent)}
                       disabled={busy}
-                      title={t("common.edit", "编辑")}
+                      title={t("common.edit")}
                     >
                       <Settings className="size-4" />
                     </Button>
@@ -128,16 +128,10 @@ export function SubAgentsList({
                       <AlertDialogContent>
                         <AlertDialogHeader>
                           <AlertDialogTitle>
-                            {t(
-                              "library.subAgents.delete.title",
-                              "删除子代理？",
-                            )}
+                            {t("library.subAgents.delete.title")}
                           </AlertDialogTitle>
                           <AlertDialogDescription>
-                            {t(
-                              "library.subAgents.delete.description",
-                              "删除后将无法在会话中使用该子代理。",
-                            )}
+                            {t("library.subAgents.delete.description")}
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>

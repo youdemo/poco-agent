@@ -1,7 +1,7 @@
 export interface ModelInfo {
   id: string;
   name: string;
-  description: string;
+  descriptionKey: string;
   icon: string;
   provider: "anthropic" | "openai" | "google";
 }

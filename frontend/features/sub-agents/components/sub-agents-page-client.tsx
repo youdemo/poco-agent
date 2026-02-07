@@ -11,6 +11,7 @@ import {
 } from "@/features/sub-agents/components/sub-agent-dialog";
 import { useSubAgentsStore } from "@/features/sub-agents/hooks/use-sub-agents-store";
 import type { SubAgent } from "@/features/sub-agents/types";
+import { CapabilityContentShell } from "@/features/capabilities/components/capability-content-shell";
 
 export function SubAgentsPageClient() {
   const store = useSubAgentsStore();
@@ -44,22 +45,20 @@ export function SubAgentsPageClient() {
 
       <div className="flex flex-1 flex-col overflow-hidden">
         <PullToRefresh onRefresh={store.refresh} isLoading={store.isLoading}>
-          <div className="flex flex-1 flex-col px-6 py-6 overflow-auto">
-            <div className="w-full max-w-4xl mx-auto">
-              <SubAgentsList
-                subAgents={filtered}
-                savingId={store.savingId}
-                isLoading={store.isLoading}
-                onToggleEnabled={(id, enabled) => store.setEnabled(id, enabled)}
-                onEdit={(agent) => {
-                  setDialogMode("edit");
-                  setEditing(agent);
-                  setDialogOpen(true);
-                }}
-                onDelete={(agent) => store.deleteSubAgent(agent.id)}
-              />
-            </div>
-          </div>
+          <CapabilityContentShell>
+            <SubAgentsList
+              subAgents={filtered}
+              savingId={store.savingId}
+              isLoading={store.isLoading}
+              onToggleEnabled={(id, enabled) => store.setEnabled(id, enabled)}
+              onEdit={(agent) => {
+                setDialogMode("edit");
+                setEditing(agent);
+                setDialogOpen(true);
+              }}
+              onDelete={(agent) => store.deleteSubAgent(agent.id)}
+            />
+          </CapabilityContentShell>
         </PullToRefresh>
       </div>
 

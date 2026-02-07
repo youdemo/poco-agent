@@ -31,9 +31,7 @@ export function useSkillCatalog() {
       setInstalls(installsData);
     } catch (error) {
       console.error("[Skills] Failed to fetch data:", error);
-      toast.error(
-        t("library.skillsManager.toasts.loadError", "加载技能列表失败"),
-      );
+      toast.error(t("library.skillsManager.toasts.loadError"));
     } finally {
       setIsLoading(false);
     }
@@ -52,15 +50,11 @@ export function useSkillCatalog() {
           enabled: true,
         });
         setInstalls((prev) => [created, ...prev]);
-        toast.success(
-          t("library.skillsManager.toasts.installed", "技能已安装"),
-        );
+        toast.success(t("library.skillsManager.toasts.installed"));
         playMcpInstallSound();
       } catch (error) {
         console.error("[Skills] install failed:", error);
-        toast.error(
-          t("library.skillsManager.toasts.actionError", "操作失败，请稍后再试"),
-        );
+        toast.error(t("library.skillsManager.toasts.actionError"));
       } finally {
         setLoadingId(null);
       }
@@ -74,14 +68,10 @@ export function useSkillCatalog() {
       try {
         await skillsService.deleteInstall(installId);
         await refresh();
-        toast.success(
-          t("library.skillsManager.toasts.uninstalled", "技能已卸载"),
-        );
+        toast.success(t("library.skillsManager.toasts.uninstalled"));
       } catch (error) {
         console.error("[Skills] uninstall failed:", error);
-        toast.error(
-          t("library.skillsManager.toasts.actionError", "操作失败，请稍后再试"),
-        );
+        toast.error(t("library.skillsManager.toasts.actionError"));
       } finally {
         setLoadingId(null);
       }
@@ -97,8 +87,7 @@ export function useSkillCatalog() {
       const skill = install
         ? skills.find((s) => s.id === install.skill_id)
         : null;
-      const skillName =
-        skill?.name || t("library.skillsManager.unknownSkill", "未知技能");
+      const skillName = skill?.name || t("library.skillsManager.unknownSkill");
 
       // Optimistic update
       setInstalls((prev) =>
@@ -113,8 +102,8 @@ export function useSkillCatalog() {
         );
         toast.success(
           enabled
-            ? `${skillName} ${t("library.skillsManager.toasts.enabled", "已启用")}`
-            : `${skillName} ${t("library.skillsManager.toasts.disabled", "已停用")}`,
+            ? `${skillName} ${t("library.skillsManager.toasts.enabled")}`
+            : `${skillName} ${t("library.skillsManager.toasts.disabled")}`,
         );
         if (enabled) {
           playMcpInstallSound();
@@ -127,9 +116,7 @@ export function useSkillCatalog() {
             i.id === installId ? { ...i, enabled: !enabled } : i,
           ),
         );
-        toast.error(
-          t("library.skillsManager.toasts.actionError", "操作失败，请稍后再试"),
-        );
+        toast.error(t("library.skillsManager.toasts.actionError"));
       } finally {
         setLoadingId(null);
       }

@@ -11,10 +11,13 @@ import { PullToRefresh } from "@/components/ui/pull-to-refresh";
 import { PaginatedGrid } from "@/components/ui/paginated-grid";
 import { usePagination } from "@/hooks/use-pagination";
 import { mcpService } from "@/features/mcp/services/mcp-service";
+import { useT } from "@/lib/i18n/client";
+import { CapabilityContentShell } from "@/features/capabilities/components/capability-content-shell";
 
 const PAGE_SIZE = 10;
 
 export function McpPageClient() {
+  const { t } = useT("translation");
   const {
     items,
     servers,
@@ -57,10 +60,10 @@ export function McpPageClient() {
         refresh();
       } catch (error) {
         console.error("[McpPageClient] Failed to batch toggle:", error);
-        toast.error("操作失败，请重试");
+        toast.error(t("library.mcpLibrary.toasts.actionFailed"));
       }
     },
-    [installs, refresh],
+    [installs, refresh, t],
   );
 
   const activeItem = useMemo(() => {
@@ -78,30 +81,28 @@ export function McpPageClient() {
 
       <div className="flex flex-1 flex-col overflow-hidden">
         <PullToRefresh onRefresh={refresh} isLoading={isLoading}>
-          <div className="flex flex-1 flex-col px-6 py-6 overflow-auto">
-            <div className="w-full max-w-4xl mx-auto">
-              <PaginatedGrid
-                currentPage={pagination.currentPage}
-                totalPages={pagination.totalPages}
-                pageSize={pagination.pageSize}
-                onPageChange={pagination.goToPage}
-                onPageSizeChange={pagination.setPageSize}
-                totalItems={filteredServers.length}
-              >
-                <McpGrid
-                  servers={pagination.paginatedData}
-                  installs={installs}
-                  loadingId={loadingId}
-                  isLoading={isLoading}
-                  onToggleInstall={toggleInstall}
-                  onUninstall={uninstallServer}
-                  onEditServer={(server) => setSelectedServer(server)}
-                  onBatchToggle={handleBatchToggle}
-                  totalCount={filteredServers.length}
-                />
-              </PaginatedGrid>
-            </div>
-          </div>
+          <CapabilityContentShell>
+            <PaginatedGrid
+              currentPage={pagination.currentPage}
+              totalPages={pagination.totalPages}
+              pageSize={pagination.pageSize}
+              onPageChange={pagination.goToPage}
+              onPageSizeChange={pagination.setPageSize}
+              totalItems={filteredServers.length}
+            >
+              <McpGrid
+                servers={pagination.paginatedData}
+                installs={installs}
+                loadingId={loadingId}
+                isLoading={isLoading}
+                onToggleInstall={toggleInstall}
+                onUninstall={uninstallServer}
+                onEditServer={(server) => setSelectedServer(server)}
+                onBatchToggle={handleBatchToggle}
+                totalCount={filteredServers.length}
+              />
+            </PaginatedGrid>
+          </CapabilityContentShell>
         </PullToRefresh>
       </div>
 

@@ -57,7 +57,7 @@ interface InstalledItem {
  * An expandable card that shows MCP, Skill, and App sections on hover
  */
 export function CardNav({
-  triggerText = "将您的工具连接到 Poco",
+  triggerText,
   className = "",
   forceExpanded = false,
 }: CardNavProps) {
@@ -65,6 +65,9 @@ export function CardNav({
   const { lng } = useAppShell();
   const { t } = useT("translation");
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // Default trigger text from i18n if not provided
+  const displayText = triggerText ?? t("hero.tools");
   const navRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -467,7 +470,7 @@ export function CardNav({
             )}
           />
           <span className="text-sm font-medium text-muted-foreground transition-colors duration-300">
-            {triggerText}
+            {displayText}
           </span>
         </div>
 
@@ -511,7 +514,7 @@ export function CardNav({
                         </button>
                       </TooltipTrigger>
                       <TooltipContent side="top" sideOffset={4}>
-                        <span>一键关闭</span>
+                        <span>{t("cardNav.turnOffAll")}</span>
                       </TooltipContent>
                     </Tooltip>
                   )}
@@ -524,14 +527,18 @@ export function CardNav({
                       }}
                       className="flex items-center justify-center size-6 rounded-full hover:bg-amber-500/20 transition-colors"
                       type="button"
-                      title="点击查看详情"
+                      title={t("cardNav.clickForDetails")}
                     >
                       <AlertTriangle className="size-4 text-amber-500" />
                     </button>
                   )}
                 </div>
               </div>
-              {renderItemBadges(installedMcps, "未安装 MCP", "mcp")}
+              {renderItemBadges(
+                installedMcps,
+                t("cardNav.noMcpInstalled"),
+                "mcp",
+              )}
             </div>
 
             {/* Skill Card */}
@@ -571,7 +578,7 @@ export function CardNav({
                         </button>
                       </TooltipTrigger>
                       <TooltipContent side="top" sideOffset={4}>
-                        <span>一键关闭</span>
+                        <span>{t("cardNav.turnOffAll")}</span>
                       </TooltipContent>
                     </Tooltip>
                   )}
@@ -584,14 +591,18 @@ export function CardNav({
                       }}
                       className="flex items-center justify-center size-6 rounded-full hover:bg-amber-500/20 transition-colors"
                       type="button"
-                      title="点击查看详情"
+                      title={t("cardNav.clickForDetails")}
                     >
                       <AlertTriangle className="size-4 text-amber-500" />
                     </button>
                   )}
                 </div>
               </div>
-              {renderItemBadges(installedSkills, "未安装技能", "skill")}
+              {renderItemBadges(
+                installedSkills,
+                t("cardNav.noSkillsInstalled"),
+                "skill",
+              )}
             </div>
 
             {/* App Card */}
@@ -601,11 +612,11 @@ export function CardNav({
                   <AppWindow className="size-[1.125rem]" />
                 </div>
                 <span className="text-base font-semibold tracking-[-0.01em] text-foreground">
-                  应用
+                  {t("cardNav.apps")}
                 </span>
               </div>
               <span className="text-xs italic text-muted-foreground">
-                即将推出
+                {t("cardNav.comingSoon")}
               </span>
             </div>
           </div>

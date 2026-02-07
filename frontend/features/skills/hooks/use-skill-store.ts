@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import { skillsService } from "@/features/skills/services/skills-service";
 import type { Skill, UserSkillInstall } from "@/features/skills/types";
+import { useT } from "@/lib/i18n/client";
 
 export interface SkillListItem extends Skill {
   isInstalled: boolean;
@@ -13,6 +14,7 @@ export interface SkillListItem extends Skill {
 }
 
 export function useSkillStore() {
+  const { t } = useT("translation");
   const [skills, setSkills] = useState<Skill[]>([]);
   const [installs, setInstalls] = useState<UserSkillInstall[]>([]);
   const [loadingSkillId, setLoadingSkillId] = useState<number | null>(null);
@@ -31,13 +33,13 @@ export function useSkillStore() {
         setInstalls(installsData);
       } catch (error) {
         console.error("[SkillStore] Failed to fetch skills:", error);
-        toast.error("加载技能列表失败");
+        toast.error(t("library.skillsManager.toasts.loadError"));
       } finally {
         setIsLoading(false);
       }
     };
     fetchData();
-  }, []);
+  }, [t]);
 
   const toggleInstall = useCallback(
     async (skillId: number) => {
@@ -51,23 +53,23 @@ export function useSkillStore() {
             prev.filter((install) => install.id !== current.id),
           );
           setSkills((prev) => prev.filter((skill) => skill.id !== skillId));
-          toast.success("技能已卸载");
+          toast.success(t("library.skillsManager.toasts.uninstalled"));
         } else {
           const created = await skillsService.createInstall({
             skill_id: skillId,
             enabled: true,
           });
           setInstalls((prev) => [...prev, created]);
-          toast.success("技能已安装");
+          toast.success(t("library.skillsManager.toasts.installed"));
         }
       } catch (error) {
         console.error("[SkillStore] toggle failed:", error);
-        toast.error("操作失败，请稍后再试");
+        toast.error(t("library.skillsManager.toasts.actionError"));
       } finally {
         setLoadingSkillId(null);
       }
     },
-    [installs],
+    [installs, t],
   );
 
   const items: SkillListItem[] = useMemo(() => {

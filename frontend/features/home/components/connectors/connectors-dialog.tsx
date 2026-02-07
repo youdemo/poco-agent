@@ -11,6 +11,7 @@ import {
   Connector,
   ConnectorType,
 } from "../../model/connectors";
+import { useT } from "@/lib/i18n/client";
 
 interface ConnectorsDialogProps {
   open: boolean;
@@ -28,6 +29,7 @@ export function ConnectorsDialog({
   defaultTab = "app",
   key,
 }: ConnectorsDialogProps) {
+  const { t } = useT("translation");
   const [activeTab, setActiveTab] = useState<ConnectorType>(defaultTab);
   const [selectedConnector, setSelectedConnector] = useState<Connector | null>(
     null,
@@ -57,7 +59,7 @@ export function ConnectorsDialog({
           <>
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-              <DialogTitle>连接器</DialogTitle>
+              <DialogTitle>{t("connectors.title")}</DialogTitle>
             </div>
 
             {/* Main Content */}
@@ -75,7 +77,7 @@ export function ConnectorsDialog({
                         value="app"
                         className="rounded-lg border border-transparent px-4 py-2 text-sm font-medium text-muted-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:border-primary/20 hover:text-foreground transition-all"
                       >
-                        应用
+                        {t("connectors.apps")}
                       </TabsTrigger>
                       <TabsTrigger
                         value="mcp"
@@ -94,7 +96,7 @@ export function ConnectorsDialog({
                   <div className="relative w-64">
                     <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
                     <Input
-                      placeholder="搜索"
+                      placeholder={t("connectors.search")}
                       className="pl-9 h-9 bg-muted/50 border-border focus-visible:ring-1 focus-visible:ring-primary"
                     />
                   </div>

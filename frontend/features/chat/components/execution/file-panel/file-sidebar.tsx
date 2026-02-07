@@ -17,6 +17,7 @@ import type { FileNode } from "@/features/chat/types";
 import { apiClient, API_ENDPOINTS } from "@/lib/api-client";
 import { toast } from "sonner";
 import { PanelHeaderAction } from "@/components/shared/panel-header";
+import { useT } from "@/lib/i18n/client";
 
 interface FileSidebarProps {
   files: FileNode[];
@@ -171,6 +172,8 @@ export function FileSidebar({
   selectedFile,
   sessionId,
 }: FileSidebarProps) {
+  const { t } = useT("translation");
+
   const handleDownload = async () => {
     if (!sessionId) return;
     try {
@@ -187,13 +190,13 @@ export function FileSidebar({
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        toast.success("开始下载工作区归档");
+        toast.success(t("fileSidebar.downloadStarted"));
       } else {
-        toast.error("归档文件暂不可用");
+        toast.error(t("fileSidebar.archiveNotAvailable"));
       }
     } catch (error) {
       console.error("[Artifacts] Failed to download workspace archive", error);
-      toast.error("下载失败");
+      toast.error(t("fileSidebar.downloadFailed"));
     }
   };
 
@@ -201,10 +204,13 @@ export function FileSidebar({
     <aside className="flex h-full min-h-0 min-w-0 flex-col border-l border-border/60 bg-sidebar/60 text-sidebar-foreground">
       <div className="flex items-center justify-between px-3 py-2">
         <span className="text-xs font-semibold uppercase tracking-wide text-sidebar-foreground/70">
-          文件列表
+          {t("fileSidebar.title")}
         </span>
         {sessionId && (
-          <PanelHeaderAction onClick={handleDownload} aria-label="下载全部">
+          <PanelHeaderAction
+            onClick={handleDownload}
+            aria-label={t("fileSidebar.downloadAll")}
+          >
             <Download className="size-4" />
           </PanelHeaderAction>
         )}
@@ -213,7 +219,7 @@ export function FileSidebar({
         <div className="px-2 py-2 space-y-1 min-w-0 overflow-hidden">
           {files.length === 0 ? (
             <p className="text-xs text-sidebar-foreground/60 px-2 py-1">
-              暂无文件
+              {t("fileSidebar.noFiles")}
             </p>
           ) : (
             files.map((file) => (

@@ -59,21 +59,15 @@ export function AddEnvVarDialog({
 
   const title =
     mode === "create"
-      ? t("library.envVars.addTitle", "新增环境变量")
+      ? t("library.envVars.addTitle")
       : mode === "override"
-        ? t("library.envVars.overrideTitle", "覆盖系统变量")
-        : t("library.envVars.editTitle", "更新环境变量");
+        ? t("library.envVars.overrideTitle")
+        : t("library.envVars.editTitle");
 
   const valueHint =
     mode === "edit"
-      ? t(
-          "library.envVars.valueUpdateHint",
-          "不会显示旧值；留空表示不修改当前值",
-        )
-      : t(
-          "library.envVars.valueCreateHint",
-          "不会显示旧值；请输入要设置的新值",
-        );
+      ? t("library.envVars.valueUpdateHint")
+      : t("library.envVars.valueCreateHint");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,10 +144,7 @@ export function AddEnvVarDialog({
             </div>
 
             <p className="text-xs text-muted-foreground">
-              {t(
-                "library.envVars.secretHelp",
-                "环境变量不会在前端展示明文，只能重新设置",
-              )}
+              {t("library.envVars.secretHelp")}
             </p>
           </div>
 
@@ -181,7 +172,7 @@ export function AddEnvVarDialog({
                   )}
                   {mode === "create"
                     ? t("library.envVars.addButton")
-                    : t("library.envVars.save", "保存")}
+                    : t("library.envVars.save")}
                 </>
               )}
             </Button>

@@ -11,6 +11,7 @@ import {
 } from "@/features/slash-commands/components/slash-command-dialog";
 import { useSlashCommandsStore } from "@/features/slash-commands/hooks/use-slash-commands-store";
 import type { SlashCommand } from "@/features/slash-commands/types";
+import { CapabilityContentShell } from "@/features/capabilities/components/capability-content-shell";
 
 export function SlashCommandsPageClient() {
   const store = useSlashCommandsStore();
@@ -44,22 +45,20 @@ export function SlashCommandsPageClient() {
 
       <div className="flex flex-1 flex-col overflow-hidden">
         <PullToRefresh onRefresh={store.refresh} isLoading={store.isLoading}>
-          <div className="flex flex-1 flex-col px-6 py-6 overflow-auto">
-            <div className="w-full max-w-4xl mx-auto">
-              <SlashCommandsList
-                commands={filteredCommands}
-                savingId={store.savingId}
-                isLoading={store.isLoading}
-                onToggleEnabled={(id, enabled) => store.setEnabled(id, enabled)}
-                onEdit={(cmd) => {
-                  setDialogMode("edit");
-                  setEditing(cmd);
-                  setDialogOpen(true);
-                }}
-                onDelete={(cmd) => store.deleteCommand(cmd.id)}
-              />
-            </div>
-          </div>
+          <CapabilityContentShell>
+            <SlashCommandsList
+              commands={filteredCommands}
+              savingId={store.savingId}
+              isLoading={store.isLoading}
+              onToggleEnabled={(id, enabled) => store.setEnabled(id, enabled)}
+              onEdit={(cmd) => {
+                setDialogMode("edit");
+                setEditing(cmd);
+                setDialogOpen(true);
+              }}
+              onDelete={(cmd) => store.deleteCommand(cmd.id)}
+            />
+          </CapabilityContentShell>
         </PullToRefresh>
       </div>
 

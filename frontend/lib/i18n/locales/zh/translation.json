@@ -23,6 +23,8 @@
     "shareDesc": "各得 500 积分",
     "user": "用户",
     "removeFromProject": "移出项目",
+    "batchOperations": "批量操作",
+    "moveToHere": "移动到这里",
     "plan": "专业版"
   },
   "header": {
@@ -355,6 +357,17 @@
     "title": "能力",
     "subtitle": "管理您的技能、插件和工具",
     "comingSoon": "即将推出",
+    "sidebar": {
+      "title": "能力导航",
+      "description": "选择要查看的能力设置",
+      "mobile": "浏览能力",
+      "groups": {
+        "core": "核心",
+        "automation": "自动化",
+        "integrations": "集成",
+        "labs": "实验室"
+      }
+    },
     "skillsStore": {
       "title": "Skills",
       "description": "浏览和安装社区贡献的 AI 技能",
@@ -378,7 +391,12 @@
     },
     "envVars": {
       "title": "环境变量",
+      "sidebarTitle": "环境配置",
       "description": "集中管理技能和 MCP 服务器使用的 API Key 与密钥。",
+      "header": {
+        "title": "环境变量",
+        "add": "添加变量"
+      },
       "copied": "已复制到剪贴板",
       "copy": "复制",
       "copyError": "复制失败",
@@ -487,6 +505,7 @@
         "title": "Slash Commands",
         "add": "添加命令"
       },
+      "searchPlaceholder": "搜索命令...",
       "summary": "可用命令",
       "enabled": "已启用",
       "mode": {
@@ -723,6 +742,7 @@
         "title": "Skills",
         "subtitle": "探索和管理 AI 能力"
       },
+      "searchPlaceholder": "搜索技能...",
       "items": {
         "webSearch": {
           "name": "Web Search web搜索",
@@ -843,8 +863,10 @@
       "header": {
         "title": "MCP 服务器",
         "subtitle": "管理所有 Model Context Protocol 集成",
-        "settings": "全局设置"
+        "settings": "全局设置",
+        "add": "添加MCP"
       },
+      "searchPlaceholder": "搜索服务器...",
       "status": {
         "enabled": "已启用",
         "disabled": "未启用"
@@ -934,5 +956,223 @@
     "of": "/ {{total}} 页",
     "rowsPerPage": "每页显示",
     "items": "条"
+  },
+  "settings": {
+    "dialogTitle": "设置",
+    "sidebar": {
+      "account": "账户",
+      "settings": "设置",
+      "usage": "使用情况"
+    },
+    "upgrade": "升级",
+    "credits": "积分",
+    "freeCredits": "免费积分",
+    "dailyRefresh": "每日刷新积分",
+    "dailyRefreshHint": "每天 {{time}} 刷新为 {{max}}",
+    "generalSettings": "通用设置",
+    "darkMode": "深色模式",
+    "language": "语言",
+    "simplifiedChinese": "简体中文",
+    "noUsageData": "暂无使用数据",
+    "getHelp": "获取帮助"
+  },
+  "validation": {
+    "projectNameRequired": "请输入项目名称",
+    "selectProject": "请选择项目",
+    "missingTaskId": "缺少任务 ID",
+    "taskContentRequired": "请输入任务内容",
+    "selectExecutionTime": "请选择执行时间",
+    "nightlyNoTime": "夜间执行不支持设置执行时间",
+    "missingSessionId": "缺少会话 ID",
+    "missingToolUseId": "缺少工具调用 ID",
+    "messageContentRequired": "请输入消息内容",
+    "sessionNameRequired": "请输入会话名称",
+    "sessionNameTooLong": "会话名称过长"
+  },
+  "user": {
+    "plan": {
+      "free": "免费"
+    },
+    "credits": {
+      "unlimited": "无限"
+    }
+  },
+  "fileSidebar": {
+    "fileList": "文件列表",
+    "downloadAll": "下载全部",
+    "noFiles": "暂无文件",
+    "downloadStart": "开始下载工作区归档",
+    "archiveUnavailable": "归档文件暂不可用",
+    "downloadFailed": "下载失败"
+  },
+  "pullToRefresh": {
+    "refreshing": "正在刷新...",
+    "releaseToRefresh": "释放立即刷新",
+    "pullToRefresh": "下拉刷新"
+  },
+  "usageTooltip": {
+    "currentSession": "本次会话:",
+    "duration": "耗时:",
+    "usageStats": "使用统计:",
+    "today": "今日:",
+    "thisWeek": "本周:",
+    "thisMonth": "本月:",
+    "durationFormat": "{{mins}}分{{secs}}秒"
+  },
+  "cardNav": {
+    "oneClickClose": "一键关闭",
+    "notInstalledMcp": "未安装 MCP",
+    "notInstalledSkill": "未安装技能",
+    "apps": "应用",
+    "comingSoon": "即将推出",
+    "clickForDetails": "点击查看详情",
+    "connectTools": "将您的工具连接到 Poco"
+  },
+  "fileChange": {
+    "executingNoPreview": "执行中，暂不可预览",
+    "previewFile": "预览文件",
+    "linesAdded": "行新增",
+    "linesDeleted": "行删除",
+    "totalChanges": "共 {{total}} 行变更",
+    "viewDiff": "查看差异"
+  },
+  "computerPanel": {
+    "all": "全部"
+  },
+  "chatPanel": {
+    "fileAttachment": "[+{{count}} 文件]",
+    "skillsUsed": "技能使用",
+    "conversationHistory": "对话历史",
+    "loading": "加载中...",
+    "noHistory": "暂无历史记录",
+    "session": "会话",
+    "status": "状态:"
+  },
+  "artifactsPanel": {
+    "documentPreview": "文档预览",
+    "workspacePreview": "工作区文件预览",
+    "sidebarOpen": "侧边栏打开",
+    "sidebarClose": "侧边栏关闭",
+    "fileChanges": "文件变更",
+    "totalFiles": "个文件"
+  },
+  "mcpGrid": {
+    "availableServers": "可用服务器: {{count}}",
+    "enabledServers": "已启用: {{count}}",
+    "turnOffAll": "全部关闭",
+    "noMcpServers": "暂无 MCP 服务器",
+    "system": "系统",
+    "user": "个人",
+    "uninstall": "卸载",
+    "settings": "设置"
+  },
+  "skillsGrid": {
+    "turnOffAll": "全部关闭"
+  },
+  "mcpSettings": {
+    "mcpName": "MCP 名称 <span class=\"text-destructive\">*</span>",
+    "jsonConfig": "完整的 JSON 配置"
+  },
+  "queryActions": {
+    "taskNameRequired": "请输入任务名称",
+    "renameFailed": "重命名失败",
+    "creditUnlimited": "余量无限"
+  },
+  "chatInput": {
+    "connect": "连接"
+  },
+  "chatContainer": {
+    "loading": "加载中..."
+  },
+  "projectDialogs": {
+    "cancel": "取消",
+    "create": "创建",
+    "selectProject": "选择一个项目以移动此任务",
+    "noProject": "无项目",
+    "move": "移动"
+  },
+  "connectors": {
+    "gmail": {
+      "description": "撰写邮件，搜索会话并快速生成摘要"
+    },
+    "gcal": {
+      "description": "查看日程安排，优化时间与活动管理"
+    },
+    "gdrive": {
+      "description": "快速访问文件、智能搜索内容，并让 Poco 协助你更高效地管理文档"
+    },
+    "outlookMail": {
+      "description": "在 Poco 中无缝写作、搜索并管理你的 Outlook 电子邮件"
+    },
+    "github": {
+      "description": "管理代码仓库，协作开发与代码审查"
+    },
+    "slack": {
+      "description": "在 Poco 中读写 Slack 对话"
+    },
+    "notion": {
+      "description": "搜索和更新内容，实现自动化流程"
+    },
+    "filesystem": {
+      "description": "允��在本地文件系统上读取和写入文件"
+    },
+    "postgres": {
+      "description": "PostgreSQL 的只读数据库访问"
+    },
+    "sentry": {
+      "description": "从 Sentry 检索和分析错误报告"
+    },
+    "webSearch": {
+      "description": "执行实时网络搜索以获取最新信息。"
+    },
+    "codeInterpreter": {
+      "description": "在沙箱环境中安全地执行 Python 代码。"
+    }
+  },
+  "connectorCapabilities": {
+    "automation": {
+      "title": "自动化流程",
+      "description": "基于事件驱动，触发复杂任务流"
+    },
+    "assistant": {
+      "title": "智能协作助手",
+      "description": "AI 深入理解上下文，提供建议"
+    },
+    "security": {
+      "title": "安全管理系统",
+      "description": "采用企业级加密，确保数据安全"
+    },
+    "search": {
+      "title": "全局搜索索引",
+      "description": "跨平台查询，毫秒级召回对话"
+    }
+  },
+  "mcpHeader": {
+    "mcpManagement": "MCP 服务器管理",
+    "searchPlaceholder": "搜索服务器...",
+    "addMcp": "添加MCP"
+  },
+  "skillsHeader": {
+    "skillsManagement": "Skills 管理"
+  },
+  "models": {
+    "claudeSonnet45": {
+      "description": "平衡速度和智能"
+    },
+    "claudeOpus45": {
+      "description": "最强大的模型"
+    },
+    "gpt4Turbo": {
+      "description": "快速高效"
+    }
+  },
+  "creditsPopover": {
+    "proPlan": "专业版",
+    "credits": "积分",
+    "unlimited": "余量无限",
+    "freeCredits": "免费积分",
+    "dailyRefresh": "每日刷新积分",
+    "dailyRefreshHint": "每天 00:00 刷新为 9999",
+    "viewUsage": "查看使用情况"
   }
 }

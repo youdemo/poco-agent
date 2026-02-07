@@ -2,6 +2,7 @@ import { Shield, Globe, Info, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Connector } from "../../model/connectors";
+import { useT } from "@/lib/i18n/client";
 
 interface ConnectorCardProps {
   connector: Connector;
@@ -17,6 +18,7 @@ export function ConnectorCard({
   isComingSoon = true,
   onClick,
 }: ConnectorCardProps) {
+  const { t } = useT("translation");
   return (
     <div
       className={cn(
@@ -44,12 +46,12 @@ export function ConnectorCard({
               variant="outline"
               className="text-[9px] h-4 bg-muted/30 border-border text-muted-foreground/60 px-1.5"
             >
-              开发中
+              {t("connectors.inDevelopment")}
             </Badge>
           )}
         </div>
         <div className="text-sm text-muted-foreground/70 line-clamp-2 leading-relaxed">
-          {connector.description}
+          {t(connector.descriptionKey)}
         </div>
       </div>
     </div>
@@ -70,15 +72,16 @@ export function CapabilityFeature({
   title,
   desc,
 }: CapabilityFeatureProps) {
+  const { t } = useT("translation");
   return (
     <div className="group p-4 rounded-xl border border-border bg-card hover:bg-accent/50 transition-all flex items-start gap-3">
       <div className="size-8 rounded-lg bg-muted/50 flex items-center justify-center shrink-0 group-hover:bg-muted transition-colors">
         <Icon className="size-4 text-muted-foreground/60 group-hover:text-muted-foreground transition-colors" />
       </div>
       <div className="min-w-0">
-        <div className="font-bold text-sm mb-0.5 truncate">{title}</div>
+        <div className="font-bold text-sm mb-0.5 truncate">{t(title)}</div>
         <div className="text-[11px] text-muted-foreground/50 leading-snug line-clamp-2">
-          {desc}
+          {t(desc)}
         </div>
       </div>
     </div>
@@ -90,23 +93,23 @@ export function CapabilityFeature({
  */
 export const DEFAULT_CAPABILITIES = [
   {
-    title: "自动化流程",
-    desc: "基于事件驱动，触发复杂任务流",
+    title: "connectorCapabilities.automation.title",
+    desc: "connectorCapabilities.automation.desc",
     icon: Globe,
   },
   {
-    title: "智能协作助手",
-    desc: "AI 深入理解上下文，提供建议",
+    title: "connectorCapabilities.aiAssistant.title",
+    desc: "connectorCapabilities.aiAssistant.desc",
     icon: Info,
   },
   {
-    title: "安全管理系统",
-    desc: "采用企业级加密，确保数据安全",
+    title: "connectorCapabilities.security.title",
+    desc: "connectorCapabilities.security.desc",
     icon: Shield,
   },
   {
-    title: "全局搜索索引",
-    desc: "跨平台查询，毫秒级召回对话",
+    title: "connectorCapabilities.search.title",
+    desc: "connectorCapabilities.search.desc",
     icon: Search,
   },
 ];

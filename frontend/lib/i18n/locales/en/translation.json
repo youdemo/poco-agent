@@ -23,6 +23,8 @@
     "shareDesc": "Get 500 points each",
     "user": "User",
     "removeFromProject": "Remove from project",
+    "batchOperations": "Batch Operations",
+    "moveToHere": "Move here",
     "plan": "Pro Plan"
   },
   "header": {
@@ -355,6 +357,17 @@
     "title": "Capabilities",
     "subtitle": "Manage your skills, plugins and tools",
     "comingSoon": "Coming Soon",
+    "sidebar": {
+      "title": "Capability Shortcuts",
+      "description": "Select a capability to jump to its configuration.",
+      "mobile": "Browse capabilities",
+      "groups": {
+        "core": "Core",
+        "automation": "Automation",
+        "integrations": "Integrations",
+        "labs": "Labs"
+      }
+    },
     "skillsStore": {
       "title": "Skills",
       "description": "Browse and install community-contributed AI skills",
@@ -378,7 +391,12 @@
     },
     "envVars": {
       "title": "Environment Variables",
+      "sidebarTitle": "Environment Variables",
       "description": "Store API keys and secrets used by skills and MCP servers.",
+      "header": {
+        "title": "Environment Variables",
+        "add": "Add Variable"
+      },
       "copied": "Copied to clipboard",
       "copy": "Copy",
       "copyError": "Copy failed",
@@ -487,6 +505,7 @@
         "title": "Slash Commands",
         "add": "Add Command"
       },
+      "searchPlaceholder": "Search commands...",
       "summary": "Commands",
       "enabled": "Enabled",
       "mode": {
@@ -723,6 +742,7 @@
         "title": "Skills",
         "subtitle": "Explore and manage AI capabilities"
       },
+      "searchPlaceholder": "Search skills...",
       "items": {
         "webSearch": {
           "name": "Web Search",
@@ -843,8 +863,10 @@
       "header": {
         "title": "MCP Servers",
         "subtitle": "Manage Model Context Protocol integrations",
-        "settings": "Global Settings"
+        "settings": "Global Settings",
+        "add": "Add MCP"
       },
+      "searchPlaceholder": "Search servers...",
       "status": {
         "enabled": "Enabled",
         "disabled": "Disabled"
@@ -934,5 +956,223 @@
     "of": "/ {{total}}",
     "rowsPerPage": "Rows per page",
     "items": "items"
+  },
+  "settings": {
+    "dialogTitle": "Settings",
+    "sidebar": {
+      "account": "Account",
+      "settings": "Settings",
+      "usage": "Usage"
+    },
+    "upgrade": "Upgrade",
+    "credits": "Credits",
+    "freeCredits": "Free credits",
+    "dailyRefresh": "Daily refresh credits",
+    "dailyRefreshHint": "Refreshes to {{max}} every day at {{time}}",
+    "generalSettings": "General Settings",
+    "darkMode": "Dark mode",
+    "language": "Language",
+    "simplifiedChinese": "Simplified Chinese",
+    "noUsageData": "No usage data yet",
+    "getHelp": "Get Help"
+  },
+  "validation": {
+    "projectNameRequired": "Please enter a project name",
+    "selectProject": "Please select a project",
+    "missingTaskId": "Missing task ID",
+    "taskContentRequired": "Please enter task content",
+    "selectExecutionTime": "Please select execution time",
+    "nightlyNoTime": "Nightly execution does not support setting execution time",
+    "missingSessionId": "Missing session ID",
+    "missingToolUseId": "Missing tool use ID",
+    "messageContentRequired": "Please enter message content",
+    "sessionNameRequired": "Please enter session name",
+    "sessionNameTooLong": "Session name too long"
+  },
+  "user": {
+    "plan": {
+      "free": "Free"
+    },
+    "credits": {
+      "unlimited": "Unlimited"
+    }
+  },
+  "fileSidebar": {
+    "fileList": "File List",
+    "downloadAll": "Download all",
+    "noFiles": "No files yet",
+    "downloadStart": "Starting workspace archive download",
+    "archiveUnavailable": "Archive file not available yet",
+    "downloadFailed": "Download failed"
+  },
+  "pullToRefresh": {
+    "refreshing": "Refreshing...",
+    "releaseToRefresh": "Release to refresh",
+    "pullToRefresh": "Pull to refresh"
+  },
+  "usageTooltip": {
+    "currentSession": "Current session:",
+    "duration": "Duration:",
+    "usageStats": "Usage stats:",
+    "today": "Today:",
+    "thisWeek": "This week:",
+    "thisMonth": "This month:",
+    "durationFormat": "{{mins}}m {{secs}}s"
+  },
+  "cardNav": {
+    "oneClickClose": "Turn off all",
+    "notInstalledMcp": "No MCP installed",
+    "notInstalledSkill": "No skills installed",
+    "apps": "Apps",
+    "comingSoon": "Coming soon",
+    "clickForDetails": "Click for details",
+    "connectTools": "Connect your tools to Poco"
+  },
+  "fileChange": {
+    "executingNoPreview": "Executing, preview not available",
+    "previewFile": "Preview file",
+    "linesAdded": "lines added",
+    "linesDeleted": "lines deleted",
+    "totalChanges": "{{total}} line changes",
+    "viewDiff": "View diff"
+  },
+  "computerPanel": {
+    "all": "All"
+  },
+  "chatPanel": {
+    "fileAttachment": "[+{{count}} files]",
+    "skillsUsed": "Skills used",
+    "conversationHistory": "Conversation history",
+    "loading": "Loading...",
+    "noHistory": "No history yet",
+    "session": "Session",
+    "status": "Status:"
+  },
+  "artifactsPanel": {
+    "documentPreview": "Document preview",
+    "workspacePreview": "Workspace file preview",
+    "sidebarOpen": "Sidebar open",
+    "sidebarClose": "Sidebar close",
+    "fileChanges": "File changes",
+    "totalFiles": "files"
+  },
+  "mcpGrid": {
+    "availableServers": "Available servers: {{count}}",
+    "enabledServers": "Enabled: {{count}}",
+    "turnOffAll": "Turn off all",
+    "noMcpServers": "No MCP servers yet",
+    "system": "System",
+    "user": "User",
+    "uninstall": "Uninstall",
+    "settings": "Settings"
+  },
+  "skillsGrid": {
+    "turnOffAll": "Turn off all"
+  },
+  "mcpSettings": {
+    "mcpName": "MCP Name <span class=\"text-destructive\">*</span>",
+    "jsonConfig": "Complete JSON configuration"
+  },
+  "queryActions": {
+    "taskNameRequired": "Please enter a task name",
+    "renameFailed": "Failed to rename",
+    "creditUnlimited": "Unlimited credits"
+  },
+  "chatInput": {
+    "connect": "Connect"
+  },
+  "chatContainer": {
+    "loading": "Loading..."
+  },
+  "projectDialogs": {
+    "cancel": "Cancel",
+    "create": "Create",
+    "selectProject": "Select a project to move this task",
+    "noProject": "No project",
+    "move": "Move"
+  },
+  "connectors": {
+    "gmail": {
+      "description": "Draft emails, search conversations, and quickly generate summaries"
+    },
+    "gcal": {
+      "description": "View schedules, optimize time and activity management"
+    },
+    "gdrive": {
+      "description": "Quickly access files, intelligently search content, and let Poco help you manage documents more efficiently"
+    },
+    "outlookMail": {
+      "description": "Seamlessly write, search, and manage your Outlook emails in Poco"
+    },
+    "github": {
+      "description": "Manage code repositories, collaborative development, and code review"
+    },
+    "slack": {
+      "description": "Read and write Slack conversations in Poco"
+    },
+    "notion": {
+      "description": "Search and update content, automate workflows"
+    },
+    "filesystem": {
+      "description": "Allow reading and writing files on the local file system"
+    },
+    "postgres": {
+      "description": "Read-only database access for PostgreSQL"
+    },
+    "sentry": {
+      "description": "Retrieve and analyze error reports from Sentry"
+    },
+    "webSearch": {
+      "description": "Perform real-time web searches to retrieve up-to-date information."
+    },
+    "codeInterpreter": {
+      "description": "Execute Python code safely in a sandboxed environment."
+    }
+  },
+  "connectorCapabilities": {
+    "automation": {
+      "title": "Automation workflows",
+      "description": "Event-driven triggering for complex task flows"
+    },
+    "assistant": {
+      "title": "Smart collaboration assistant",
+      "description": "AI deeply understands context and provides suggestions"
+    },
+    "security": {
+      "title": "Security management system",
+      "description": "Enterprise-level encryption to ensure data security"
+    },
+    "search": {
+      "title": "Global search index",
+      "description": "Cross-platform query with millisecond-level recall"
+    }
+  },
+  "mcpHeader": {
+    "mcpManagement": "MCP server management",
+    "searchPlaceholder": "Search servers...",
+    "addMcp": "Add MCP"
+  },
+  "skillsHeader": {
+    "skillsManagement": "Skills management"
+  },
+  "models": {
+    "claudeSonnet45": {
+      "description": "Balance speed and intelligence"
+    },
+    "claudeOpus45": {
+      "description": "The most powerful model"
+    },
+    "gpt4Turbo": {
+      "description": "Fast and efficient"
+    }
+  },
+  "creditsPopover": {
+    "proPlan": "Pro Plan",
+    "credits": "Credits",
+    "unlimited": "Unlimited",
+    "freeCredits": "Free credits",
+    "dailyRefresh": "Daily refresh credits",
+    "dailyRefreshHint": "Refreshes to 9999 every day at 00:00",
+    "viewUsage": "View usage"
   }
 }

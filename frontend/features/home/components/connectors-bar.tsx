@@ -26,10 +26,7 @@ export function ConnectorsBar({
 
   return (
     <div className="mt-4 w-full">
-      <CardNav
-        triggerText="将您的工具连接到 Poco"
-        forceExpanded={forceExpanded}
-      />
+      <CardNav forceExpanded={forceExpanded} />
       {showDialog && (
         <ConnectorsDialog
           open={isOpen}

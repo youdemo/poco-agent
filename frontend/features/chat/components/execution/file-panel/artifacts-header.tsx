@@ -4,6 +4,7 @@ import {
   PanelHeaderAction,
 } from "@/components/shared/panel-header";
 import type { FileNode } from "@/features/chat/types";
+import { useT } from "@/lib/i18n/client";
 
 interface ArtifactsHeaderProps {
   title?: string;
@@ -25,13 +26,15 @@ export function ArtifactsHeader({
   onToggleSidebar,
   headerAction,
 }: ArtifactsHeaderProps) {
-  const headerTitle = title || selectedFile?.name || "文档预览";
+  const { t } = useT("translation");
+  const headerTitle =
+    title || selectedFile?.name || t("artifactsPanel.documentPreview");
 
   return (
     <PanelHeader
       icon={Layers}
       title={headerTitle}
-      description="工作区文件预览"
+      description={t("artifactsPanel.workspacePreview")}
       className="border-b"
       content={
         headerAction ? (
@@ -42,7 +45,11 @@ export function ArtifactsHeader({
         onToggleSidebar ? (
           <PanelHeaderAction
             onClick={onToggleSidebar}
-            aria-label={isSidebarCollapsed ? "侧边栏打开" : "侧边栏关闭"}
+            aria-label={
+              isSidebarCollapsed
+                ? t("artifactsPanel.sidebarOpen")
+                : t("artifactsPanel.sidebarClosed")
+            }
           >
             {isSidebarCollapsed ? (
               <PanelLeftOpen className="size-4" />

@@ -90,7 +90,7 @@ export function EnvVarsGrid({
   if (!vars.length) {
     return (
       <div className="text-sm text-muted-foreground border border-dashed border-border/50 rounded-xl px-4 py-6 text-center">
-        {t("library.envVars.empty", "暂未配置任何环境变量")}
+        {t("library.envVars.empty")}
       </div>
     );
   }
@@ -99,12 +99,9 @@ export function EnvVarsGrid({
     <div className="space-y-8">
       {systemVars.length > 0 && (
         <EnvVarsSection
-          title={t("library.envVars.scope.system", "系统")}
+          title={t("library.envVars.scope.system")}
           icon={<Wrench className="size-4" />}
-          hint={t(
-            "library.envVars.systemHint",
-            "系统变量仅展示是否已设置；可通过创建同名个人变量来覆盖",
-          )}
+          hint={t("library.envVars.systemHint")}
         >
           <StaggeredList
             items={systemVars}
@@ -120,23 +117,26 @@ export function EnvVarsGrid({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-mono text-sm">{envVar.key}</span>
-                      <Badge variant="outline" className="text-xs text-muted-foreground">
-                        {t("library.envVars.scope.system", "系统")}
+                      <Badge
+                        variant="outline"
+                        className="text-xs text-muted-foreground"
+                      >
+                        {t("library.envVars.scope.system")}
                       </Badge>
                       <div className="flex items-center">
                         {envVar.is_set ? (
-                          <span title={t("library.envVars.status.set", "已设置")}>
+                          <span title={t("library.envVars.status.set")}>
                             <CheckCircle2 className="size-4 text-muted-foreground" />
                           </span>
                         ) : (
-                          <span title={t("library.envVars.status.unset", "未设置")}>
+                          <span title={t("library.envVars.status.unset")}>
                             <CircleOff className="size-4 text-muted-foreground" />
                           </span>
                         )}
                       </div>
                       {isOverridden && (
                         <Badge variant="secondary" className="text-xs">
-                          {t("library.envVars.status.overridden", "已被个人覆盖")}
+                          {t("library.envVars.status.overridden")}
                         </Badge>
                       )}
                     </div>
@@ -161,8 +161,8 @@ export function EnvVarsGrid({
                         <User className="size-4" />
                       )}
                       {isOverridden
-                        ? t("library.envVars.actions.editOverride", "更新个人值")
-                        : t("library.envVars.actions.override", "覆盖")}
+                        ? t("library.envVars.actions.editOverride")
+                        : t("library.envVars.actions.override")}
                     </Button>
                   </div>
                 </div>
@@ -174,12 +174,9 @@ export function EnvVarsGrid({
 
       {userVars.length > 0 && (
         <EnvVarsSection
-          title={t("library.envVars.scope.user", "个人")}
+          title={t("library.envVars.scope.user")}
           icon={<User className="size-4" />}
-          hint={t(
-            "library.envVars.userHint",
-            "个人变量不会在前端展示明文；更新时请输入新值（留空表示不修改）",
-          )}
+          hint={t("library.envVars.userHint")}
         >
           <StaggeredList
             items={userVars}
@@ -195,20 +192,20 @@ export function EnvVarsGrid({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-mono text-sm">{envVar.key}</span>
-                      <Badge variant="outline" className="text-xs text-muted-foreground">
-                        {t("library.envVars.scope.user", "个人")}
+                      <Badge
+                        variant="outline"
+                        className="text-xs text-muted-foreground"
+                      >
+                        {t("library.envVars.scope.user")}
                       </Badge>
                       <div className="flex items-center">
-                        <span title={t("library.envVars.status.set", "已设置")}>
+                        <span title={t("library.envVars.status.set")}>
                           <CheckCircle2 className="size-4 text-muted-foreground" />
                         </span>
                       </div>
                       {overridesSystem && (
                         <Badge variant="secondary" className="text-xs">
-                          {t(
-                            "library.envVars.status.overridesSystem",
-                            "覆盖系统",
-                          )}
+                          {t("library.envVars.status.overridesSystem")}
                         </Badge>
                       )}
                     </div>
@@ -232,14 +229,14 @@ export function EnvVarsGrid({
                       ) : (
                         <Pencil className="size-4" />
                       )}
-                      {t("library.envVars.actions.edit", "更新")}
+                      {t("library.envVars.actions.edit")}
                     </Button>
                     <Button
                       variant="ghost"
                       size="icon"
                       className="size-8 text-muted-foreground hover:text-destructive"
                       onClick={() => onDelete?.(envVar.id)}
-                      title={t("common.delete", "删除")}
+                      title={t("common.delete")}
                       disabled={isBusy}
                     >
                       <Trash2 className="size-4" />

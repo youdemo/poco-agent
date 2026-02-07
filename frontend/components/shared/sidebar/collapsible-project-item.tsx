@@ -19,6 +19,10 @@ import {
 import type { ProjectItem, TaskHistoryItem } from "@/features/projects/types";
 import { TaskHistoryList } from "./task-history-list";
 import {
+  SIDEBAR_CARD_TEXT_CLASS,
+  SIDEBAR_CARD_WITH_ACTION_CLASS,
+} from "./sidebar-card-styles";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -139,17 +143,14 @@ export function CollapsibleProjectItem({
     <SidebarMenuItem>
       <div
         ref={setNodeRef}
-        className={cn(
-          "relative w-full group/project-item",
-          isOver && "bg-primary/10",
-        )}
+        className={cn("relative w-full", isOver && "bg-primary/10")}
       >
         {/* 项目标题行 */}
-        <div className="relative">
+        <div className="relative group/project-card">
           <SidebarMenuButton
             asChild
             className={cn(
-              "h-8 justify-start gap-3 text-sm hover:bg-sidebar-accent pr-8",
+              SIDEBAR_CARD_WITH_ACTION_CLASS,
               isOver && "bg-primary/20",
             )}
             tooltip={project.name}
@@ -157,7 +158,7 @@ export function CollapsibleProjectItem({
             onPointerUp={clearPointerTimer}
             onPointerLeave={clearPointerTimer}
           >
-            <div className="cursor-pointer">
+            <div className="flex min-w-0 w-full items-center">
               {isSelectionMode && (
                 <Checkbox
                   checked={isSelected}
@@ -175,10 +176,10 @@ export function CollapsibleProjectItem({
                   }}
                   className="size-5 shrink-0 flex items-center justify-center text-muted-foreground/70 hover:text-foreground hover:bg-sidebar-accent rounded-sm transition-all cursor-pointer group/toggle"
                 >
-                  <Folder className="size-4 group-hover/project-item:hidden" />
+                  <Folder className="size-4 group-hover/project-card:hidden" />
                   <ChevronRight
                     className={cn(
-                      "size-4 hidden group-hover/project-item:block transition-transform duration-200",
+                      "size-4 hidden group-hover/project-card:block transition-transform duration-200",
                       isExpanded && "rotate-90",
                     )}
                   />
@@ -186,7 +187,8 @@ export function CollapsibleProjectItem({
 
                 <span
                   className={cn(
-                    "flex-1 truncate cursor-pointer",
+                    SIDEBAR_CARD_TEXT_CLASS,
+                    "cursor-pointer",
                     isOver && "text-primary",
                   )}
                   onClick={(e) => {
@@ -210,7 +212,7 @@ export function CollapsibleProjectItem({
 
               {isOver && (
                 <span className="ml-auto text-xs text-primary shrink-0">
-                  移动到这里
+                  {t("sidebar.moveToHere")}
                 </span>
               )}
             </div>
@@ -218,7 +220,7 @@ export function CollapsibleProjectItem({
 
           {/* 任务数量 - 默认显示，悬浮或下拉菜单打开时隐藏 */}
           {!isDropdownOpen && (
-            <SidebarMenuBadge className="right-2 opacity-100 transition-opacity group-hover/project-item:opacity-0 group-data-[collapsible=icon]:hidden">
+            <SidebarMenuBadge className="right-2 opacity-100 transition-opacity group-hover/project-card:opacity-0 group-focus-within/project-card:opacity-0 group-data-[collapsible=icon]:hidden">
               {tasks.length}
             </SidebarMenuBadge>
           )}
@@ -231,9 +233,8 @@ export function CollapsibleProjectItem({
             >
               <DropdownMenuTrigger asChild>
                 <SidebarMenuAction
-                  showOnHover
                   onClick={(e) => e.stopPropagation()}
-                  className="right-2"
+                  className="right-2 opacity-0 transition-opacity group-hover/project-card:opacity-100 group-focus-within/project-card:opacity-100 data-[state=open]:opacity-100"
                 >
                   <MoreHorizontal />
                 </SidebarMenuAction>
@@ -270,7 +271,7 @@ export function CollapsibleProjectItem({
 
         {/* 任务列表（可折叠） */}
         {isExpanded && (
-          <div className="ml-4 mt-0.5 min-w-0 max-w-[calc(var(--sidebar-width)-16px)] overflow-hidden">
+          <div className="mt-0.5 min-w-0 max-w-[calc(var(--sidebar-width)-16px)] overflow-hidden">
             <TaskHistoryList
               tasks={tasks}
               onDeleteTask={onDeleteTask}
@@ -281,6 +282,7 @@ export function CollapsibleProjectItem({
               selectedTaskIds={selectedTaskIds}
               onToggleTaskSelection={onToggleTaskSelection}
               onEnableSelectionMode={onEnableSelectionMode}
+              isNested
             />
           </div>
         )}

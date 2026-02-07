@@ -103,7 +103,7 @@ export function ChatInput({
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      toast.error(t("hero.toasts.fileTooLarge", "文件过大，最大支持 100MB"));
+      toast.error(t("hero.toasts.fileTooLarge"));
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
@@ -114,11 +114,11 @@ export function ChatInput({
       setIsUploading(true);
       const uploadedFile = await uploadAttachment(file);
       setAttachments((prev) => [...prev, uploadedFile]);
-      toast.success(t("hero.toasts.uploadSuccess", "文件上传成功"));
+      toast.success(t("hero.toasts.uploadSuccess"));
       playFileUploadSound();
     } catch (error) {
       console.error("Upload failed:", error);
-      toast.error(t("hero.toasts.uploadFailed", "文件上传失败"));
+      toast.error(t("hero.toasts.uploadFailed"));
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) {
@@ -152,7 +152,7 @@ export function ChatInput({
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      toast.error(t("hero.toasts.fileTooLarge", "文件过大，最大支持 100MB"));
+      toast.error(t("hero.toasts.fileTooLarge"));
       return;
     }
 
@@ -160,11 +160,11 @@ export function ChatInput({
       setIsUploading(true);
       const uploadedFile = await uploadAttachment(file);
       setAttachments((prev) => [...prev, uploadedFile]);
-      toast.success(t("hero.toasts.uploadSuccess", "文件上传成功"));
+      toast.success(t("hero.toasts.uploadSuccess"));
       playFileUploadSound();
     } catch (error) {
       console.error("Upload failed:", error);
-      toast.error(t("hero.toasts.uploadFailed", "文件上传失败"));
+      toast.error(t("hero.toasts.uploadFailed"));
     } finally {
       setIsUploading(false);
     }

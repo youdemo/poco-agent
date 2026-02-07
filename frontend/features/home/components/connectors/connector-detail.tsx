@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import type { Connector } from "../../model/connectors";
 import { CapabilityFeature, DEFAULT_CAPABILITIES } from "./connector-card";
+import { useT } from "@/lib/i18n/client";
 
 interface ConnectorDetailProps {
   connector: Connector;
@@ -18,6 +19,7 @@ interface ConnectorDetailProps {
  * Shows connector info, connection button, and capabilities
  */
 export function ConnectorDetail({ connector, onBack }: ConnectorDetailProps) {
+  const { t } = useT("translation");
   const isGithub = connector.id === "github";
   const [isConnecting, setIsConnecting] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
@@ -45,7 +47,7 @@ export function ConnectorDetail({ connector, onBack }: ConnectorDetailProps) {
             <X className="size-4" />
           </Button>
           <span className="text-sm font-medium text-muted-foreground">
-            连接器详情
+            {t("connectors.details")}
           </span>
         </div>
       </div>
@@ -82,12 +84,12 @@ export function ConnectorDetail({ connector, onBack }: ConnectorDetailProps) {
                   </h3>
                   {isConnected && (
                     <Badge className="bg-success/10 text-success border-success/20 px-1.5 py-0 h-4 rounded-full text-[8px] font-bold uppercase">
-                      已连接
+                      {t("connectors.connected")}
                     </Badge>
                   )}
                 </div>
                 <p className="text-muted-foreground text-xs max-w-sm">
-                  {connector.description}
+                  {t(connector.descriptionKey)}
                 </p>
               </div>
             </div>
@@ -107,10 +109,10 @@ export function ConnectorDetail({ connector, onBack }: ConnectorDetailProps) {
               ) : isConnected ? (
                 <>
                   <Check className="mr-2 size-4" />
-                  已启用
+                  {t("connectors.enabled")}
                 </>
               ) : (
-                "立即连接"
+                t("connectors.connectNow")
               )}
             </Button>
           </div>
@@ -122,7 +124,7 @@ export function ConnectorDetail({ connector, onBack }: ConnectorDetailProps) {
             <div className="flex items-center gap-2">
               <div className="size-3.5 rounded-full bg-primary/20" />
               <h4 className="text-xs font-bold uppercase tracking-widest text-foreground">
-                核心能力
+                {t("connectors.coreCapabilities")}
               </h4>
             </div>
 

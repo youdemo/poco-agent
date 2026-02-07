@@ -88,8 +88,8 @@ export function SlashCommandDialog({
 
   const title =
     mode === "create"
-      ? t("library.slashCommands.dialog.createTitle", "新增命令")
-      : t("library.slashCommands.dialog.editTitle", "编辑命令");
+      ? t("library.slashCommands.dialog.createTitle")
+      : t("library.slashCommands.dialog.editTitle");
 
   const isValid =
     Boolean(name.trim()) &&
@@ -143,9 +143,9 @@ export function SlashCommandDialog({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="slash-command-name">
-                  {t("library.slashCommands.fields.name", "命令名")}{" "}
+                  {t("library.slashCommands.fields.name")}{" "}
                   <span className="text-muted-foreground font-normal">
-                    ({t("library.slashCommands.fields.nameHint", "不含 /")})
+                    ({t("library.slashCommands.fields.nameHint")})
                   </span>
                 </Label>
                 <Input
@@ -154,7 +154,6 @@ export function SlashCommandDialog({
                   onChange={(e) => setName(e.target.value)}
                   placeholder={t(
                     "library.slashCommands.fields.namePlaceholder",
-                    "refactor",
                   )}
                   disabled={isSaving}
                   className="font-mono"
@@ -162,9 +161,7 @@ export function SlashCommandDialog({
               </div>
 
               <div className="space-y-2">
-                <Label>
-                  {t("library.slashCommands.fields.enabled", "启用")}
-                </Label>
+                <Label>{t("library.slashCommands.fields.enabled")}</Label>
                 <div className="flex items-center gap-3 rounded-md border border-border px-3 py-2">
                   <Switch
                     checked={enabled}
@@ -172,9 +169,7 @@ export function SlashCommandDialog({
                     disabled={isSaving}
                   />
                   <span className="text-sm text-muted-foreground">
-                    {enabled
-                      ? t("common.enabled", "已启用")
-                      : t("common.disabled", "已停用")}
+                    {enabled ? t("common.enabled") : t("common.disabled")}
                   </span>
                 </div>
               </div>
@@ -186,20 +181,17 @@ export function SlashCommandDialog({
             >
               <TabsList>
                 <TabsTrigger value="raw">
-                  {t("library.slashCommands.mode.raw", "Markdown")}
+                  {t("library.slashCommands.mode.raw")}
                 </TabsTrigger>
                 <TabsTrigger value="structured">
-                  {t("library.slashCommands.mode.structured", "结构化")}
+                  {t("library.slashCommands.mode.structured")}
                 </TabsTrigger>
               </TabsList>
 
               <TabsContent value="raw">
                 <div className="space-y-2">
                   <Label htmlFor="slash-command-raw">
-                    {t(
-                      "library.slashCommands.fields.rawMarkdown",
-                      "Markdown 内容",
-                    )}
+                    {t("library.slashCommands.fields.rawMarkdown")}
                   </Label>
                   <Textarea
                     id="slash-command-raw"
@@ -207,16 +199,12 @@ export function SlashCommandDialog({
                     onChange={(e) => setRawMarkdown(e.target.value)}
                     placeholder={t(
                       "library.slashCommands.fields.rawMarkdownPlaceholder",
-                      "在这里粘贴完整的 .md（可包含 YAML 前言）",
                     )}
                     disabled={isSaving}
                     className="min-h-[220px] font-mono"
                   />
                   <p className="text-xs text-muted-foreground">
-                    {t(
-                      "library.slashCommands.fields.modelIgnoredHint",
-                      "提示：YAML 前言中的 model 字段会被忽略。",
-                    )}
+                    {t("library.slashCommands.fields.modelIgnoredHint")}
                   </p>
                 </div>
               </TabsContent>
@@ -226,7 +214,7 @@ export function SlashCommandDialog({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="slash-command-description">
-                        {t("library.slashCommands.fields.description", "描述")}
+                        {t("library.slashCommands.fields.description")}
                       </Label>
                       <Input
                         id="slash-command-description"
@@ -234,7 +222,6 @@ export function SlashCommandDialog({
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder={t(
                           "library.slashCommands.fields.descriptionPlaceholder",
-                          "比如：运行测试并分析失败原因",
                         )}
                         disabled={isSaving}
                       />
@@ -242,10 +229,7 @@ export function SlashCommandDialog({
 
                     <div className="space-y-2">
                       <Label htmlFor="slash-command-argument-hint">
-                        {t(
-                          "library.slashCommands.fields.argumentHint",
-                          "argument-hint",
-                        )}
+                        {t("library.slashCommands.fields.argumentHint")}
                       </Label>
                       <Input
                         id="slash-command-argument-hint"
@@ -253,7 +237,6 @@ export function SlashCommandDialog({
                         onChange={(e) => setArgumentHint(e.target.value)}
                         placeholder={t(
                           "library.slashCommands.fields.argumentHintPlaceholder",
-                          "[test-pattern]",
                         )}
                         disabled={isSaving}
                         className="font-mono"
@@ -263,10 +246,7 @@ export function SlashCommandDialog({
 
                   <div className="space-y-2">
                     <Label htmlFor="slash-command-allowed-tools">
-                      {t(
-                        "library.slashCommands.fields.allowedTools",
-                        "allowed-tools",
-                      )}
+                      {t("library.slashCommands.fields.allowedTools")}
                     </Label>
                     <Input
                       id="slash-command-allowed-tools"
@@ -274,7 +254,6 @@ export function SlashCommandDialog({
                       onChange={(e) => setAllowedTools(e.target.value)}
                       placeholder={t(
                         "library.slashCommands.fields.allowedToolsPlaceholder",
-                        "Read, Grep, Glob",
                       )}
                       disabled={isSaving}
                       className="font-mono"
@@ -283,7 +262,7 @@ export function SlashCommandDialog({
 
                   <div className="space-y-2">
                     <Label htmlFor="slash-command-content">
-                      {t("library.slashCommands.fields.content", "命令内容")}
+                      {t("library.slashCommands.fields.content")}
                     </Label>
                     <Textarea
                       id="slash-command-content"
@@ -291,7 +270,6 @@ export function SlashCommandDialog({
                       onChange={(e) => setContent(e.target.value)}
                       placeholder={t(
                         "library.slashCommands.fields.contentPlaceholder",
-                        "写下命令要 Claude 做的事（Markdown）",
                       )}
                       disabled={isSaving}
                       className="min-h-[220px]"
@@ -315,7 +293,7 @@ export function SlashCommandDialog({
               {isSaving ? (
                 <>
                   <Loader2 className="mr-2 size-4 animate-spin" />
-                  {t("common.saving", "保存中")}
+                  {t("common.saving")}
                 </>
               ) : (
                 <>
@@ -324,9 +302,7 @@ export function SlashCommandDialog({
                   ) : (
                     <Save className="mr-2 size-4" />
                   )}
-                  {mode === "create"
-                    ? t("common.create", "创建")
-                    : t("common.save", "保存")}
+                  {mode === "create" ? t("common.create") : t("common.save")}
                 </>
               )}
             </Button>

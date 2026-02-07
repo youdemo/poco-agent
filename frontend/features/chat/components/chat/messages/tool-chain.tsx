@@ -207,7 +207,7 @@ function ToolStep({ toolUse, toolResult, isOpen, onToggle }: ToolStepProps) {
             {/* Input */}
             <div className="mt-2">
               <div className="text-[10px] uppercase text-muted-foreground mb-1 select-none">
-                {t("chat.input", "Input")}
+                {t("chat.input")}
               </div>
               <div className="bg-muted/50 p-2 rounded overflow-x-auto text-foreground/90">
                 <pre className="whitespace-pre-wrap break-all">
@@ -220,7 +220,7 @@ function ToolStep({ toolUse, toolResult, isOpen, onToggle }: ToolStepProps) {
             {isCompleted && (
               <div>
                 <div className="text-[10px] uppercase text-muted-foreground mb-1 select-none flex items-center gap-1">
-                  {t("chat.output", "Output")}
+                  {t("chat.output")}
                 </div>
                 <div
                   className={cn(
@@ -241,7 +241,7 @@ function ToolStep({ toolUse, toolResult, isOpen, onToggle }: ToolStepProps) {
             toolUse.subagent_transcript.length > 0 ? (
               <div>
                 <div className="text-[10px] uppercase text-muted-foreground mb-1 select-none">
-                  {t("chat.subagentTranscript", "子代理过程")}
+                  {t("chat.subagentTranscript")}
                 </div>
                 <div className="bg-muted/50 p-2 rounded overflow-x-auto text-foreground/90">
                   <pre className="whitespace-pre-wrap break-all">
@@ -317,7 +317,7 @@ export function ToolChain({ blocks }: ToolChainProps) {
         <CollapsibleTrigger className="flex items-center gap-2 w-full cursor-pointer select-none text-xs font-medium text-muted-foreground hover:text-foreground transition-colors group">
           <div className="flex items-center gap-1.5">
             <SquareTerminal className="size-3.5" />
-            <span>{t("chat.toolExecution", "Tool Execution")}</span>
+            <span>{t("chat.toolExecution")}</span>
             {steps.length > 0 && (
               <span className="opacity-70">({steps.length})</span>
             )}

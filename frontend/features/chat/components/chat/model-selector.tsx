@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { AVAILABLE_MODELS } from "@/features/home/model/constants";
 import type { ModelInfo } from "@/types";
+import { useT } from "@/lib/i18n/client";
 
 interface ModelSelectorProps {
   model: ModelInfo;
@@ -18,6 +19,7 @@ interface ModelSelectorProps {
 }
 
 export function ModelSelector({ model, onChange }: ModelSelectorProps) {
+  const { t } = useT("translation");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -37,7 +39,7 @@ export function ModelSelector({ model, onChange }: ModelSelectorProps) {
             <div className="flex-1">
               <div className="font-medium">{m.name}</div>
               <div className="text-xs text-muted-foreground">
-                {m.description}
+                {t(m.descriptionKey)}
               </div>
             </div>
             {m.id === model.id && <div className="text-primary text-sm">✓</div>}

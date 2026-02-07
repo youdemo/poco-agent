@@ -63,7 +63,10 @@ export function McpGrid({
       {/* Stats bar with batch controls */}
       <div className="rounded-xl bg-muted/50 px-5 py-3 flex items-center justify-between">
         <span className="text-sm text-muted-foreground">
-          可用服务器: {totalCount ?? servers.length} · 已启用: {enabledCount}
+          {t("mcpGrid.availableServers", {
+            count: totalCount ?? servers.length,
+          })}{" "}
+          · {t("mcpGrid.enabledServers", { count: enabledCount })}
         </span>
         {installs.length > 0 && (
           <Button
@@ -73,7 +76,7 @@ export function McpGrid({
             className="h-7 px-2 text-xs"
           >
             <PowerOff className="size-3 mr-1" />
-            全部关闭
+            {t("mcpGrid.turnOffAll")}
           </Button>
         )}
       </div>
@@ -83,7 +86,7 @@ export function McpGrid({
           <SkeletonShimmer count={5} itemClassName="min-h-[64px]" gap="md" />
         ) : servers.length === 0 ? (
           <div className="rounded-xl border border-border/50 bg-muted/10 px-4 py-6 text-sm text-muted-foreground text-center">
-            暂无 MCP 服务器
+            {t("mcpGrid.noMcpServers")}
           </div>
         ) : (
           <StaggeredList
@@ -113,7 +116,9 @@ export function McpGrid({
                         variant="outline"
                         className="text-xs text-muted-foreground"
                       >
-                        {server.scope === "system" ? "系统" : "个人"}
+                        {server.scope === "system"
+                          ? t("mcpGrid.system")
+                          : t("mcpGrid.user")}
                       </Badge>
                     </div>
                   </div>
@@ -131,10 +136,7 @@ export function McpGrid({
                         className="size-8"
                         onClick={() => onUninstall?.(server.id, install.id)}
                         disabled={isRowLoading}
-                        title={t(
-                          "library.mcpLibrary.actions.uninstall",
-                          "卸载",
-                        )}
+                        title={t("library.mcpLibrary.actions.uninstall")}
                       >
                         <Trash2 className="size-4" />
                       </Button>
@@ -144,7 +146,7 @@ export function McpGrid({
                       size="icon"
                       className="size-8"
                       onClick={() => onEditServer?.(server)}
-                      title="设置"
+                      title={t("mcpGrid.settings")}
                     >
                       <Settings className="size-4" />
                     </Button>

@@ -649,7 +649,7 @@ export function ComputerPanel({
             : "hover:bg-muted/50 text-muted-foreground",
         )}
       >
-        全部
+        {t("computerPanel.all")}
       </button>
       <button
         type="button"

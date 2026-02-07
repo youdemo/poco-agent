@@ -150,21 +150,14 @@ export function SkillImportDialog({
       const formData = new FormData();
       if (tab === "zip") {
         if (!zipFile) {
-          toast.error(
-            t("library.skillsImport.toasts.missingZip", "请选择一个 zip 文件"),
-          );
+          toast.error(t("library.skillsImport.toasts.missingZip"));
           return;
         }
         formData.append("file", zipFile);
       } else {
         const url = githubUrl.trim();
         if (!url) {
-          toast.error(
-            t(
-              "library.skillsImport.toasts.missingGithubUrl",
-              "请输入 GitHub 地址",
-            ),
-          );
+          toast.error(t("library.skillsImport.toasts.missingGithubUrl"));
           return;
         }
         formData.append("github_url", url);
@@ -184,17 +177,10 @@ export function SkillImportDialog({
       }
       setSelections(next);
 
-      toast.success(
-        t(
-          "library.skillsImport.toasts.discovered",
-          "解析成功，请确认要导入的技能",
-        ),
-      );
+      toast.success(t("library.skillsImport.toasts.discovered"));
     } catch (error) {
       console.error("[SkillsImport] discover failed:", error);
-      toast.error(
-        t("library.skillsImport.toasts.discoverError", "解析失败，请稍后重试"),
-      );
+      toast.error(t("library.skillsImport.toasts.discoverError"));
     } finally {
       setIsDiscovering(false);
     }
@@ -250,10 +236,7 @@ export function SkillImportDialog({
 
         // Safety net: avoid polling forever if something goes wrong.
         if (Date.now() - startedAt > 10 * 60 * 1000) {
-          finalError = t(
-            "library.skillsImport.toasts.commitTimeout",
-            "导入超时，请稍后刷新查看结果",
-          );
+          finalError = t("library.skillsImport.toasts.commitTimeout");
           setCommitError(finalError);
           break;
         }
@@ -264,13 +247,7 @@ export function SkillImportDialog({
       if (!isActiveRef.current) return;
 
       if (finalError) {
-        toast.error(
-          finalError ||
-            t(
-              "library.skillsImport.toasts.commitError",
-              "导入失败，请稍后重试",
-            ),
-        );
+        toast.error(finalError || t("library.skillsImport.toasts.commitError"));
         return;
       }
 
@@ -278,23 +255,16 @@ export function SkillImportDialog({
         (i) => i.status !== "success",
       );
       if (failed.length > 0) {
-        toast.error(
-          t(
-            "library.skillsImport.toasts.partialFailed",
-            "部分技能导入失败，请查看详情",
-          ),
-        );
+        toast.error(t("library.skillsImport.toasts.partialFailed"));
         return;
       }
 
-      toast.success(t("library.skillsImport.toasts.committed", "技能导入成功"));
+      toast.success(t("library.skillsImport.toasts.committed"));
       await onImported?.();
       handleClose();
     } catch (error) {
       console.error("[SkillsImport] commit failed:", error);
-      toast.error(
-        t("library.skillsImport.toasts.commitError", "导入失败，请稍后重试"),
-      );
+      toast.error(t("library.skillsImport.toasts.commitError"));
     } finally {
       setIsCommitting(false);
     }
@@ -303,11 +273,11 @@ export function SkillImportDialog({
   const hasPreview = candidates.length > 0 && !!archiveKey;
   const selectionDisabled = isCommitting || isDiscovering;
   const pageSelectionTitle = isPageFullySelected
-    ? t("library.skillsImport.preview.selection.clearPage", "取消本页全选")
-    : t("library.skillsImport.preview.selection.selectPage", "全选本页");
+    ? t("library.skillsImport.preview.selection.clearPage")
+    : t("library.skillsImport.preview.selection.selectPage");
   const allSelectionTitle = isAllSelected
-    ? t("library.skillsImport.preview.selection.clearAll", "取消全选")
-    : t("library.skillsImport.preview.selection.selectAll", "全选全部");
+    ? t("library.skillsImport.preview.selection.clearAll")
+    : t("library.skillsImport.preview.selection.selectAll");
 
   return (
     <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
@@ -317,7 +287,7 @@ export function SkillImportDialog({
       >
         <DialogHeader className="px-6 py-4 border-b bg-muted/5">
           <DialogTitle className="text-lg font-semibold">
-            {t("library.skillsImport.title", "导入技能")}
+            {t("library.skillsImport.title")}
           </DialogTitle>
         </DialogHeader>
 
@@ -326,16 +296,16 @@ export function SkillImportDialog({
             <Tabs value={tab} onValueChange={(v) => setTab(v as SourceTab)}>
               <TabsList>
                 <TabsTrigger value="zip">
-                  {t("library.skillsImport.tabs.zip", "上传压缩包")}
+                  {t("library.skillsImport.tabs.zip")}
                 </TabsTrigger>
                 <TabsTrigger value="github">
-                  {t("library.skillsImport.tabs.github", "GitHub 地址")}
+                  {t("library.skillsImport.tabs.github")}
                 </TabsTrigger>
               </TabsList>
 
               <TabsContent value="zip" className="space-y-3">
                 <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  {t("library.skillsImport.fields.zip", "Zip 文件")}
+                  {t("library.skillsImport.fields.zip")}
                 </Label>
                 <Input
                   type="file"
@@ -351,24 +321,15 @@ export function SkillImportDialog({
 
               <TabsContent value="github" className="space-y-3">
                 <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  {t(
-                    "library.skillsImport.fields.githubUrl",
-                    "GitHub 公共仓库地址",
-                  )}
+                  {t("library.skillsImport.fields.githubUrl")}
                 </Label>
                 <Input
                   value={githubUrl}
                   onChange={(e) => setGithubUrl(e.target.value)}
-                  placeholder={t(
-                    "library.skillsImport.placeholders.githubUrl",
-                    "https://github.com/owner/repo",
-                  )}
+                  placeholder={t("library.skillsImport.placeholders.githubUrl")}
                 />
                 <div className="text-xs text-muted-foreground">
-                  {t(
-                    "library.skillsImport.hints.github",
-                    "默认尝试 main/master 分支（仅支持 github.com 公共仓库）",
-                  )}
+                  {t("library.skillsImport.hints.github")}
                 </div>
               </TabsContent>
             </Tabs>
@@ -378,21 +339,18 @@ export function SkillImportDialog({
             <div className="space-y-4">
               <div className="flex items-center justify-between gap-4">
                 <div className="text-sm text-muted-foreground">
-                  {t("library.skillsImport.preview.found", "发现")}{" "}
+                  {t("library.skillsImport.preview.found")}{" "}
                   <span className="text-foreground font-medium">
                     {candidates.length}
                   </span>{" "}
-                  {t("library.skillsImport.preview.items", "个技能定义")}
+                  {t("library.skillsImport.preview.items")}
                   {overwriteCount > 0 && (
                     <span className="ml-2">
-                      · {t("library.skillsImport.preview.overwrite", "将覆盖")}{" "}
+                      · {t("library.skillsImport.preview.overwrite")}{" "}
                       <span className="text-foreground font-medium">
                         {overwriteCount}
                       </span>{" "}
-                      {t(
-                        "library.skillsImport.preview.overwriteItems",
-                        "个同名技能",
-                      )}
+                      {t("library.skillsImport.preview.overwriteItems")}
                     </span>
                   )}
                 </div>
@@ -492,38 +450,29 @@ export function SkillImportDialog({
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-medium truncate">
                             {c.skill_name ||
-                              t(
-                                "library.skillsImport.preview.unnamed",
-                                "未命名",
-                              )}
+                              t("library.skillsImport.preview.unnamed")}
                           </span>
                           {c.will_overwrite && (
                             <Badge variant="outline" className="text-xs">
-                              {t(
-                                "library.skillsImport.preview.willOverwrite",
-                                "将覆盖",
-                              )}
+                              {t("library.skillsImport.preview.willOverwrite")}
                             </Badge>
                           )}
                           {c.relative_path === "." && (
                             <Badge variant="outline" className="text-xs">
-                              {t("library.skillsImport.preview.root", "根目录")}
+                              {t("library.skillsImport.preview.root")}
                             </Badge>
                           )}
                         </div>
 
                         <div className="text-xs text-muted-foreground font-mono">
-                          {t("library.skillsImport.preview.path", "路径")}:{" "}
+                          {t("library.skillsImport.preview.path")}:{" "}
                           {c.relative_path}
                         </div>
 
                         {c.requires_name && sel.selected && (
                           <div className="space-y-1">
                             <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                              {t(
-                                "library.skillsImport.fields.nameOverride",
-                                "技能名称",
-                              )}
+                              {t("library.skillsImport.fields.nameOverride")}
                             </Label>
                             <Input
                               value={sel.nameOverride}
@@ -540,15 +489,11 @@ export function SkillImportDialog({
                               }}
                               placeholder={t(
                                 "library.skillsImport.placeholders.name",
-                                "例如：my-skill",
                               )}
                               className="font-mono"
                             />
                             <div className="text-xs text-muted-foreground">
-                              {t(
-                                "library.skillsImport.hints.nameRequired",
-                                "检测到 SKILL.md 位于根目录，必须手动填写技能名称",
-                              )}
+                              {t("library.skillsImport.hints.nameRequired")}
                             </div>
                           </div>
                         )}
@@ -570,20 +515,13 @@ export function SkillImportDialog({
                       setCandidatePage((prev) => Math.max(1, prev - 1))
                     }
                   >
-                    {t(
-                      "library.skillsImport.preview.pagination.prev",
-                      "上一页",
-                    )}
+                    {t("library.skillsImport.preview.pagination.prev")}
                   </Button>
                   <div className="text-xs text-muted-foreground">
-                    {t(
-                      "library.skillsImport.preview.pagination.page",
-                      "第 {{page}} / {{pages}} 页",
-                      {
-                        page: candidatePageClamped,
-                        pages: totalCandidatePages,
-                      },
-                    )}
+                    {t("library.skillsImport.preview.pagination.page", {
+                      page: candidatePageClamped,
+                      pages: totalCandidatePages,
+                    })}
                   </div>
                   <Button
                     variant="outline"
@@ -599,10 +537,7 @@ export function SkillImportDialog({
                       )
                     }
                   >
-                    {t(
-                      "library.skillsImport.preview.pagination.next",
-                      "下一页",
-                    )}
+                    {t("library.skillsImport.preview.pagination.next")}
                   </Button>
                 </div>
               )}
@@ -610,7 +545,7 @@ export function SkillImportDialog({
               {commitResult && (
                 <div className="rounded-xl border border-border/50 bg-muted/5 px-4 py-3 space-y-2">
                   <div className="text-sm font-medium">
-                    {t("library.skillsImport.result.title", "导入结果")}
+                    {t("library.skillsImport.result.title")}
                   </div>
                   <div className="space-y-1">
                     {(commitResult.items || []).map((it) => (
@@ -623,8 +558,8 @@ export function SkillImportDialog({
                         </span>
                         <span className="shrink-0">
                           {it.status === "success"
-                            ? t("library.skillsImport.result.success", "成功")
-                            : t("library.skillsImport.result.failed", "失败")}
+                            ? t("library.skillsImport.result.success")
+                            : t("library.skillsImport.result.failed")}
                         </span>
                       </div>
                     ))}
@@ -635,18 +570,17 @@ export function SkillImportDialog({
               {isCommitting && (
                 <div className="rounded-xl border border-border/50 bg-muted/5 px-4 py-3 space-y-2">
                   <div className="text-sm font-medium">
-                    {t("library.skillsImport.progress.title", "正在导入")}
+                    {t("library.skillsImport.progress.title")}
                   </div>
                   {typeof commitProgress === "number" && (
                     <div className="text-xs text-muted-foreground">
-                      {t("library.skillsImport.progress.value", "进度")}:{" "}
+                      {t("library.skillsImport.progress.value")}:{" "}
                       {commitProgress}%
                     </div>
                   )}
                   {commitJobId && (
                     <div className="text-xs text-muted-foreground font-mono">
-                      {t("library.skillsImport.progress.jobId", "任务")}:{" "}
-                      {commitJobId}
+                      {t("library.skillsImport.progress.jobId")}: {commitJobId}
                     </div>
                   )}
                 </div>
@@ -655,7 +589,7 @@ export function SkillImportDialog({
               {commitError && !isCommitting && (
                 <div className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 space-y-1">
                   <div className="text-sm font-medium">
-                    {t("library.skillsImport.result.failed", "导入失败")}
+                    {t("library.skillsImport.result.failed")}
                   </div>
                   <div className="text-xs text-muted-foreground break-words">
                     {commitError}
@@ -672,19 +606,19 @@ export function SkillImportDialog({
             onClick={handleClose}
             disabled={isCommitting}
           >
-            {t("common.cancel", "取消")}
+            {t("common.cancel")}
           </Button>
           {!hasPreview ? (
             <Button onClick={onDiscover} disabled={isDiscovering}>
               {isDiscovering
-                ? t("library.skillsImport.actions.discovering", "解析中...")
-                : t("library.skillsImport.actions.discover", "解析")}
+                ? t("library.skillsImport.actions.discovering")
+                : t("library.skillsImport.actions.discover")}
             </Button>
           ) : (
             <Button onClick={onCommit} disabled={!canCommit || isCommitting}>
               {isCommitting
-                ? t("library.skillsImport.actions.committing", "导入中...")
-                : t("library.skillsImport.actions.commit", "导入并安装")}
+                ? t("library.skillsImport.actions.committing")
+                : t("library.skillsImport.actions.commit")}
             </Button>
           )}
         </DialogFooter>

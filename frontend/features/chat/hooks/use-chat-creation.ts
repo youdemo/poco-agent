@@ -11,12 +11,13 @@ import type {
 
 /**
  * Create a new empty chat session
+ * Note: title should be a translation key "chat.newChat", resolved by caller
  */
 function createNewChatSession(): ChatSession {
   return {
     id: `session-${Date.now()}`,
     taskId: `task-${Date.now()}`,
-    title: "新对话",
+    title: "chat.newChat", // Translation key, should be resolved by caller
     status: "pending",
     model: "claude-sonnet-4.5",
     createdAt: new Date().toISOString(),
