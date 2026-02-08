@@ -48,13 +48,13 @@ export function ArtifactsHeader({
             aria-label={
               isSidebarCollapsed
                 ? t("artifactsPanel.sidebarOpen")
-                : t("artifactsPanel.sidebarClosed")
+                : t("artifactsPanel.sidebarClose")
             }
           >
             {isSidebarCollapsed ? (
-              <PanelLeftOpen className="size-4" />
-            ) : (
               <PanelLeftClose className="size-4" />
+            ) : (
+              <PanelLeftOpen className="size-4" />
             )}
           </PanelHeaderAction>
         ) : undefined
