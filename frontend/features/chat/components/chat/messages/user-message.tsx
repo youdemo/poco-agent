@@ -112,7 +112,7 @@ export function UserMessage({
               }}
             />
           ) : null}
-          {attachments.map((file, i) => (
+          {attachments?.map((file, i) => (
             <FileCard
               key={i}
               file={file}
