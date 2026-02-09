@@ -364,7 +364,7 @@
   },
   "library": {
     "title": "Funktionen",
-    "subtitle": "Verwalte deine Skills, Plugins und Tools",
+    "subtitle": "Verwalte deine Skills, Vorlagen und Tools",
     "comingSoon": "Demnächst",
     "mobile": {
       "back": "Zurück zu den Funktionen"
@@ -745,7 +745,7 @@
     "more": {
       "title": "Mehr",
       "description": "Mehr Funktionen und Erweiterungen erkunden",
-      "feature1": "Plugin-Marktplatz",
+      "feature1": "Vorlagen-Marktplatz",
       "feature2": "Integrationsanleitungen",
       "feature3": "API-Dokumentation",
       "action": "Mehr erfahren"

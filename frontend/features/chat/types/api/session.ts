@@ -107,8 +107,15 @@ export interface TaskConfig {
    *  Servers not in this object use their default enabled state from user installations.
    */
   mcp_config?: Record<string, boolean>;
+  /** Skill enable/disable toggles (true=enabled, false=disabled).
+   *  Skills not in this object use their default enabled state from user installs.
+   */
+  skill_config?: Record<string, boolean>;
+  /** Plugin enable/disable toggles (true=enabled, false=disabled).
+   *  Plugins not in this object use their default enabled state from user installs.
+   */
+  plugin_config?: Record<string, boolean>;
   /** Optional explicit subagent selection (by id). */
   subagent_ids?: number[];
-  skill_files?: Record<string, unknown>;
   input_files?: InputFile[];
 }

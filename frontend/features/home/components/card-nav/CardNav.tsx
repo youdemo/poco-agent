@@ -9,21 +9,19 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
-import {
-  Plug,
-  Server,
-  Sparkles,
-  AppWindow,
-  ChevronRight,
-  PowerOff,
-} from "lucide-react";
+import { Plug, Server, Sparkles, ChevronRight, PowerOff } from "lucide-react";
 import { mcpService } from "@/features/capabilities/mcp/services/mcp-service";
 import { skillsService } from "@/features/capabilities/skills/services/skills-service";
+import { pluginsService } from "@/features/capabilities/plugins/services/plugins-service";
 import type {
   McpServer,
   UserMcpInstall,
 } from "@/features/capabilities/mcp/types";
 import { Skill, UserSkillInstall } from "@/features/capabilities/skills/types";
+import type {
+  Plugin,
+  UserPluginInstall,
+} from "@/features/capabilities/plugins/types";
 import { useAppShell } from "@/components/shared/app-shell-context";
 import { cn } from "@/lib/utils";
 import { playMcpInstallSound } from "@/lib/utils/sound";
@@ -84,26 +82,38 @@ export function CardNav({
   const [mcpInstalls, setMcpInstalls] = useState<UserMcpInstall[]>([]);
   const [skills, setSkills] = useState<Skill[]>([]);
   const [skillInstalls, setSkillInstalls] = useState<UserSkillInstall[]>([]);
+  const [plugins, setPlugins] = useState<Plugin[]>([]);
+  const [pluginInstalls, setPluginInstalls] = useState<UserPluginInstall[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
 
-  // Fetch MCP and Skill data
+  // Fetch MCP/Skill/Plugin data
   const fetchData = useCallback(async () => {
     if (hasFetched || isLoading) return;
 
     setIsLoading(true);
     try {
-      const [mcpServersData, mcpInstallsData, skillsData, skillInstallsData] =
-        await Promise.all([
-          mcpService.listServers(),
-          mcpService.listInstalls(),
-          skillsService.listSkills(),
-          skillsService.listInstalls(),
-        ]);
+      const [
+        mcpServersData,
+        mcpInstallsData,
+        skillsData,
+        skillInstallsData,
+        pluginsData,
+        pluginInstallsData,
+      ] = await Promise.all([
+        mcpService.listServers(),
+        mcpService.listInstalls(),
+        skillsService.listSkills(),
+        skillsService.listInstalls(),
+        pluginsService.listPlugins(),
+        pluginsService.listInstalls(),
+      ]);
       setMcpServers(mcpServersData);
       setMcpInstalls(mcpInstallsData);
       setSkills(skillsData);
       setSkillInstalls(skillInstallsData);
+      setPlugins(pluginsData);
+      setPluginInstalls(pluginInstallsData);
       setHasFetched(true);
     } catch (error) {
       console.error("[CardNav] Failed to fetch data:", error);
@@ -117,7 +127,7 @@ export function CardNav({
     const server = mcpServers.find((s) => s.id === install.server_id);
     return {
       id: install.server_id,
-      name: server?.name || `MCP #${install.server_id}`,
+      name: server?.name || t("cardNav.fallbackMcp", { id: install.server_id }),
       enabled: install.enabled,
       installId: install.id,
     };
@@ -128,7 +138,19 @@ export function CardNav({
     const skill = skills.find((s) => s.id === install.skill_id);
     return {
       id: install.skill_id,
-      name: skill?.name || `Skill #${install.skill_id}`,
+      name: skill?.name || t("cardNav.fallbackSkill", { id: install.skill_id }),
+      enabled: install.enabled,
+      installId: install.id,
+    };
+  });
+
+  // Get all installed Plugins
+  const installedPlugins: InstalledItem[] = pluginInstalls.map((install) => {
+    const plugin = plugins.find((p) => p.id === install.plugin_id);
+    return {
+      id: install.plugin_id,
+      name:
+        plugin?.name || t("cardNav.fallbackPreset", { id: install.plugin_id }),
       enabled: install.enabled,
       installId: install.id,
     };
@@ -214,6 +236,30 @@ export function CardNav({
     [skillInstalls, t],
   );
 
+  // Toggle Plugin enabled state
+  const togglePluginEnabled = useCallback(
+    async (installId: number, currentEnabled: boolean) => {
+      try {
+        await pluginsService.updateInstall(installId, {
+          enabled: !currentEnabled,
+        });
+        setPluginInstalls((prev) =>
+          prev.map((install) =>
+            install.id === installId
+              ? { ...install, enabled: !currentEnabled }
+              : install,
+          ),
+        );
+        if (!currentEnabled) {
+          playMcpInstallSound();
+        }
+      } catch (error) {
+        console.error("[CardNav] Failed to toggle Plugin:", error);
+      }
+    },
+    [],
+  );
+
   // Batch toggle all MCPs
   const batchToggleMcps = useCallback(
     async (enable: boolean) => {
@@ -276,6 +322,33 @@ export function CardNav({
       }
     },
     [skillInstalls, t],
+  );
+
+  // Batch toggle all Plugins
+  const batchTogglePlugins = useCallback(
+    async (enable: boolean) => {
+      try {
+        const installIds = pluginInstalls
+          .filter((install) => install.enabled !== enable)
+          .map((install) => install.id);
+        if (installIds.length > 0) {
+          await pluginsService.bulkUpdateInstalls({
+            enabled: enable,
+            install_ids: installIds,
+          });
+        }
+        setPluginInstalls((prev) =>
+          prev.map((install) => ({ ...install, enabled: enable })),
+        );
+        if (enable) {
+          playMcpInstallSound();
+        }
+      } catch (error) {
+        console.error("[CardNav] Failed to batch toggle Plugins:", error);
+        toast.error(t("hero.toasts.actionFailed"));
+      }
+    },
+    [pluginInstalls, t],
   );
 
   // Handle warning icon click
@@ -383,7 +456,7 @@ export function CardNav({
   };
 
   const handleLabelClick = useCallback(
-    (e: React.MouseEvent, viewId: "mcp" | "skills") => {
+    (e: React.MouseEvent, viewId: "mcp" | "skills" | "presets") => {
       e.stopPropagation();
       setPendingCapabilityView(viewId);
       router.push(`/${lng}/capabilities`);
@@ -394,7 +467,7 @@ export function CardNav({
   const renderItemBadges = (
     items: InstalledItem[],
     emptyText: string,
-    type: "mcp" | "skill",
+    type: "mcp" | "skill" | "plugin",
   ) => {
     if (isLoading && !hasFetched) {
       return (
@@ -414,7 +487,12 @@ export function CardNav({
       );
     }
 
-    const toggleFn = type === "mcp" ? toggleMcpEnabled : toggleSkillEnabled;
+    const toggleFn =
+      type === "mcp"
+        ? toggleMcpEnabled
+        : type === "skill"
+          ? toggleSkillEnabled
+          : togglePluginEnabled;
 
     return (
       <div className="flex flex-col gap-2">
@@ -498,7 +576,7 @@ export function CardNav({
                     type="button"
                   >
                     <span className="text-base font-semibold tracking-[-0.01em] text-foreground">
-                      MCP
+                      {t("cardNav.mcp")}
                     </span>
                     <ChevronRight className="size-3.5 text-muted-foreground transition-transform duration-200 hover:translate-x-0.5" />
                   </button>
@@ -562,7 +640,7 @@ export function CardNav({
                     type="button"
                   >
                     <span className="text-base font-semibold tracking-[-0.01em] text-foreground">
-                      Skills
+                      {t("cardNav.skills")}
                     </span>
                     <ChevronRight className="size-3.5 text-muted-foreground transition-transform duration-200 hover:translate-x-0.5" />
                   </button>
@@ -610,19 +688,54 @@ export function CardNav({
               )}
             </div>
 
-            {/* App Card */}
-            <div className="group relative flex min-w-[260px] shrink-0 flex-col rounded-lg border border-border/50 bg-muted/30 p-5 transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] hover:-translate-y-0.5 hover:bg-muted/40 hover:shadow-[0_4px_12px_-2px_rgba(var(--foreground),0.05)] min-h-[140px] md:min-w-0 md:shrink">
-              <div className="mb-3 flex min-w-0 items-center gap-2.5 overflow-x-auto whitespace-nowrap [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                <div className="flex items-center justify-center size-9 rounded-md bg-muted text-muted-foreground transition-all duration-300">
-                  <AppWindow className="size-[1.125rem]" />
+            {/* Presets Card */}
+            <div
+              ref={setCardRef(2)}
+              className="group relative flex min-w-[260px] shrink-0 flex-col rounded-lg border border-border/50 bg-muted/30 p-5 transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] hover:-translate-y-0.5 hover:bg-muted/40 hover:shadow-[0_4px_12px_-2px_rgba(var(--foreground),0.05)] min-h-[140px] md:min-w-0 md:shrink"
+            >
+              <div className="mb-3 flex min-w-0 items-center justify-between gap-3 overflow-x-auto whitespace-nowrap [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <div className="flex shrink-0 items-center gap-2.5">
+                  <div className="flex items-center justify-center size-9 rounded-md bg-muted text-muted-foreground transition-all duration-300">
+                    <Plug className="size-[1.125rem]" />
+                  </div>
+                  <button
+                    className="flex items-center gap-1 bg-transparent border-none cursor-pointer transition-all duration-200 rounded px-2 py-1 -mx-2 -my-1 hover:bg-muted/50 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+                    onClick={(e) => handleLabelClick(e, "presets")}
+                    type="button"
+                  >
+                    <span className="text-base font-semibold tracking-[-0.01em] text-foreground">
+                      {t("cardNav.plugins")}
+                    </span>
+                    <ChevronRight className="size-3.5 text-muted-foreground transition-transform duration-200 hover:translate-x-0.5" />
+                  </button>
                 </div>
-                <span className="text-base font-semibold tracking-[-0.01em] text-foreground">
-                  {t("cardNav.apps")}
-                </span>
+                <div className="flex shrink-0 items-center gap-1">
+                  {installedPlugins.filter((i) => i.enabled).length > 0 && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            batchTogglePlugins(false);
+                          }}
+                          className="flex items-center justify-center size-6 rounded-md hover:bg-muted/60 transition-colors text-muted-foreground hover:text-foreground"
+                          type="button"
+                        >
+                          <PowerOff className="size-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" sideOffset={4}>
+                        <span>{t("cardNav.turnOffAll")}</span>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                </div>
               </div>
-              <span className="text-xs italic text-muted-foreground">
-                {t("cardNav.comingSoon")}
-              </span>
+              {renderItemBadges(
+                installedPlugins,
+                t("cardNav.noPluginsInstalled"),
+                "plugin",
+              )}
             </div>
           </div>
         </div>

@@ -363,7 +363,7 @@
   },
   "library": {
     "title": "Capacités",
-    "subtitle": "Gérer vos compétences, plugins et outils",
+    "subtitle": "Gérer vos compétences, préréglages et outils",
     "comingSoon": "Bientôt disponible",
     "sidebar": {
       "title": "Raccourcis de capacités",
@@ -741,7 +741,7 @@
     "more": {
       "title": "Plus",
       "description": "Explorer plus de fonctionnalités et extensions",
-      "feature1": "Marketplace de plugins",
+      "feature1": "Marketplace de préréglages",
       "feature2": "Guides d'intégration",
       "feature3": "Documentation API",
       "action": "En savoir plus"

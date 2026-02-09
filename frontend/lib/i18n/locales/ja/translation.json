@@ -363,7 +363,7 @@
   },
   "library": {
     "title": "機能",
-    "subtitle": "スキル、プラグイン、ツールを管理",
+    "subtitle": "スキル、プリセット、ツールを管理",
     "comingSoon": "近日公開",
     "sidebar": {
       "title": "機能ショートカット",
@@ -741,7 +741,7 @@
     "more": {
       "title": "その他",
       "description": "その他の機能と拡張機能を探索",
-      "feature1": "プラグインマーケットプレイス",
+      "feature1": "プリセットマーケットプレイス",
       "feature2": "統合ガイド",
       "feature3": "APIドキュメント",
       "action": "詳細"

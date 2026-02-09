@@ -66,6 +66,18 @@ export const API_ENDPOINTS = {
   skillInstall: (installId: number) => `/skill-installs/${installId}`,
   skillInstallsBulk: "/skill-installs/bulk",
 
+  // Plugins
+  plugins: "/plugins",
+  plugin: (pluginId: number) => `/plugins/${pluginId}`,
+  pluginImportDiscover: "/plugins/import/discover",
+  pluginImportCommit: "/plugins/import/commit",
+  pluginImportJob: (jobId: string) => `/plugins/import/jobs/${jobId}`,
+
+  // Plugin Installs (User)
+  pluginInstalls: "/plugin-installs",
+  pluginInstall: (installId: number) => `/plugin-installs/${installId}`,
+  pluginInstallsBulk: "/plugin-installs/bulk",
+
   // Slash Commands
   slashCommands: "/slash-commands",
   slashCommand: (commandId: number) => `/slash-commands/${commandId}`,

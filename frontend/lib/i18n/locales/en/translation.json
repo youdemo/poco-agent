@@ -234,7 +234,8 @@
       "skillsConfigured": "Skills (configured)",
       "skillsUsed": "Skills",
       "mcpConfigured": "MCP servers (configured)",
-      "mcp": "MCP servers"
+      "mcp": "MCP servers",
+      "pluginsConfigured": "Presets (configured)"
     }
   },
   "status": {
@@ -364,7 +365,7 @@
   },
   "library": {
     "title": "Capabilities",
-    "subtitle": "Manage your skills, plugins and tools",
+    "subtitle": "Manage your skills, presets and tools",
     "comingSoon": "Coming Soon",
     "mobile": {
       "back": "Back to capabilities"
@@ -400,6 +401,10 @@
       "feature2": "Visual management",
       "feature3": "Real-time monitoring",
       "action": "Manage Servers"
+    },
+    "pluginsStore": {
+      "title": "Presets",
+      "description": "Browse and install capability presets"
     },
     "envVars": {
       "title": "Environment Variables",
@@ -745,7 +750,7 @@
     "more": {
       "title": "More",
       "description": "Explore more features and extensions",
-      "feature1": "Plugin marketplace",
+      "feature1": "Preset marketplace",
       "feature2": "Integration guides",
       "feature3": "API documentation",
       "action": "Learn More"
@@ -778,6 +783,9 @@
           "description": "Create charts and graphs from data sets for better insights."
         }
       }
+    },
+    "pluginsPage": {
+      "searchPlaceholder": "Search presets..."
     },
     "skillsManager": {
       "stats": {
@@ -872,6 +880,99 @@
         "committed": "Import succeeded",
         "commitError": "Import failed, please try again later",
         "partialFailed": "Some skills failed to import. Please review the details.",
+        "commitTimeout": "Import timed out, please try again later"
+      },
+      "progress": {
+        "title": "Import progress",
+        "value": "Progress",
+        "jobId": "Job ID"
+      }
+    },
+    "pluginsManager": {
+      "stats": {
+        "enabled": "Enabled"
+      },
+      "scope": {
+        "system": "System",
+        "user": "User"
+      },
+      "fields": {
+        "id": "id"
+      },
+      "actions": {
+        "install": "Install",
+        "uninstall": "Uninstall"
+      },
+      "toasts": {
+        "loadError": "Failed to load presets",
+        "actionError": "Operation failed, please try again later",
+        "installed": "Preset installed",
+        "uninstalled": "Preset uninstalled",
+        "enabled": "Preset enabled",
+        "disabled": "Preset disabled",
+        "actionFailed": "Operation failed, please try again later"
+      },
+      "empty": "No presets yet",
+      "unknownPlugin": "Unknown preset"
+    },
+    "pluginsImport": {
+      "title": "Import Presets",
+      "description": "Upload a preset zip or import from a public GitHub repository.",
+      "relativePath": "Relative path",
+      "tabs": {
+        "zip": "Upload Zip",
+        "github": "GitHub URL"
+      },
+      "fields": {
+        "zip": "Zip file",
+        "githubUrl": "GitHub public repo URL",
+        "nameOverride": "Preset name"
+      },
+      "placeholders": {
+        "githubUrl": "https://github.com/owner/repo",
+        "name": "e.g. my-preset"
+      },
+      "actions": {
+        "back": "Back",
+        "discover": "Discover",
+        "discovering": "Discovering...",
+        "commit": "Import & Install",
+        "committing": "Importing..."
+      },
+      "preview": {
+        "found": "Found",
+        "items": "preset definitions",
+        "overwrite": "will overwrite",
+        "overwriteItems": "existing presets",
+        "willOverwrite": "Overwrite",
+        "root": "Root",
+        "path": "Path",
+        "unnamed": "Unnamed",
+        "pagination": {
+          "page": "Page {{page}} / {{pages}}",
+          "prev": "Previous",
+          "next": "Next"
+        },
+        "selection": {
+          "selectPage": "Select page",
+          "clearPage": "Clear page selection",
+          "selectAll": "Select all",
+          "clearAll": "Clear all selections"
+        }
+      },
+      "result": {
+        "title": "Import result",
+        "success": "Success",
+        "failed": "Failed"
+      },
+      "toasts": {
+        "missingZip": "Please choose a zip file",
+        "missingGithubUrl": "Please enter a GitHub URL",
+        "discovered": "Discovered. Please confirm what to import.",
+        "discoverError": "Discover failed, please try again later",
+        "committed": "Import succeeded",
+        "commitError": "Import failed, please try again later",
+        "partialFailed": "Some presets failed to import. Please review the details.",
         "commitTimeout": "Import timed out, please try again later"
       },
       "progress": {
@@ -1093,9 +1194,16 @@
     "turnOffAll": "Turn off all",
     "noMcpInstalled": "No MCP installed",
     "noSkillsInstalled": "No skills installed",
+    "noPluginsInstalled": "No presets installed",
+    "fallbackMcp": "MCP #{{id}}",
+    "fallbackSkill": "Skill #{{id}}",
+    "fallbackPreset": "Preset #{{id}}",
     "oneClickClose": "Turn off all",
     "notInstalledMcp": "No MCP installed",
     "notInstalledSkill": "No skills installed",
+    "mcp": "MCP",
+    "skills": "Skills",
+    "plugins": "Presets",
     "apps": "Apps",
     "comingSoon": "Coming soon",
     "clickForDetails": "Click for details",
@@ -1142,6 +1250,9 @@
     "settings": "Settings"
   },
   "skillsGrid": {
+    "turnOffAll": "Turn off all"
+  },
+  "pluginsGrid": {
     "turnOffAll": "Turn off all"
   },
   "mcpSettings": {

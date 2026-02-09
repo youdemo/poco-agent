@@ -49,11 +49,12 @@ export interface NewMessage {
 
 /**
  * Configuration snapshot from session creation
- * Contains the IDs of MCP servers and skills used in this session
+ * Contains the IDs of MCP servers, skills, and presets used in this session
  */
 export interface ConfigSnapshot {
   mcp_server_ids?: number[];
   skill_ids?: number[];
+  plugin_ids?: number[];
   browser_enabled?: boolean;
 }
 

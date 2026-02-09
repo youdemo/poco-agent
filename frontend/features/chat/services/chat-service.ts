@@ -84,6 +84,11 @@ function parseConfigSnapshot(
           (id): id is number => typeof id === "number",
         )
       : undefined,
+    plugin_ids: Array.isArray(configSnapshot.plugin_ids)
+      ? (configSnapshot.plugin_ids as number[]).filter(
+          (id): id is number => typeof id === "number",
+        )
+      : undefined,
     browser_enabled:
       typeof configSnapshot.browser_enabled === "boolean"
         ? configSnapshot.browser_enabled

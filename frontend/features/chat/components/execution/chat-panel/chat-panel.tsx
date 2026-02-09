@@ -183,6 +183,8 @@ export function ChatPanel({
     ((session.config_snapshot.mcp_server_ids &&
       session.config_snapshot.mcp_server_ids.length > 0) ||
       session.config_snapshot.browser_enabled === true ||
+      (session.config_snapshot.plugin_ids &&
+        session.config_snapshot.plugin_ids.length > 0) ||
       (session.config_snapshot.skill_ids &&
         session.config_snapshot.skill_ids.length > 0));
   const hasSkills =
