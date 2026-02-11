@@ -26,7 +26,7 @@ export function PluginsPageClient() {
     loadingId,
     isLoading,
     installPlugin,
-    uninstallPlugin,
+    deletePlugin,
     setEnabled,
     refresh,
   } = usePluginCatalog();
@@ -101,7 +101,7 @@ export function PluginsPageClient() {
                 loadingId={loadingId}
                 isLoading={isLoading}
                 onInstall={installPlugin}
-                onUninstall={uninstallPlugin}
+                onDeletePlugin={deletePlugin}
                 onToggleEnabled={setEnabled}
                 onBatchToggle={handleBatchToggle}
                 toolbarSlot={toolbarSlot}

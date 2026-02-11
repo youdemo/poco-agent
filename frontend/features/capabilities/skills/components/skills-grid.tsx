@@ -23,7 +23,7 @@ interface SkillsGridProps {
   loadingId?: number | null;
   isLoading?: boolean;
   onInstall?: (skillId: number) => void;
-  onUninstall?: (installId: number) => void;
+  onDeleteSkill?: (skillId: number) => void;
   onToggleEnabled?: (installId: number, enabled: boolean) => void;
   onBatchToggle?: (enabled: boolean) => void;
   toolbarSlot?: React.ReactNode;
@@ -35,7 +35,7 @@ export function SkillsGrid({
   loadingId,
   isLoading = false,
   onInstall,
-  onUninstall,
+  onDeleteSkill,
   onToggleEnabled,
   onBatchToggle,
   toolbarSlot,
@@ -141,25 +141,41 @@ export function SkillsGrid({
                           onToggleEnabled?.(install.id, enabled)
                         }
                       />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        disabled={isRowLoading}
-                        onClick={() => onUninstall?.(install.id)}
-                        className="rounded-lg"
-                        title={t("library.skillsManager.actions.uninstall")}
-                      >
-                        <Trash2 className="size-4" />
-                      </Button>
+                      {skill.scope === "user" && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          disabled={isRowLoading}
+                          onClick={() => onDeleteSkill?.(skill.id)}
+                          className="rounded-lg"
+                          title={t("common.delete")}
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      )}
                     </div>
                   ) : (
-                    <Button
-                      size="sm"
-                      disabled={isRowLoading}
-                      onClick={() => onInstall?.(skill.id)}
-                    >
-                      {t("library.skillsManager.actions.install")}
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        disabled={isRowLoading}
+                        onClick={() => onInstall?.(skill.id)}
+                      >
+                        {t("library.skillsManager.actions.install")}
+                      </Button>
+                      {skill.scope === "user" && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          disabled={isRowLoading}
+                          onClick={() => onDeleteSkill?.(skill.id)}
+                          className="rounded-lg"
+                          title={t("common.delete")}
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      )}
+                    </div>
                   )}
                 </div>
               );

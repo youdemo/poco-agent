@@ -65,21 +65,24 @@ export function useSkillCatalog() {
     [t],
   );
 
-  const uninstallSkill = useCallback(
-    async (installId: number) => {
-      setLoadingId(installId);
+  const deleteSkill = useCallback(
+    async (skillId: number) => {
+      setLoadingId(skillId);
       try {
-        await skillsService.deleteInstall(installId);
-        await refresh();
-        toast.success(t("library.skillsManager.toasts.uninstalled"));
+        await skillsService.deleteSkill(skillId);
+        setSkills((prev) => prev.filter((skill) => skill.id !== skillId));
+        setInstalls((prev) =>
+          prev.filter((install) => install.skill_id !== skillId),
+        );
+        toast.success(t("common.deleted"));
       } catch (error) {
-        console.error("[Skills] uninstall failed:", error);
+        console.error("[Skills] delete failed:", error);
         toast.error(t("library.skillsManager.toasts.actionError"));
       } finally {
         setLoadingId(null);
       }
     },
-    [refresh, t],
+    [t],
   );
 
   const setEnabled = useCallback(
@@ -142,7 +145,7 @@ export function useSkillCatalog() {
     loadingId,
     refresh,
     installSkill,
-    uninstallSkill,
+    deleteSkill,
     setEnabled,
   };
 }

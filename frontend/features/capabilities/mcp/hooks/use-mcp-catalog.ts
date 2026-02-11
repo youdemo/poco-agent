@@ -210,19 +210,17 @@ export function useMcpCatalog() {
     [t],
   );
 
-  const uninstallServer = useCallback(
-    async (serverId: number, installId: number) => {
+  const deleteServer = useCallback(
+    async (serverId: number) => {
       setLoadingId(serverId);
       try {
-        await mcpService.deleteInstall(installId);
+        await mcpService.deleteServer(serverId);
         await refresh();
         const server = servers.find((s) => s.id === serverId);
         const serverName = server?.name || "";
-        toast.success(
-          `${serverName} MCP ${t("library.mcpLibrary.toasts.uninstalled")}`,
-        );
+        toast.success(`${serverName} MCP ${t("common.deleted")}`);
       } catch (error) {
-        console.error("[MCP] uninstall failed:", error);
+        console.error("[MCP] delete failed:", error);
         toast.error(t("library.mcpLibrary.toasts.error"));
       } finally {
         setLoadingId(null);
@@ -249,7 +247,7 @@ export function useMcpCatalog() {
     toggleInstall,
     updateServer,
     createServer,
-    uninstallServer,
+    deleteServer,
     refresh,
     loadingId,
     savingEnvKey: envVarStore.savingEnvKey,

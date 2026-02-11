@@ -20,7 +20,7 @@ interface PluginsGridProps {
   loadingId?: number | null;
   isLoading?: boolean;
   onInstall?: (pluginId: number) => void;
-  onUninstall?: (installId: number) => void;
+  onDeletePlugin?: (pluginId: number) => void;
   onToggleEnabled?: (installId: number, enabled: boolean) => void;
   onBatchToggle?: (enabled: boolean) => void;
   toolbarSlot?: React.ReactNode;
@@ -32,7 +32,7 @@ export function PluginsGrid({
   loadingId,
   isLoading = false,
   onInstall,
-  onUninstall,
+  onDeletePlugin,
   onToggleEnabled,
   onBatchToggle,
   toolbarSlot,
@@ -138,25 +138,41 @@ export function PluginsGrid({
                           onToggleEnabled?.(install.id, enabled)
                         }
                       />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        disabled={isRowLoading}
-                        onClick={() => onUninstall?.(install.id)}
-                        className="rounded-lg"
-                        title={t("library.pluginsManager.actions.uninstall")}
-                      >
-                        <Trash2 className="size-4" />
-                      </Button>
+                      {plugin.scope === "user" && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          disabled={isRowLoading}
+                          onClick={() => onDeletePlugin?.(plugin.id)}
+                          className="rounded-lg"
+                          title={t("common.delete")}
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      )}
                     </div>
                   ) : (
-                    <Button
-                      size="sm"
-                      disabled={isRowLoading}
-                      onClick={() => onInstall?.(plugin.id)}
-                    >
-                      {t("library.pluginsManager.actions.install")}
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        disabled={isRowLoading}
+                        onClick={() => onInstall?.(plugin.id)}
+                      >
+                        {t("library.pluginsManager.actions.install")}
+                      </Button>
+                      {plugin.scope === "user" && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          disabled={isRowLoading}
+                          onClick={() => onDeletePlugin?.(plugin.id)}
+                          className="rounded-lg"
+                          title={t("common.delete")}
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      )}
+                    </div>
                   )}
                 </div>
               );

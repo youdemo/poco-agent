@@ -65,21 +65,24 @@ export function usePluginCatalog() {
     [t],
   );
 
-  const uninstallPlugin = useCallback(
-    async (installId: number) => {
-      setLoadingId(installId);
+  const deletePlugin = useCallback(
+    async (pluginId: number) => {
+      setLoadingId(pluginId);
       try {
-        await pluginsService.deleteInstall(installId);
-        await refresh();
-        toast.success(t("library.pluginsManager.toasts.uninstalled"));
+        await pluginsService.deletePlugin(pluginId);
+        setPlugins((prev) => prev.filter((plugin) => plugin.id !== pluginId));
+        setInstalls((prev) =>
+          prev.filter((install) => install.plugin_id !== pluginId),
+        );
+        toast.success(t("common.deleted"));
       } catch (error) {
-        console.error("[Plugins] uninstall failed:", error);
+        console.error("[Plugins] delete failed:", error);
         toast.error(t("library.pluginsManager.toasts.actionError"));
       } finally {
         setLoadingId(null);
       }
     },
-    [refresh, t],
+    [t],
   );
 
   const setEnabled = useCallback(
@@ -140,7 +143,7 @@ export function usePluginCatalog() {
     loadingId,
     refresh,
     installPlugin,
-    uninstallPlugin,
+    deletePlugin,
     setEnabled,
   };
 }

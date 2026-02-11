@@ -29,7 +29,7 @@ export function McpPageClient() {
     toggleInstall,
     updateServer,
     createServer,
-    uninstallServer,
+    deleteServer,
     refresh,
     isLoading,
     loadingId,
@@ -112,7 +112,7 @@ export function McpPageClient() {
                 loadingId={loadingId}
                 isLoading={isLoading}
                 onToggleInstall={toggleInstall}
-                onUninstall={uninstallServer}
+                onDeleteServer={deleteServer}
                 onEditServer={(server) => setSelectedServer(server)}
                 onBatchToggle={handleBatchToggle}
                 toolbarSlot={toolbarSlot}

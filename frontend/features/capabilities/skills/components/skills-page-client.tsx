@@ -26,7 +26,7 @@ export function SkillsPageClient() {
     loadingId,
     isLoading,
     installSkill,
-    uninstallSkill,
+    deleteSkill,
     setEnabled,
     refresh,
   } = useSkillCatalog();
@@ -103,7 +103,7 @@ export function SkillsPageClient() {
                 loadingId={loadingId}
                 isLoading={isLoading}
                 onInstall={installSkill}
-                onUninstall={uninstallSkill}
+                onDeleteSkill={deleteSkill}
                 onToggleEnabled={setEnabled}
                 onBatchToggle={handleBatchToggle}
                 toolbarSlot={toolbarSlot}

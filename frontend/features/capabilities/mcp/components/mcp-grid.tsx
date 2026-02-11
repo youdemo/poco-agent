@@ -23,7 +23,7 @@ interface McpGridProps {
   loadingId?: number | null;
   isLoading?: boolean;
   onToggleInstall?: (serverId: number) => void;
-  onUninstall?: (serverId: number, installId: number) => void;
+  onDeleteServer?: (serverId: number) => void;
   onEditServer?: (server: McpServer) => void;
   onBatchToggle?: (enabled: boolean) => void;
   toolbarSlot?: React.ReactNode;
@@ -35,7 +35,7 @@ export function McpGrid({
   loadingId,
   isLoading = false,
   onToggleInstall,
-  onUninstall,
+  onDeleteServer,
   onEditServer,
   onBatchToggle,
   toolbarSlot,
@@ -105,7 +105,6 @@ export function McpGrid({
               const install = installByServerId.get(server.id);
               const isEnabled = install?.enabled ?? false;
               const isRowLoading = loadingId === server.id;
-              const isInstalled = Boolean(install);
 
               return (
                 <div
@@ -135,14 +134,14 @@ export function McpGrid({
                       onCheckedChange={() => onToggleInstall?.(server.id)}
                       disabled={isRowLoading}
                     />
-                    {isInstalled && install && (
+                    {server.scope === "user" && (
                       <Button
                         variant="ghost"
                         size="icon"
                         className="size-8"
-                        onClick={() => onUninstall?.(server.id, install.id)}
+                        onClick={() => onDeleteServer?.(server.id)}
                         disabled={isRowLoading}
-                        title={t("library.mcpLibrary.actions.uninstall")}
+                        title={t("common.delete")}
                       >
                         <Trash2 className="size-4" />
                       </Button>
