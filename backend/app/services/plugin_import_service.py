@@ -690,8 +690,6 @@ class PluginImportService:
             )
             UserPluginInstallRepository.create(db, install)
         else:
-            if getattr(install, "is_deleted", False):
-                install.is_deleted = False
             install.enabled = True
 
         db.commit()

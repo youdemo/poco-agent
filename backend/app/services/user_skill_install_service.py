@@ -34,12 +34,6 @@ class UserSkillInstallService:
             db, user_id, request.skill_id
         )
         if existing:
-            if existing.is_deleted:
-                existing.is_deleted = False
-                existing.enabled = request.enabled
-                db.commit()
-                db.refresh(existing)
-                return self._to_response(existing)
             raise AppException(
                 error_code=ErrorCode.BAD_REQUEST,
                 message="Skill install already exists for skill",
@@ -64,11 +58,7 @@ class UserSkillInstallService:
         request: UserSkillInstallUpdateRequest,
     ) -> UserSkillInstallResponse:
         install = UserSkillInstallRepository.get_by_id(db, install_id)
-        if (
-            not install
-            or install.user_id != user_id
-            or getattr(install, "is_deleted", False)
-        ):
+        if not install or install.user_id != user_id:
             raise AppException(
                 error_code=ErrorCode.NOT_FOUND,
                 message=f"Skill install not found: {install_id}",
@@ -98,11 +88,7 @@ class UserSkillInstallService:
 
     def delete_install(self, db: Session, user_id: str, install_id: int) -> None:
         install = UserSkillInstallRepository.get_by_id(db, install_id)
-        if (
-            not install
-            or install.user_id != user_id
-            or getattr(install, "is_deleted", False)
-        ):
+        if not install or install.user_id != user_id:
             raise AppException(
                 error_code=ErrorCode.NOT_FOUND,
                 message=f"Skill install not found: {install_id}",

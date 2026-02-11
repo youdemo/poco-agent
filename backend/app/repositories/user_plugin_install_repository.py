@@ -35,10 +35,7 @@ class UserPluginInstallRepository:
     def list_by_user(session_db: Session, user_id: str) -> list[UserPluginInstall]:
         return (
             session_db.query(UserPluginInstall)
-            .filter(
-                UserPluginInstall.user_id == user_id,
-                UserPluginInstall.is_deleted.is_(False),
-            )
+            .filter(UserPluginInstall.user_id == user_id)
             .order_by(UserPluginInstall.created_at.desc())
             .all()
         )
@@ -52,8 +49,7 @@ class UserPluginInstallRepository:
         install_ids: list[int] | None = None,
     ) -> int:
         query = session_db.query(UserPluginInstall).filter(
-            UserPluginInstall.user_id == user_id,
-            UserPluginInstall.is_deleted.is_(False),
+            UserPluginInstall.user_id == user_id
         )
         if install_ids is not None:
             if not install_ids:
