@@ -98,13 +98,16 @@ class UserPluginInstallService:
 
     def delete_install(self, db: Session, user_id: str, install_id: int) -> None:
         install = UserPluginInstallRepository.get_by_id(db, install_id)
-        if not install or install.user_id != user_id:
+        if (
+            not install
+            or install.user_id != user_id
+            or getattr(install, "is_deleted", False)
+        ):
             raise AppException(
                 error_code=ErrorCode.NOT_FOUND,
                 message=f"Plugin install not found: {install_id}",
             )
-        install.is_deleted = True
-        install.enabled = False
+        UserPluginInstallRepository.delete(db, install)
         db.commit()
 
     @staticmethod

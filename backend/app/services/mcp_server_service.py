@@ -20,7 +20,7 @@ class McpServerService:
         self, db: Session, user_id: str, server_id: int
     ) -> McpServerResponse:
         server = McpServerRepository.get_by_id(db, server_id)
-        if not server or (server.scope != "system" and server.owner_user_id != user_id):
+        if not server or (server.scope == "user" and server.owner_user_id != user_id):
             raise AppException(
                 error_code=ErrorCode.MCP_SERVER_NOT_FOUND,
                 message=f"MCP server not found: {server_id}",
@@ -58,10 +58,20 @@ class McpServerService:
         request: McpServerUpdateRequest,
     ) -> McpServerResponse:
         server = McpServerRepository.get_by_id(db, server_id)
-        if not server or (server.scope != "system" and server.owner_user_id != user_id):
+        if not server:
             raise AppException(
                 error_code=ErrorCode.MCP_SERVER_NOT_FOUND,
                 message=f"MCP server not found: {server_id}",
+            )
+        if server.scope == "system":
+            raise AppException(
+                error_code=ErrorCode.FORBIDDEN,
+                message="Cannot modify system MCP servers",
+            )
+        if server.owner_user_id != user_id:
+            raise AppException(
+                error_code=ErrorCode.FORBIDDEN,
+                message="MCP server does not belong to the user",
             )
 
         if request.name is not None and request.name != server.name:
@@ -83,10 +93,20 @@ class McpServerService:
 
     def delete_server(self, db: Session, user_id: str, server_id: int) -> None:
         server = McpServerRepository.get_by_id(db, server_id)
-        if not server or (server.scope != "system" and server.owner_user_id != user_id):
+        if not server:
             raise AppException(
                 error_code=ErrorCode.MCP_SERVER_NOT_FOUND,
                 message=f"MCP server not found: {server_id}",
+            )
+        if server.scope == "system":
+            raise AppException(
+                error_code=ErrorCode.FORBIDDEN,
+                message="Cannot delete system MCP servers",
+            )
+        if server.owner_user_id != user_id:
+            raise AppException(
+                error_code=ErrorCode.FORBIDDEN,
+                message="MCP server does not belong to the user",
             )
         McpServerRepository.delete(db, server)
         db.commit()
