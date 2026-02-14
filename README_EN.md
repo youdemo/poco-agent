@@ -3,7 +3,7 @@
 
 # Poco: Your Pocket Coworker
 
-**A cloud-based Claude Code Agent Platform delivering a Manus-like experience**
+A cloud-based Claude Code Agent Platform delivering a Manus-like experience
 
 Think of it as a **safer** (sandboxed isolation), **more beautiful** (modern UI), and **simpler to configure** (ready-to-use) alternative to **OpenClaw**.
 
@@ -35,32 +35,20 @@ Think of it as a **safer** (sandboxed isolation), **more beautiful** (modern UI)
 <summary><strong>Click to view more feature demos</strong></summary>
 <br>
 
-**1. Artifact rendering, supports browser and terminal review**
-
-![output](assets/output.png)
-![output-computer](assets/output-computer.png)
-
-https://github.com/user-attachments/assets/3d732f0b-3f32-4aca-ab61-ec28c5fd274e
-
-![HTML](https://github.com/user-attachments/assets/0ef59c4c-8363-44a6-b9ed-7005ccfd71cb)
-
-![Multiple-file](https://github.com/user-attachments/assets/8135dab4-6396-4af8-97af-6f665853fb56)
-
-**2. Full Plugin/MCP/Skills/Subagent/Slash Commands support with easy configuration**
-
-![mcp](assets/mcp.png)
-
-![skills](assets/skills.png)
-
-https://github.com/user-attachments/assets/60df5a0f-c338-44ad-af03-e1ebb98d5743
-
-**3. Scheduled tasks**
-
-![schedule](assets/schedule.png)
-
-**4. Mobile optimization - your AI Coworker in your pocket**
-
-https://github.com/user-attachments/assets/a8364763-8edf-4bb1-b873-5c27755a5712
+1. Artifact rendering, supports browser and terminal review
+   ![output](assets/output.png)
+   ![output-computer](assets/output-computer.png)
+   <https://github.com/user-attachments/assets/3d732f0b-3f32-4aca-ab61-ec28c5fd274e>
+   ![HTML](https://github.com/user-attachments/assets/0ef59c4c-8363-44a6-b9ed-7005ccfd71cb)
+   ![Multiple-file](https://github.com/user-attachments/assets/8135dab4-6396-4af8-97af-6f665853fb56)
+2. Full Plugin/MCP/Skills/Subagent/Slash Commands support with easy configuration
+   ![mcp](assets/mcp.png)
+   ![skills](assets/skills.png)
+   <https://github.com/user-attachments/assets/60df5a0f-c338-44ad-af03-e1ebb98d5743>
+3. Scheduled tasks
+   ![schedule](assets/schedule.png)
+4. Mobile optimization - your AI Coworker in your pocket
+   <https://github.com/user-attachments/assets/a8364763-8edf-4bb1-b873-5c27755a5712>
 
 </details>
 
@@ -72,9 +60,9 @@ Run the interactive setup script to automatically generate configuration and sta
 ./scripts/quickstart.sh
 ```
 
-Visit: http://localhost:3000 after startup completes.
+Visit: `http://localhost:3000` after startup completes.
 
-For detailed deployment documentation and troubleshooting, please refer to the [Deployment Guide](./docs/README.md).
+For detailed deployment documentation and troubleshooting, please refer to the [Deployment Guide](./docs/en/README.md).
 
 ## Star History
 

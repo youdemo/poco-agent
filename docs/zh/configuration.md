@@ -45,7 +45,7 @@
 - `LOG_DIR`（默认 `./logs`）、`LOG_BACKUP_COUNT`（默认 `14`）
 - `LOG_SQL`（默认 `false`）：是否打印 SQLAlchemy SQL（注意敏感信息）
 
-## Executor Manager（FastAPI + APScheduler）
+## Executor Manager (FastAPI + APScheduler)
 
 必需（否则无法启动或无法调度执行）：
 
@@ -83,7 +83,7 @@
 - `WORKSPACE_ARCHIVE_DAYS`（默认 `7`）
 - `WORKSPACE_IGNORE_DOT_FILES`（默认 `true`）
 
-## Executor（FastAPI + Claude Agent SDK）
+## Executor (FastAPI + Claude Agent SDK)
 
 必需（跑任务时）：
 
@@ -98,7 +98,7 @@
 - `POCO_BROWSER_VIEWPORT_SIZE`：可选，浏览器视口大小（影响截图与响应式布局），格式如 `1366x768` / `1920x1080`（`browser_enabled=true` 时生效）
 - `DEBUG` / `LOG_LEVEL` / `LOG_TO_FILE` 等日志变量（同上）
 
-## Frontend（Next.js）
+## Frontend (Next.js)
 
 Frontend 现在默认通过 Next.js 的 **同源 API 代理**（`/api/v1/* -> Backend`）访问后端，因此后端地址可以在 **运行时（runtime）** 配置。
 
