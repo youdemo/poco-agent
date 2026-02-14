@@ -38,17 +38,17 @@ Think of it as a **safer** (sandboxed isolation), **more beautiful** (modern UI)
 1. Artifact rendering, supports browser and terminal review
    ![output](assets/output.png)
    ![output-computer](assets/output-computer.png)
-   <https://github.com/user-attachments/assets/3d732f0b-3f32-4aca-ab61-ec28c5fd274e>
+   <video src="https://github.com/user-attachments/assets/3d732f0b-3f32-4aca-ab61-ec28c5fd274e" controls="controls"></video>
    ![HTML](https://github.com/user-attachments/assets/0ef59c4c-8363-44a6-b9ed-7005ccfd71cb)
    ![Multiple-file](https://github.com/user-attachments/assets/8135dab4-6396-4af8-97af-6f665853fb56)
 2. Full Plugin/MCP/Skills/Subagent/Slash Commands support with easy configuration
    ![mcp](assets/mcp.png)
    ![skills](assets/skills.png)
-   <https://github.com/user-attachments/assets/60df5a0f-c338-44ad-af03-e1ebb98d5743>
+   <video src="https://github.com/user-attachments/assets/60df5a0f-c338-44ad-af03-e1ebb98d5743" controls="controls"></video>
 3. Scheduled tasks
    ![schedule](assets/schedule.png)
 4. Mobile optimization - your AI Coworker in your pocket
-   <https://github.com/user-attachments/assets/a8364763-8edf-4bb1-b873-5c27755a5712>
+   <video src="https://github.com/user-attachments/assets/a8364763-8edf-4bb1-b873-5c27755a5712" controls="controls"></video>
 
 </details>
 
