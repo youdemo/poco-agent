@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import {
-  Loader2,
   Monitor,
   CheckCircle2,
   XCircle,
@@ -18,7 +17,7 @@ import {
 } from "lucide-react";
 import { PanelHeader } from "@/components/shared/panel-header";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonCircle, SkeletonItem } from "@/components/ui/skeleton-shimmer";
 import {
   Tooltip,
   TooltipContent,
@@ -57,6 +56,34 @@ interface ReplayFrame {
   kind: ReplayKind;
   execution: ToolExecutionResponse;
   label: string;
+}
+
+function ViewerSkeleton({
+  label,
+  className,
+}: {
+  label: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "flex h-full w-full items-center justify-center p-4",
+        className,
+      )}
+    >
+      <div className="h-full w-full max-w-[960px] rounded-lg skeleton-shimmer" />
+      <span className="sr-only">{label}</span>
+    </div>
+  );
+}
+
+function TerminalOutputSkeleton({ label }: { label: string }) {
+  return (
+    <SkeletonItem className="h-20 min-h-0 w-full">
+      <span className="sr-only">{label}</span>
+    </SkeletonItem>
+  );
 }
 
 function truncateMiddle(value: string, maxLen: number): string {
@@ -420,12 +447,10 @@ export function ComputerPanel({
     if (selectedFrame.kind === "browser") {
       if (!selectedBrowserIsDone) {
         return (
-          <div className="h-full w-full bg-muted/30 flex items-center justify-center">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Loader2 className="size-4 animate-spin" />
-              {t("computer.terminal.running")}
-            </div>
-          </div>
+          <ViewerSkeleton
+            label={t("computer.terminal.running")}
+            className="bg-muted/30"
+          />
         );
       }
 
@@ -455,10 +480,7 @@ export function ComputerPanel({
               {t("computer.browser.screenshotUnavailable")}
             </div>
           ) : (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Loader2 className="size-4 animate-spin" />
-              {t("computer.browser.screenshotLoading")}
-            </div>
+            <ViewerSkeleton label={t("computer.browser.screenshotLoading")} />
           )}
         </div>
       );
@@ -483,7 +505,7 @@ export function ComputerPanel({
               </span>
               <span className="shrink-0">
                 {!isDone ? (
-                  <Loader2 className="size-3.5 animate-spin text-primary" />
+                  <SkeletonCircle className="size-3.5" />
                 ) : isError ? (
                   <XCircle className="size-3.5 text-destructive" />
                 ) : (
@@ -500,9 +522,7 @@ export function ComputerPanel({
                 )}
               </div>
             ) : (
-              <div className="text-muted-foreground">
-                {t("computer.terminal.running")}
-              </div>
+              <TerminalOutputSkeleton label={t("computer.terminal.running")} />
             )}
             {isDone && typeof result.exitCode === "number" ? (
               <div
@@ -744,15 +764,11 @@ export function ComputerPanel({
   const renderSkeletons = (count: number) => (
     <>
       {Array.from({ length: count }).map((_, i) => (
-        <div
+        <SkeletonItem
           key={`skeleton-${i}`}
-          className="w-full flex items-center gap-2 rounded-md px-2 py-2 h-10"
-        >
-          <Skeleton className="size-4 shrink-0" />
-          <Skeleton className="size-4 shrink-0" />
-          <Skeleton className="flex-1 h-3" />
-          <Skeleton className="w-10 h-3 shrink-0" />
-        </div>
+          className="h-10 min-h-0 w-full"
+          style={{ animationDelay: `${i * 0.08}s` }}
+        />
       ))}
     </>
   );
@@ -790,7 +806,7 @@ export function ComputerPanel({
                   <SquareTerminal className="size-4 text-muted-foreground" />
                 );
               const statusIcon = !isDone ? (
-                <Loader2 className="size-4 animate-spin text-primary" />
+                <SkeletonCircle className="size-4" />
               ) : isError ? (
                 <XCircle className="size-4 text-destructive" />
               ) : (

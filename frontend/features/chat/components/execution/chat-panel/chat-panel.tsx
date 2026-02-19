@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { MessageSquare, Loader2, Pencil } from "lucide-react";
+import { MessageSquare, Pencil } from "lucide-react";
 import { ChatMessageList } from "../../chat/chat-message-list";
 import { TodoList } from "./todo-list";
 import { StatusBar } from "./status-bar";
@@ -29,6 +29,7 @@ import type {
 import { useT } from "@/lib/i18n/client";
 import { toast } from "sonner";
 import { useTaskHistoryContext } from "@/features/projects/contexts/task-history-context";
+import { SkeletonCircle, SkeletonItem } from "@/components/ui/skeleton-shimmer";
 
 interface ChatPanelProps {
   session: ExecutionSession | null;
@@ -38,6 +39,30 @@ interface ChatPanelProps {
   updateSession: (newSession: Partial<ExecutionSession>) => void;
   onIconClick?: () => void;
   hideHeader?: boolean;
+}
+
+function ChatHistorySkeleton() {
+  const shimmerDelay = (index: number) => ({
+    animationDelay: `${index * 0.08}s`,
+  });
+  return (
+    <div className="flex h-full w-full flex-col gap-4 py-6" aria-busy="true">
+      <div className="flex items-start gap-3">
+        <SkeletonCircle className="h-8 w-8" style={shimmerDelay(0)} />
+        <SkeletonItem className="w-[70%]" style={shimmerDelay(1)} />
+      </div>
+      <div className="flex items-start justify-end">
+        <SkeletonItem className="w-[68%]" style={shimmerDelay(2)} />
+      </div>
+      <div className="flex items-start gap-3">
+        <SkeletonCircle className="h-8 w-8" style={shimmerDelay(3)} />
+        <SkeletonItem className="w-[60%]" style={shimmerDelay(4)} />
+      </div>
+      <div className="flex items-start justify-end">
+        <SkeletonItem className="w-[55%]" style={shimmerDelay(5)} />
+      </div>
+    </div>
+  );
 }
 
 /**
@@ -243,9 +268,7 @@ export function ChatPanel({
       {/* Message list */}
       <div className="flex-1 min-h-0 min-w-0 overflow-hidden px-4">
         {isLoadingHistory ? (
-          <div className="flex h-full w-full items-center justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground/20" />
-          </div>
+          <ChatHistorySkeleton />
         ) : (
           <ChatMessageList
             messages={displayMessages}

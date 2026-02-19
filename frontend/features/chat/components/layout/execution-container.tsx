@@ -8,7 +8,7 @@ import { MobileExecutionView } from "./mobile-execution-view";
 import { useExecutionSession } from "@/features/chat/hooks/use-execution-session";
 import { useTaskHistoryContext } from "@/features/projects/contexts/task-history-context";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Layers, Loader2, Monitor } from "lucide-react";
+import { Layers, Monitor, MessageSquare } from "lucide-react";
 
 import {
   ResizableHandle,
@@ -16,10 +16,108 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PanelHeader } from "@/components/shared/panel-header";
+import { ChatInput } from "../execution/chat-panel/chat-input";
 import { useT } from "@/lib/i18n/client";
+import { SkeletonCircle, SkeletonItem } from "@/components/ui/skeleton-shimmer";
 
 interface ExecutionContainerProps {
   sessionId: string;
+}
+
+const shimmerDelay = (index: number) => ({
+  animationDelay: `${index * 0.08}s`,
+});
+
+function ChatPanelSkeleton() {
+  const { t } = useT("translation");
+  return (
+    <div className="flex h-full min-h-0 flex-col overflow-hidden">
+      <PanelHeader
+        icon={MessageSquare}
+        title={t("chat.executionTitle")}
+        description={t("chat.emptyStateDesc")}
+      />
+      <div className="flex-1 min-h-0 overflow-hidden px-4">
+        <div
+          className="flex h-full w-full flex-col gap-4 py-6"
+          aria-busy="true"
+        >
+          <div className="flex items-start gap-3">
+            <SkeletonCircle className="h-8 w-8" style={shimmerDelay(0)} />
+            <SkeletonItem className="w-[70%]" style={shimmerDelay(1)} />
+          </div>
+          <div className="flex items-start justify-end">
+            <SkeletonItem className="w-[68%]" style={shimmerDelay(2)} />
+          </div>
+          <div className="flex items-start gap-3">
+            <SkeletonCircle className="h-8 w-8" style={shimmerDelay(3)} />
+            <SkeletonItem className="w-[60%]" style={shimmerDelay(4)} />
+          </div>
+          <div className="flex items-start justify-end">
+            <SkeletonItem className="w-[55%]" style={shimmerDelay(5)} />
+          </div>
+        </div>
+      </div>
+      <ChatInput onSend={() => undefined} disabled />
+    </div>
+  );
+}
+
+function RightPanelSkeleton() {
+  const { t } = useT("translation");
+  return (
+    <div className="flex h-full min-h-0 flex-col overflow-hidden bg-muted/30">
+      <PanelHeader
+        content={
+          <Tabs defaultValue="computer" className="min-w-0">
+            <TabsList className="min-w-0 max-w-full overflow-hidden">
+              <TabsTrigger value="computer" className="!flex-none min-w-0 px-2">
+                <Monitor className="size-4" />
+                <span className="whitespace-nowrap">
+                  {t("mobile.computer")}
+                </span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="artifacts"
+                className="!flex-none min-w-0 px-2"
+              >
+                <Layers className="size-4" />
+                <span className="whitespace-nowrap">
+                  {t("mobile.artifacts")}
+                </span>
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        }
+      />
+      <div className="flex-1 min-h-0 overflow-hidden p-3 sm:p-4">
+        <div className="flex h-full flex-col gap-3">
+          <div className="flex-1 min-h-0 overflow-hidden rounded-xl border bg-card p-4">
+            <SkeletonItem
+              className="h-full w-full min-h-0"
+              style={shimmerDelay(0)}
+            />
+          </div>
+          <SkeletonItem
+            className="h-10 min-h-0 w-full"
+            style={shimmerDelay(1)}
+          />
+          <div className="h-[220px] min-w-0 overflow-hidden rounded-xl border bg-card p-3">
+            <div className="space-y-3">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <SkeletonItem
+                  key={`timeline-skeleton-${index}`}
+                  className="h-10 min-h-0 w-full rounded-md px-2 py-2"
+                  style={shimmerDelay(index + 2)}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export function ExecutionContainer({ sessionId }: ExecutionContainerProps) {
@@ -64,8 +162,26 @@ export function ExecutionContainer({ sessionId }: ExecutionContainerProps) {
   // Loading state
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-dvh bg-background select-text">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground/20" />
+      <div className="flex h-dvh min-h-0 min-w-0 overflow-hidden bg-background select-text">
+        <ResizablePanelGroup direction="horizontal" className="min-h-0 min-w-0">
+          <ResizablePanel
+            defaultSize={45}
+            minSize={30}
+            className="min-h-0 min-w-0 overflow-hidden"
+          >
+            <ChatPanelSkeleton />
+          </ResizablePanel>
+
+          <ResizableHandle withHandle />
+
+          <ResizablePanel
+            defaultSize={55}
+            minSize={30}
+            className="min-h-0 min-w-0 overflow-hidden"
+          >
+            <RightPanelSkeleton />
+          </ResizablePanel>
+        </ResizablePanelGroup>
       </div>
     );
   }

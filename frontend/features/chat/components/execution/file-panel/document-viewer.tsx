@@ -7,7 +7,6 @@ import {
   File,
   Download,
   ExternalLink,
-  Loader2,
   Check,
   Copy,
   ChevronLeft,
@@ -22,6 +21,7 @@ import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { MarkdownCode, MarkdownPre } from "@/components/shared/markdown-code";
 import { SyntaxHighlighter, oneDark, oneLight } from "@/lib/markdown/prism";
+import { SkeletonItem } from "@/components/ui/skeleton-shimmer";
 
 const dispatchCloseViewer = () => {
   if (typeof window === "undefined") return;
@@ -36,9 +36,7 @@ const DocViewer = dynamic<DocViewerProps>(
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const { t } = useT("translation");
       return (
-        <div className="h-full flex items-center justify-center p-8 text-muted-foreground animate-pulse text-sm">
-          {t("artifacts.viewer.loadingEngine")}
-        </div>
+        <DocumentViewerSkeleton label={t("artifacts.viewer.loadingEngine")} />
       );
     },
   },
@@ -165,6 +163,36 @@ const MIME_LANGUAGE_RULES: Array<{ test: RegExp; language: string }> = [
 
 const VIEW_CLASSNAME =
   "h-full w-full max-h-full animate-in fade-in duration-300 [--tw-enter-opacity:1] [--tw-enter-scale:1] [--tw-enter-translate-x:0] [--tw-enter-translate-y:0] overflow-hidden flex flex-col min-h-0";
+
+function DocumentViewerSkeleton({ label }: { label: string }) {
+  return (
+    <div
+      className={cn(
+        VIEW_CLASSNAME,
+        "items-center justify-center p-6 text-muted-foreground",
+      )}
+    >
+      <div className="w-full max-w-3xl space-y-3">
+        <SkeletonItem className="h-10 min-h-0 w-1/3" />
+        <SkeletonItem className="h-56 min-h-0 w-full" />
+        <SkeletonItem className="h-10 min-h-0 w-2/3" />
+      </div>
+      <span className="sr-only">{label}</span>
+    </div>
+  );
+}
+
+function DocumentViewerOverlaySkeleton({ label }: { label: string }) {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center bg-background/70">
+      <div className="w-full max-w-md space-y-3 px-6">
+        <SkeletonItem className="h-10 min-h-0 w-2/3" />
+        <SkeletonItem className="h-32 min-h-0 w-full" />
+      </div>
+      <span className="sr-only">{label}</span>
+    </div>
+  );
+}
 
 const DEFAULT_TEXT_LANGUAGE = "text";
 const NO_SOURCE_ERROR = "NO_SOURCE";
@@ -478,17 +506,7 @@ const TextDocumentViewer = ({
   }, [state]);
 
   if (state.status === "idle" || state.status === "loading") {
-    return (
-      <div
-        className={cn(
-          VIEW_CLASSNAME,
-          "flex min-w-0 items-center justify-center text-sm text-muted-foreground",
-        )}
-      >
-        <Loader2 className="mr-2 size-4 animate-spin" />
-        {t("artifacts.viewer.loadingDoc")}
-      </div>
-    );
+    return <DocumentViewerSkeleton label={t("artifacts.viewer.loadingDoc")} />;
   }
 
   if (state.status === "error") {
@@ -630,17 +648,7 @@ const MarkdownDocumentViewer = ({
   }, [state]);
 
   if (state.status === "idle" || state.status === "loading") {
-    return (
-      <div
-        className={cn(
-          VIEW_CLASSNAME,
-          "flex min-w-0 items-center justify-center text-sm text-muted-foreground",
-        )}
-      >
-        <Loader2 className="mr-2 size-4 animate-spin" />
-        {t("artifacts.viewer.loadingDoc")}
-      </div>
-    );
+    return <DocumentViewerSkeleton label={t("artifacts.viewer.loadingDoc")} />;
   }
 
   if (state.status === "error") {
@@ -922,10 +930,9 @@ const XMindDocumentViewer = ({
       <div className="relative flex-1 min-h-0 overflow-hidden">
         <div ref={containerRef} className="h-full w-full bg-background" />
         {status === "loading" && (
-          <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground bg-background/70">
-            <Loader2 className="mr-2 size-4 animate-spin" />
-            {t("artifacts.viewer.loadingDoc")}
-          </div>
+          <DocumentViewerOverlaySkeleton
+            label={t("artifacts.viewer.loadingDoc")}
+          />
         )}
       </div>
     </div>
