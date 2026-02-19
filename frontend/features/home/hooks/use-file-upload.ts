@@ -21,13 +21,8 @@ interface UseFileUploadOptions {
  * - Paste handler for clipboard images
  */
 export function useFileUpload({ t }: UseFileUploadOptions) {
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = React.useState(false);
   const [attachments, setAttachments] = React.useState<InputFile[]>([]);
-
-  const resetFileInput = React.useCallback(() => {
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  }, []);
 
   const isDuplicate = React.useCallback(
     (fileName: string) => {
@@ -68,12 +63,16 @@ export function useFileUpload({ t }: UseFileUploadOptions) {
 
   const handleFileSelect = React.useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const input = e.currentTarget;
       const file = e.target.files?.[0];
       if (!file) return;
-      await uploadFile(file);
-      resetFileInput();
+      try {
+        await uploadFile(file);
+      } finally {
+        input.value = "";
+      }
     },
-    [uploadFile, resetFileInput],
+    [uploadFile],
   );
 
   const handlePaste = React.useCallback(
@@ -100,7 +99,6 @@ export function useFileUpload({ t }: UseFileUploadOptions) {
   }, []);
 
   return {
-    fileInputRef,
     isUploading,
     attachments,
     handleFileSelect,

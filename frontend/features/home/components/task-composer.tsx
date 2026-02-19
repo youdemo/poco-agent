@@ -1,5 +1,4 @@
 import * as React from "react";
-import { toast } from "sonner";
 import { Clock, AlarmClock } from "lucide-react";
 import { useT } from "@/lib/i18n/client";
 import { Badge } from "@/components/ui/badge";
@@ -107,6 +106,7 @@ export function TaskComposer({
   const { t } = useT("translation");
   const { lng } = useAppShell();
   const isComposing = React.useRef(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   // ---- File upload (shared hook) ----
   const upload = useFileUpload({ t });
@@ -214,7 +214,14 @@ export function TaskComposer({
       }
     }
     setRepoDialogOpen(false);
-  }, [gitBranch, gitTokenEnvKey, isSubmitting, upload.isUploading, onRepoDefaultsSave, repoUrl]);
+  }, [
+    gitBranch,
+    gitTokenEnvKey,
+    isSubmitting,
+    upload.isUploading,
+    onRepoDefaultsSave,
+    repoUrl,
+  ]);
 
   const canSubmit = React.useMemo(() => {
     if (mode === "scheduled") {
@@ -225,7 +232,14 @@ export function TaskComposer({
       return false;
     }
     return hasContent;
-  }, [mode, value, scheduledCron, upload.attachments.length, runScheduleMode, runScheduledAt]);
+  }, [
+    mode,
+    value,
+    scheduledCron,
+    upload.attachments.length,
+    runScheduleMode,
+    runScheduledAt,
+  ]);
 
   const handleSubmit = React.useCallback(() => {
     if (isSubmitting || upload.isUploading || !canSubmit) return;
@@ -234,13 +248,11 @@ export function TaskComposer({
       attachments: upload.attachments,
       repo_url: repoUrl.trim() || null,
       git_branch: gitBranch.trim() || null,
-      git_token_env_key: repoUrl.trim()
-        ? gitTokenEnvKey.trim() || null
-        : null,
+      git_token_env_key: repoUrl.trim() ? gitTokenEnvKey.trim() || null : null,
       repo_usage: allowProjectize ? repoUsage : null,
       project_name:
         allowProjectize && repoUsage === "create_project"
-          ? (projectName.trim() || null)
+          ? projectName.trim() || null
           : null,
       browser_enabled: browserEnabled,
       run_schedule:
@@ -300,7 +312,7 @@ export function TaskComposer({
       {/* Hidden file input */}
       <input
         type="file"
-        ref={upload.fileInputRef}
+        ref={fileInputRef}
         className="hidden"
         onChange={upload.handleFileSelect}
       />
@@ -500,7 +512,7 @@ export function TaskComposer({
           onOpenRepoDialog={() => setRepoDialogOpen(true)}
           onOpenRunSchedule={() => setRunScheduleOpen(true)}
           onToggleBrowser={() => setBrowserEnabled((prev) => !prev)}
-          onOpenFileInput={() => upload.fileInputRef.current?.click()}
+          onOpenFileInput={() => fileInputRef.current?.click()}
           onSubmit={handleSubmit}
         />
       </div>
