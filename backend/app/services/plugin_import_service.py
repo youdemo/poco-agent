@@ -135,6 +135,7 @@ class PluginImportService:
             source_path: Path | None = None
             source_bytes: IO[bytes] | None = None
             source_name: str = "upload.zip"
+            archive_source: dict[str, Any] = {"kind": "zip", "filename": source_name}
 
             if file is not None:
                 filename = _sanitize_filename(file.filename or "upload.zip")
@@ -154,6 +155,7 @@ class PluginImportService:
                 file.file.seek(0)
                 source_bytes = file.file
                 source_name = filename
+                archive_source = {"kind": "zip", "filename": filename}
             else:
                 github_url = (github_url or "").strip()
                 if not github_url:
@@ -162,7 +164,7 @@ class PluginImportService:
                         message="github_url cannot be empty",
                     )
                 source_path = tmp_root / "github.zip"
-                self._download_github_zip(
+                archive_source = self._download_github_zip(
                     github_url=github_url, destination=source_path
                 )
                 source_name = "github.zip"
@@ -203,6 +205,7 @@ class PluginImportService:
                 source_path=source_path,
                 source_bytes=source_bytes,
             )
+            self._upload_archive_meta(archive_key=archive_key, source=archive_source)
 
             return PluginImportDiscoverResponse(
                 archive_key=archive_key,
@@ -243,6 +246,8 @@ class PluginImportService:
         total = len(unique_selections)
         processed = 0
 
+        archive_source = self._resolve_archive_source(archive_key=archive_key)
+
         with tempfile.TemporaryDirectory() as tmp_dir:
             tmp_root = Path(tmp_dir)
             zip_path = tmp_root / "archive.zip"
@@ -277,6 +282,7 @@ class PluginImportService:
                             relative_path=rel_raw,
                             name_override=name_override,
                             archive_key=archive_key,
+                            archive_source=archive_source,
                         )
                         items.append(item)
                     except AppException as exc:
@@ -358,6 +364,37 @@ class PluginImportService:
                 error_code=ErrorCode.FORBIDDEN,
                 message="Archive does not belong to the user",
             )
+
+    @staticmethod
+    def _meta_key_from_archive_key(*, archive_key: str) -> str:
+        return str(PurePosixPath(archive_key).parent / "meta.json")
+
+    def _upload_archive_meta(self, *, archive_key: str, source: dict[str, Any]) -> None:
+        meta_key = self._meta_key_from_archive_key(archive_key=archive_key)
+        payload = json.dumps(source).encode("utf-8")
+        self.storage_service.upload_fileobj(
+            fileobj=io.BytesIO(payload),
+            key=meta_key,
+            content_type="application/json",
+        )
+
+    def _resolve_archive_source(self, *, archive_key: str) -> dict[str, Any]:
+        meta_key = self._meta_key_from_archive_key(archive_key=archive_key)
+        if self.storage_service.exists(meta_key):
+            with tempfile.TemporaryDirectory() as tmp_dir:
+                meta_path = Path(tmp_dir) / "meta.json"
+                self.storage_service.download_file(key=meta_key, destination=meta_path)
+                try:
+                    data = json.loads(meta_path.read_text("utf-8"))
+                except Exception:
+                    data = None
+            if isinstance(data, dict) and isinstance(data.get("kind"), str):
+                return data
+
+        filename = PurePosixPath(archive_key).name
+        if filename == "github.zip":
+            return {"kind": "github"}
+        return {"kind": "zip", "filename": filename}
 
     @staticmethod
     def _scan_candidates(
@@ -463,7 +500,7 @@ class PluginImportService:
             return results
 
     @staticmethod
-    def _download_github_zip(*, github_url: str, destination: Path) -> None:
+    def _download_github_zip(*, github_url: str, destination: Path) -> dict[str, Any]:
         parsed = urllib.parse.urlparse(github_url)
         if parsed.scheme not in {"http", "https"}:
             raise AppException(
@@ -485,11 +522,12 @@ class PluginImportService:
             )
         owner = segments[0]
         repo = segments[1].removesuffix(".git")
+        canonical = f"https://github.com/{owner}/{repo}"
 
         if parsed.path.endswith(".zip") and "/archive/" in parsed.path:
             download_url = github_url
             PluginImportService._download_with_limit(download_url, destination)
-            return
+            return {"kind": "github", "repo": f"{owner}/{repo}", "url": canonical}
 
         branch: str | None = None
         if len(segments) >= 4 and segments[2] in {"tree", "blob"}:
@@ -505,7 +543,12 @@ class PluginImportService:
             )
             try:
                 PluginImportService._download_with_limit(download_url, destination)
-                return
+                return {
+                    "kind": "github",
+                    "repo": f"{owner}/{repo}",
+                    "url": canonical,
+                    "ref": b,
+                }
             except Exception as exc:
                 last_error = exc
                 continue
@@ -578,6 +621,7 @@ class PluginImportService:
         relative_path: str,
         name_override: str | None,
         archive_key: str,
+        archive_source: dict[str, Any],
     ) -> PluginImportResultItem:
         candidate = candidate_by_path.get(relative_path)
         if candidate is None:
@@ -656,6 +700,7 @@ class PluginImportService:
                 scope="user",
                 owner_user_id=user_id,
                 entry=entry,
+                source=dict(archive_source or {}),
                 manifest=manifest_json,
                 version=str(manifest_json.get("version")).strip()
                 if isinstance(manifest_json.get("version"), str)
@@ -669,6 +714,7 @@ class PluginImportService:
         else:
             plugin = existing
             plugin.entry = entry
+            plugin.source = dict(archive_source or {})
             plugin.manifest = manifest_json
             plugin.version = (
                 str(manifest_json.get("version")).strip()

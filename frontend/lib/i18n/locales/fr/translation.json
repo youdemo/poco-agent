@@ -850,7 +850,8 @@
         "user": "Utilisateur"
       },
       "fields": {
-        "id": "id"
+        "id": "id",
+        "source": "Source"
       },
       "actions": {
         "install": "Installer",
@@ -986,6 +987,13 @@
         "created": "Serveur MCP créé",
         "updated": "Serveur MCP mis à jour"
       }
+    },
+    "sources": {
+      "github": "GitHub",
+      "zip": "ZIP",
+      "system": "Système",
+      "manual": "Manuel",
+      "unknown": "Inconnu"
     },
     "pluginsManager": {
       "toasts": {

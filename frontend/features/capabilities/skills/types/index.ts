@@ -1,7 +1,10 @@
+import type { SourceInfo } from "@/features/capabilities/types/source";
+
 export interface Skill {
   id: number;
   name: string;
   entry: Record<string, unknown>;
+  source?: SourceInfo | null;
   scope: string;
   owner_user_id: string | null;
   created_at: string;

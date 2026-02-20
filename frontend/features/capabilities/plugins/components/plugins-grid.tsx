@@ -12,6 +12,7 @@ import type {
   Plugin,
   UserPluginInstall,
 } from "@/features/capabilities/plugins/types";
+import { formatSourceLabel } from "@/features/capabilities/utils/source";
 import { useT } from "@/lib/i18n/client";
 
 interface PluginsGridProps {
@@ -123,9 +124,14 @@ export function PluginsGrid({
                           : t("library.pluginsManager.scope.user")}
                       </Badge>
                     </div>
+                    {plugin.description && (
+                      <p className="text-xs text-muted-foreground mt-1 truncate">
+                        {plugin.description}
+                      </p>
+                    )}
                     <p className="text-xs text-muted-foreground mt-1 truncate">
-                      {plugin.description ||
-                        `${t("library.pluginsManager.fields.id")}: ${plugin.id}`}
+                      {t("library.pluginsManager.fields.source")}:{" "}
+                      {formatSourceLabel(plugin.source, t)}
                     </p>
                   </div>
 

@@ -13,6 +13,7 @@ import type {
   Skill,
   UserSkillInstall,
 } from "@/features/capabilities/skills/types";
+import { formatSourceLabel } from "@/features/capabilities/utils/source";
 import { useT } from "@/lib/i18n/client";
 
 const SKILL_LIMIT = 5;
@@ -127,8 +128,9 @@ export function SkillsGrid({
                           : t("library.skillsManager.scope.user")}
                       </Badge>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {t("library.skillsManager.fields.id")}: {skill.id}
+                    <p className="text-xs text-muted-foreground mt-1 truncate">
+                      {t("library.skillsManager.fields.source")}:{" "}
+                      {formatSourceLabel(skill.source, t)}
                     </p>
                   </div>
 

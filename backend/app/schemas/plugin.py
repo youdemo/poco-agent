@@ -2,6 +2,8 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
+from app.schemas.source import SourceInfo
+
 
 class PluginCreateRequest(BaseModel):
     name: str
@@ -25,6 +27,7 @@ class PluginResponse(BaseModel):
     id: int
     name: str
     entry: dict
+    source: SourceInfo
     scope: str
     owner_user_id: str | None
     description: str | None = None
