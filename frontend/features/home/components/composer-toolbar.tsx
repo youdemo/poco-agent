@@ -1,15 +1,9 @@
 "use client";
 
 import * as React from "react";
-import {
-  Loader2,
-  ArrowUp,
-  Plus,
-  GitBranch,
-  Chrome,
-  AlarmClock,
-} from "lucide-react";
+import { Loader2, ArrowUp, Plus, Github, Chrome, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
   TooltipContent,
@@ -26,12 +20,12 @@ interface ComposerToolbarProps {
   repoUrl: string;
   repoDialogOpen: boolean;
   browserEnabled: boolean;
-  runScheduleMode: string;
   onOpenRepoDialog: () => void;
-  onOpenRunSchedule: () => void;
   onToggleBrowser: () => void;
   onOpenFileInput: () => void;
   onSubmit: () => void;
+  scheduledSummary?: string;
+  onOpenScheduledSettings?: () => void;
 }
 
 /**
@@ -47,117 +41,122 @@ export function ComposerToolbar({
   repoUrl,
   repoDialogOpen,
   browserEnabled,
-  runScheduleMode,
   onOpenRepoDialog,
-  onOpenRunSchedule,
   onToggleBrowser,
   onOpenFileInput,
   onSubmit,
+  scheduledSummary,
+  onOpenScheduledSettings,
 }: ComposerToolbarProps) {
   const { t } = useT("translation");
   const disabled = isSubmitting || isUploading;
 
   return (
-    <div className="flex flex-wrap items-center justify-end gap-1">
-      {/* Repo toggle */}
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            type="button"
-            variant={repoDialogOpen || repoUrl.trim() ? "secondary" : "ghost"}
-            size="icon"
-            disabled={disabled}
-            className="size-9 rounded-xl hover:bg-accent"
-            aria-label={t("hero.repo.toggle")}
-            title={t("hero.repo.toggle")}
-            onClick={onOpenRepoDialog}
-          >
-            <GitBranch className="size-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="top" sideOffset={8}>
-          {t("hero.repo.toggle")}
-        </TooltipContent>
-      </Tooltip>
-
-      {/* Run schedule toggle (non-scheduled mode only) */}
-      {mode !== "scheduled" && (
+    <div className="flex w-full flex-wrap items-center justify-between gap-3">
+      {/* Left: file upload, then GitHub */}
+      <div className="flex items-center gap-1">
+        {/* File upload */}
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
               type="button"
-              variant={runScheduleMode !== "immediate" ? "secondary" : "ghost"}
+              variant="ghost"
               size="icon"
               disabled={disabled}
               className="size-9 rounded-xl hover:bg-accent"
-              aria-label={t("hero.runSchedule.toggle")}
-              title={t("hero.runSchedule.toggle")}
-              onClick={onOpenRunSchedule}
+              aria-label={t("hero.importLocal")}
+              onClick={onOpenFileInput}
             >
-              <AlarmClock className="size-4" />
+              {isUploading ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <Plus className="size-4" />
+              )}
             </Button>
           </TooltipTrigger>
           <TooltipContent side="top" sideOffset={8}>
-            {t("hero.runSchedule.toggle")}
+            {t("hero.importLocal")}
           </TooltipContent>
         </Tooltip>
-      )}
 
-      {/* Browser toggle */}
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            type="button"
-            variant={browserEnabled ? "secondary" : "ghost"}
-            size="icon"
-            disabled={disabled}
-            className="size-9 rounded-xl hover:bg-accent"
-            aria-label={t("hero.browser.toggle")}
-            title={t("hero.browser.toggle")}
-            onClick={onToggleBrowser}
-          >
-            <Chrome className="size-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="top" sideOffset={8}>
-          {t("hero.browser.toggle")}
-        </TooltipContent>
-      </Tooltip>
+        {/* Repo (GitHub) toggle */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              variant={repoDialogOpen || repoUrl.trim() ? "secondary" : "ghost"}
+              size="icon"
+              disabled={disabled}
+              className="size-9 rounded-xl hover:bg-accent"
+              aria-label={t("hero.repo.toggle")}
+              title={t("hero.repo.toggle")}
+              onClick={onOpenRepoDialog}
+            >
+              <Github className="size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="top" sideOffset={8}>
+            {t("hero.repo.toggle")}
+          </TooltipContent>
+        </Tooltip>
 
-      {/* File upload */}
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            disabled={disabled}
-            className="size-9 rounded-xl hover:bg-accent"
-            aria-label={t("hero.importLocal")}
-            onClick={onOpenFileInput}
-          >
-            {isUploading ? (
-              <Loader2 className="size-4 animate-spin" />
-            ) : (
-              <Plus className="size-4" />
-            )}
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="top" sideOffset={8}>
-          {t("hero.importLocal")}
-        </TooltipContent>
-      </Tooltip>
+        {/* Scheduled summary badge (scheduled mode only, right of GitHub) */}
+        {mode === "scheduled" &&
+          scheduledSummary &&
+          onOpenScheduledSettings && (
+            <Badge
+              variant="secondary"
+              role="button"
+              tabIndex={0}
+              className="inline-flex h-9 w-fit items-center gap-2 rounded-xl cursor-pointer select-none px-3 py-0"
+              onClick={onOpenScheduledSettings}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onOpenScheduledSettings();
+                }
+              }}
+              aria-label={t("hero.modes.scheduled")}
+              title={t("hero.modes.scheduled")}
+            >
+              <Clock className="size-3" />
+              <span className="text-sm font-medium">{scheduledSummary}</span>
+            </Badge>
+          )}
+      </div>
 
-      {/* Send */}
-      <Button
-        onClick={onSubmit}
-        disabled={!canSubmit || disabled}
-        size="icon"
-        className="size-9 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground"
-        title={t("hero.send")}
-      >
-        <ArrowUp className="size-4" />
-      </Button>
+      {/* Right: browser, send */}
+      <div className="flex items-center gap-1">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              variant={browserEnabled ? "secondary" : "ghost"}
+              size="icon"
+              disabled={disabled}
+              className="size-9 rounded-xl hover:bg-accent"
+              aria-label={t("hero.browser.toggle")}
+              title={t("hero.browser.toggle")}
+              onClick={onToggleBrowser}
+            >
+              <Chrome className="size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="top" sideOffset={8}>
+            {t("hero.browser.toggle")}
+          </TooltipContent>
+        </Tooltip>
+
+        <Button
+          onClick={onSubmit}
+          disabled={!canSubmit || disabled}
+          size="icon"
+          className="size-9 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground"
+          title={t("hero.send")}
+        >
+          <ArrowUp className="size-4" />
+        </Button>
+      </div>
     </div>
   );
 }

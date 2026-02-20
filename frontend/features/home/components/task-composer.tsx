@@ -1,7 +1,5 @@
 import * as React from "react";
-import { Clock, AlarmClock } from "lucide-react";
 import { useT } from "@/lib/i18n/client";
-import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { ScheduledTaskSettingsDialog } from "@/features/scheduled-tasks/components/scheduled-task-settings-dialog";
@@ -447,74 +445,31 @@ export function TaskComposer({
         )}
       </div>
 
-      {/* Run schedule badge (non-scheduled mode, non-immediate) */}
-      {mode !== "scheduled" && runScheduleMode !== "immediate" && (
-        <div className="px-4 pb-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge
-              variant="secondary"
-              role="button"
-              tabIndex={0}
-              className="cursor-pointer select-none"
-              onClick={() => setRunScheduleOpen(true)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  setRunScheduleOpen(true);
-                }
-              }}
-              aria-label={t("hero.runSchedule.toggle")}
-              title={t("hero.runSchedule.toggle")}
-            >
-              <AlarmClock className="size-3" />
-              {runScheduleSummary}
-            </Badge>
-          </div>
-        </div>
-      )}
-
       {/* Bottom toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 pb-4">
-        {/* Scheduled summary (left) */}
-        <div className="flex min-h-[36px] flex-1 items-center gap-2">
-          {mode === "scheduled" && (
-            <Badge
-              variant="secondary"
-              role="button"
-              tabIndex={0}
-              className="inline-flex h-9 w-fit items-center gap-2 rounded-xl cursor-pointer select-none px-3 py-0"
-              onClick={() => setScheduledSettingsOpen(true)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  setScheduledSettingsOpen(true);
-                }
-              }}
-              aria-label={t("hero.modes.scheduled")}
-              title={t("hero.modes.scheduled")}
-            >
-              <Clock className="size-3" />
-              <span className="text-sm font-medium">{scheduledSummary}</span>
-            </Badge>
-          )}
+        <div className="flex-1 min-w-0">
+          <ComposerToolbar
+            mode={mode}
+            isSubmitting={isSubmitting}
+            isUploading={upload.isUploading}
+            canSubmit={canSubmit}
+            repoUrl={repoUrl}
+            repoDialogOpen={repoDialogOpen}
+            browserEnabled={browserEnabled}
+            onOpenRepoDialog={() => setRepoDialogOpen(true)}
+            onToggleBrowser={() => setBrowserEnabled((prev) => !prev)}
+            onOpenFileInput={() => fileInputRef.current?.click()}
+            onSubmit={handleSubmit}
+            scheduledSummary={
+              mode === "scheduled" ? scheduledSummary : undefined
+            }
+            onOpenScheduledSettings={
+              mode === "scheduled"
+                ? () => setScheduledSettingsOpen(true)
+                : undefined
+            }
+          />
         </div>
-
-        {/* Action buttons (right) */}
-        <ComposerToolbar
-          mode={mode}
-          isSubmitting={isSubmitting}
-          isUploading={upload.isUploading}
-          canSubmit={canSubmit}
-          repoUrl={repoUrl}
-          repoDialogOpen={repoDialogOpen}
-          browserEnabled={browserEnabled}
-          runScheduleMode={runScheduleMode}
-          onOpenRepoDialog={() => setRepoDialogOpen(true)}
-          onOpenRunSchedule={() => setRunScheduleOpen(true)}
-          onToggleBrowser={() => setBrowserEnabled((prev) => !prev)}
-          onOpenFileInput={() => fileInputRef.current?.click()}
-          onSubmit={handleSubmit}
-        />
       </div>
     </div>
   );
