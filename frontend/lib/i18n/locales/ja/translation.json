@@ -995,6 +995,11 @@
       "manual": "手動",
       "unknown": "不明"
     },
+    "pluginsManager": {
+      "toasts": {
+        "exclusiveEnabled": "（他のプリセットもオフにしました）"
+      }
+    },
     "presets": {
       "title": "プリセット",
       "description": "再利用可能な機能プリセットを管理"

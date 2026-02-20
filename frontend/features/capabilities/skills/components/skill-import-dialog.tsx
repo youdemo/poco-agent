@@ -19,6 +19,7 @@ import type {
   SkillImportCommitResponse,
 } from "@/features/capabilities/skills/types";
 import { CapabilityDialogContent } from "@/features/capabilities/components/capability-dialog-content";
+import { playInstallSound } from "@/lib/utils/sound";
 
 type SourceTab = "zip" | "github";
 
@@ -54,7 +55,6 @@ export function SkillImportDialog({
 
   const [isDiscovering, setIsDiscovering] = useState(false);
   const [isCommitting, setIsCommitting] = useState(false);
-  const [commitJobId, setCommitJobId] = useState<string | null>(null);
   const [commitProgress, setCommitProgress] = useState<number | null>(null);
   const [commitError, setCommitError] = useState<string | null>(null);
   const [commitResult, setCommitResult] =
@@ -78,7 +78,6 @@ export function SkillImportDialog({
     setSelections({});
     setIsDiscovering(false);
     setIsCommitting(false);
-    setCommitJobId(null);
     setCommitProgress(null);
     setCommitError(null);
     setCommitResult(null);
@@ -189,7 +188,6 @@ export function SkillImportDialog({
     setCommitError(null);
     setCommitResult(null);
     setCommitProgress(0);
-    setCommitJobId(null);
     try {
       const payload = {
         archive_key: archiveKey,
@@ -202,7 +200,6 @@ export function SkillImportDialog({
       };
 
       const enqueue = await skillsService.importCommit(payload);
-      setCommitJobId(enqueue.job_id);
 
       const startedAt = Date.now();
       let finalError: string | null = null;
@@ -255,6 +252,7 @@ export function SkillImportDialog({
       }
 
       toast.success(t("library.skillsImport.toasts.committed"));
+      playInstallSound();
       await onImported?.();
       handleClose();
     } catch (error) {
@@ -278,7 +276,7 @@ export function SkillImportDialog({
     <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
       <CapabilityDialogContent
         title={t("library.skillsImport.title")}
-        bodyClassName="space-y-6 bg-background px-6 py-6"
+        bodyClassName="space-y-6 bg-background px-6 pt-4 pb-6"
         footer={
           <DialogFooter className="grid grid-cols-2 gap-2">
             <Button
@@ -303,11 +301,36 @@ export function SkillImportDialog({
               <Button
                 onClick={onCommit}
                 disabled={!canCommit || isCommitting}
-                className="w-full"
+                className={
+                  isCommitting
+                    ? "relative w-full overflow-hidden !bg-primary/50 text-primary-foreground hover:!bg-primary/50"
+                    : "w-full"
+                }
+                aria-busy={isCommitting}
+                aria-valuenow={isCommitting ? (commitProgress ?? 0) : undefined}
+                aria-valuemin={isCommitting ? 0 : undefined}
+                aria-valuemax={isCommitting ? 100 : undefined}
               >
-                {isCommitting
-                  ? t("library.skillsImport.actions.committing")
-                  : t("library.skillsImport.actions.commit")}
+                {isCommitting && (
+                  <span
+                    className="absolute inset-y-0 left-0 bg-primary transition-[width] duration-300 ease-out"
+                    style={{
+                      width: `${typeof commitProgress === "number" ? commitProgress : 0}%`,
+                    }}
+                    aria-hidden
+                  />
+                )}
+                <span
+                  className={
+                    isCommitting
+                      ? "relative z-10 text-primary-foreground"
+                      : undefined
+                  }
+                >
+                  {isCommitting
+                    ? t("library.skillsImport.actions.committing")
+                    : t("library.skillsImport.actions.commit")}
+                </span>
               </Button>
             )}
           </DialogFooter>
@@ -452,22 +475,50 @@ export function SkillImportDialog({
                   return (
                     <div
                       key={c.relative_path}
-                      className="flex items-start gap-3 rounded-xl border border-border/50 bg-muted/10 px-4 py-3"
+                      role="button"
+                      tabIndex={0}
+                      className="flex items-start gap-3 rounded-xl border border-border/50 bg-muted/10 px-4 py-3 cursor-pointer transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2"
+                      onClick={(e) => {
+                        if (disabled) return;
+                        if ((e.target as HTMLElement).closest("input")) return;
+                        setSelections((prev) => ({
+                          ...prev,
+                          [c.relative_path]: {
+                            ...sel,
+                            selected: !sel.selected,
+                          },
+                        }));
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          if (!disabled)
+                            setSelections((prev) => ({
+                              ...prev,
+                              [c.relative_path]: {
+                                ...sel,
+                                selected: !sel.selected,
+                              },
+                            }));
+                        }
+                      }}
                     >
-                      <Checkbox
-                        className="self-center"
-                        checked={sel.selected}
-                        disabled={disabled}
-                        onCheckedChange={(checked) => {
-                          setSelections((prev) => ({
-                            ...prev,
-                            [c.relative_path]: {
-                              ...sel,
-                              selected: Boolean(checked),
-                            },
-                          }));
-                        }}
-                      />
+                      <span onClick={(e) => e.stopPropagation()}>
+                        <Checkbox
+                          className="self-center"
+                          checked={sel.selected}
+                          disabled={disabled}
+                          onCheckedChange={(checked) => {
+                            setSelections((prev) => ({
+                              ...prev,
+                              [c.relative_path]: {
+                                ...sel,
+                                selected: Boolean(checked),
+                              },
+                            }));
+                          }}
+                        />
+                      </span>
                       <div className="flex-1 min-w-0 space-y-2">
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-medium truncate">
@@ -486,13 +537,11 @@ export function SkillImportDialog({
                           )}
                         </div>
 
-                        <div className="text-xs text-muted-foreground font-mono">
-                          {t("library.skillsImport.preview.path")}:{" "}
-                          {c.relative_path}
-                        </div>
-
                         {c.requires_name && sel.selected && (
-                          <div className="space-y-1">
+                          <div
+                            className="space-y-1"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                               {t("library.skillsImport.fields.nameOverride")}
                             </Label>
@@ -586,25 +635,6 @@ export function SkillImportDialog({
                       </div>
                     ))}
                   </div>
-                </div>
-              )}
-
-              {isCommitting && (
-                <div className="rounded-xl border border-border/50 bg-muted/5 px-4 py-3 space-y-2">
-                  <div className="text-sm font-medium">
-                    {t("library.skillsImport.progress.title")}
-                  </div>
-                  {typeof commitProgress === "number" && (
-                    <div className="text-xs text-muted-foreground">
-                      {t("library.skillsImport.progress.value")}:{" "}
-                      {commitProgress}%
-                    </div>
-                  )}
-                  {commitJobId && (
-                    <div className="text-xs text-muted-foreground font-mono">
-                      {t("library.skillsImport.progress.jobId")}: {commitJobId}
-                    </div>
-                  )}
                 </div>
               )}
 

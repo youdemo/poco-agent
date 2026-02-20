@@ -995,6 +995,11 @@
       "manual": "Manuel",
       "unknown": "Inconnu"
     },
+    "pluginsManager": {
+      "toasts": {
+        "exclusiveEnabled": "(Autres préréglages désactivés)"
+      }
+    },
     "presets": {
       "title": "Préréglages",
       "description": "Gérer les préconfigurations de capacités réutilisables"

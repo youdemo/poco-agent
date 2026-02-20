@@ -995,6 +995,11 @@
       "manual": "Вручную",
       "unknown": "Неизвестно"
     },
+    "pluginsManager": {
+      "toasts": {
+        "exclusiveEnabled": "(Другие пресеты отключены)"
+      }
+    },
     "presets": {
       "title": "Пресеты",
       "description": "Управление повторно используемыми пресетами возможностей"

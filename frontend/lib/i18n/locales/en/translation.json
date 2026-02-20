@@ -973,7 +973,8 @@
         "uninstalled": "Preset uninstalled",
         "enabled": "Preset enabled",
         "disabled": "Preset disabled",
-        "actionFailed": "Operation failed, please try again later"
+        "actionFailed": "Operation failed, please try again later",
+        "exclusiveEnabled": "(Other presets were turned off)"
       },
       "empty": "No presets yet",
       "unknownPlugin": "Unknown preset"
@@ -994,6 +995,9 @@
       "placeholders": {
         "githubUrl": "https://github.com/owner/repo",
         "name": "e.g. my-preset"
+      },
+      "hints": {
+        "github": "Defaults to main/master (public github.com repos only)"
       },
       "actions": {
         "back": "Back",

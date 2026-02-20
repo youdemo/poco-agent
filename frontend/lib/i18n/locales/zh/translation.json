@@ -973,7 +973,8 @@
         "uninstalled": "预设已卸载",
         "enabled": "预设已启用",
         "disabled": "预设已停用",
-        "actionFailed": "操作失败，请稍后再试"
+        "actionFailed": "操作失败，请稍后再试",
+        "exclusiveEnabled": "（同时关闭其他预设）"
       },
       "empty": "暂无预设",
       "unknownPlugin": "未知预设"
@@ -994,6 +995,9 @@
       "placeholders": {
         "githubUrl": "https://github.com/owner/repo",
         "name": "例如：my-preset"
+      },
+      "hints": {
+        "github": "默认为 main/master 分支，仅支持公开 GitHub 仓库"
       },
       "actions": {
         "back": "返回",

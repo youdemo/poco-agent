@@ -999,6 +999,11 @@
       "manual": "Manuell",
       "unknown": "Unbekannt"
     },
+    "pluginsManager": {
+      "toasts": {
+        "exclusiveEnabled": "(Andere Vorlagen wurden deaktiviert)"
+      }
+    },
     "presets": {
       "title": "Vorlagen",
       "description": "Wiederverwendbare Funktionsvorlagen verwalten"
