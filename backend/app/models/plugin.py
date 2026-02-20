@@ -19,6 +19,7 @@ class Plugin(Base, TimestampMixin):
     # Location info for staging the plugin into workspace
     # (e.g. {"s3_key": ".../", "is_prefix": true}).
     entry: Mapped[dict] = mapped_column(JSON, nullable=False)
+    source: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
     __table_args__ = (
         UniqueConstraint("name", "owner_user_id", name="uq_plugin_name_owner"),

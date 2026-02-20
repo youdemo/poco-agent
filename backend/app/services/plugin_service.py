@@ -7,6 +7,8 @@ from app.core.errors.exceptions import AppException
 from app.models.plugin import Plugin
 from app.repositories.plugin_repository import PluginRepository
 from app.schemas.plugin import PluginCreateRequest, PluginResponse, PluginUpdateRequest
+from app.schemas.source import SourceInfo
+from app.services.source_utils import infer_capability_source
 
 
 _PLUGIN_NAME_PATTERN = re.compile(r"^[A-Za-z0-9._-]+$")
@@ -56,6 +58,7 @@ class PluginService:
             version=request.version,
             manifest=request.manifest,
             entry=request.entry or {},
+            source={"kind": "manual"},
         )
         PluginRepository.create(db, plugin)
         db.commit()
@@ -137,10 +140,16 @@ class PluginService:
 
     @staticmethod
     def _to_response(plugin: Plugin) -> PluginResponse:
+        source_dict = infer_capability_source(
+            scope=plugin.scope,
+            source=getattr(plugin, "source", None),
+            entry=plugin.entry,
+        )
         return PluginResponse(
             id=plugin.id,
             name=plugin.name,
             entry=plugin.entry,
+            source=SourceInfo.model_validate(source_dict),
             scope=plugin.scope,
             owner_user_id=plugin.owner_user_id,
             description=plugin.description,
