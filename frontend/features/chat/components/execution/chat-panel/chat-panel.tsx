@@ -101,7 +101,6 @@ export function ChatPanel({
     isLoadingHistory,
     showTypingIndicator,
     sendMessage,
-    internalContextsByUserMessageId,
     runUsageByUserMessageId,
   } = useChatMessages({ session });
 
@@ -276,7 +275,6 @@ export function ChatPanel({
             sessionStatus={session?.status}
             repoUrl={session?.config_snapshot?.repo_url ?? null}
             gitBranch={session?.config_snapshot?.git_branch ?? null}
-            internalContextsByUserMessageId={internalContextsByUserMessageId}
             runUsageByUserMessageId={runUsageByUserMessageId}
             onEditMessage={handleEditMessage}
           />

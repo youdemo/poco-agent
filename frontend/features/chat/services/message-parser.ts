@@ -48,7 +48,6 @@ export interface RawApiMessage {
 
 export interface ParsedMessages {
   messages: ChatMessage[];
-  internalContextsByUserMessageId: Record<string, string[]>;
 }
 
 // ---------------------------------------------------------------------------
@@ -125,7 +124,6 @@ export function parseMessages(
   const canClassifyUserMessages = realUserMessageIdSet.size > 0;
 
   const processedMessages: ChatMessage[] = [];
-  const internalContextsByUserMessageId: Record<string, string[]> = {};
   const subagentTranscriptByToolUseId: Record<string, string[]> = {};
   let currentAssistantMessage: ChatMessage | null = null;
   let currentTurnUserMessageId: string | null = null;
@@ -303,13 +301,6 @@ export function parseMessages(
           : true;
 
         if (!isRealUserMessage) {
-          if (currentTurnUserMessageId) {
-            internalContextsByUserMessageId[currentTurnUserMessageId] = [
-              ...(internalContextsByUserMessageId[currentTurnUserMessageId] ||
-                []),
-              textContent,
-            ];
-          }
           continue;
         }
 
@@ -353,5 +344,5 @@ export function parseMessages(
     });
   }
 
-  return { messages: processedMessages, internalContextsByUserMessageId };
+  return { messages: processedMessages };
 }

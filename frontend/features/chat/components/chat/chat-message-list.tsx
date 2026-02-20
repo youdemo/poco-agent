@@ -15,7 +15,6 @@ export interface ChatMessageListProps {
   sessionStatus?: string;
   repoUrl?: string | null;
   gitBranch?: string | null;
-  internalContextsByUserMessageId?: Record<string, string[]>;
   runUsageByUserMessageId?: Record<string, UsageResponse | null>;
   onEditMessage?: (content: string) => void;
 }
@@ -26,7 +25,6 @@ export function ChatMessageList({
   sessionStatus,
   repoUrl,
   gitBranch,
-  internalContextsByUserMessageId,
   runUsageByUserMessageId,
   onEditMessage,
 }: ChatMessageListProps) {
@@ -37,35 +35,11 @@ export function ChatMessageList({
   const [isUserScrolling, setIsUserScrolling] = React.useState(false);
   const lastMessageCountRef = React.useRef(messages.length);
   const hasInitializedRef = React.useRef(false);
-  const [expandedInternalContextIds, setExpandedInternalContextIds] =
-    React.useState<Set<string>>(() => new Set());
 
   const firstUserMessageId = React.useMemo(() => {
     const first = messages.find((msg) => msg.role === "user");
     return first?.id ?? null;
   }, [messages]);
-
-  const toggleInternalContext = React.useCallback((messageId: string) => {
-    setExpandedInternalContextIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(messageId)) {
-        next.delete(messageId);
-      } else {
-        next.add(messageId);
-      }
-      return next;
-    });
-  }, []);
-
-  const copyInternalContext = React.useCallback(async (texts: string[]) => {
-    const joined = texts.filter(Boolean).join("\n\n");
-    if (!joined) return;
-    try {
-      await navigator.clipboard.writeText(joined);
-    } catch (err) {
-      console.error("Failed to copy internal context", err);
-    }
-  }, []);
 
   // Check if user has scrolled up
   const checkScrollPosition = React.useCallback(() => {
@@ -194,85 +168,17 @@ export function ChatMessageList({
         <div className="w-full min-w-0 max-w-full space-y-4 px-6 py-6">
           {messages.map((message, index) => {
             if (message.role === "user") {
-              const internalTexts =
-                internalContextsByUserMessageId?.[message.id] || [];
-              const expanded = expandedInternalContextIds.has(message.id);
-              const hasInternal = internalTexts.length > 0;
-
-              if (!hasInternal) {
-                return (
-                  <UserMessage
-                    key={message.id}
-                    content={message.content}
-                    attachments={message.attachments}
-                    repoUrl={message.id === firstUserMessageId ? repoUrl : null}
-                    gitBranch={
-                      message.id === firstUserMessageId ? gitBranch : null
-                    }
-                    onEdit={onEditMessage}
-                  />
-                );
-              }
-
               return (
-                <div key={message.id} className="space-y-2 w-full">
-                  <UserMessage
-                    content={message.content}
-                    attachments={message.attachments}
-                    repoUrl={message.id === firstUserMessageId ? repoUrl : null}
-                    gitBranch={
-                      message.id === firstUserMessageId ? gitBranch : null
-                    }
-                    onEdit={onEditMessage}
-                  />
-                  <div className="flex justify-end w-full">
-                    <div className="w-full min-w-0 max-w-[85%] rounded-md border border-border/60 bg-muted/20 px-3 py-2">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <div className="text-xs font-medium text-foreground">
-                            {t("chat.internalContextInjected")}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            {t("chat.internalContextSubtitle")}
-                          </div>
-                        </div>
-
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
-                          onClick={() => toggleInternalContext(message.id)}
-                        >
-                          {expanded
-                            ? t("chat.internalContextHide")
-                            : t("chat.internalContextView", {
-                                count: internalTexts.length,
-                              })}
-                        </Button>
-                      </div>
-
-                      {expanded && (
-                        <div className="mt-2 border-t border-border/50 pt-2 space-y-2">
-                          <div className="text-xs whitespace-pre-wrap break-words break-all text-foreground/90">
-                            {internalTexts.join("\n\n")}
-                          </div>
-                          <div className="flex justify-end">
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
-                              onClick={() => copyInternalContext(internalTexts)}
-                            >
-                              {t("chat.internalContextCopy")}
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                <UserMessage
+                  key={message.id}
+                  content={message.content}
+                  attachments={message.attachments}
+                  repoUrl={message.id === firstUserMessageId ? repoUrl : null}
+                  gitBranch={
+                    message.id === firstUserMessageId ? gitBranch : null
+                  }
+                  onEdit={onEditMessage}
+                />
               );
             }
 

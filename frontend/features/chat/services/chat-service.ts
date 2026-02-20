@@ -228,10 +228,11 @@ export const chatService = {
       const rawMessages = await apiClient.get<RawApiMessage[]>(
         API_ENDPOINTS.sessionMessagesWithFiles(sessionId),
       );
-      return parseMessages(rawMessages, options?.realUserMessageIds);
+      const parsed = parseMessages(rawMessages, options?.realUserMessageIds);
+      return parsed;
     } catch (error) {
       console.error("[Chat Service] Failed to get messages:", error);
-      return { messages: [], internalContextsByUserMessageId: {} };
+      return { messages: [] };
     }
   },
 

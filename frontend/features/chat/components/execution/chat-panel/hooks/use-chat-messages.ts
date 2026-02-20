@@ -23,7 +23,6 @@ interface UseChatMessagesReturn {
   isTyping: boolean;
   showTypingIndicator: boolean;
   sendMessage: (content: string, attachments?: InputFile[]) => Promise<void>;
-  internalContextsByUserMessageId: Record<string, string[]>;
   runUsageByUserMessageId: Record<string, UsageResponse | null>;
 }
 
@@ -45,8 +44,6 @@ export function useChatMessages({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const [internalContextsByUserMessageId, setInternalContextsByUserMessageId] =
-    useState<Record<string, string[]>>({});
   const [runUsageByUserMessageId, setRunUsageByUserMessageId] = useState<
     Record<string, UsageResponse | null>
   >({});
@@ -181,9 +178,6 @@ export function useChatMessages({
 
         // Fetch latest messages immediately to confirm sync
         const server = await fetchMessagesWithFilter(sessionId);
-        setInternalContextsByUserMessageId(
-          server.internalContextsByUserMessageId,
-        );
         setMessages((prev) => mergeMessages(prev, server.messages));
       } catch (error) {
         console.error("[Chat] Failed to send message or get reply:", error);
@@ -207,7 +201,6 @@ export function useChatMessages({
       setIsLoadingHistory(true);
       setMessages([]);
       setIsTyping(false);
-      setInternalContextsByUserMessageId({});
       realUserMessageIdsRef.current = null;
       setRunUsageByUserMessageId({});
       lastLoadedSessionIdRef.current = session.session_id;
@@ -216,9 +209,6 @@ export function useChatMessages({
     const fetchMessages = async () => {
       try {
         const history = await fetchMessagesWithFilter(session.session_id);
-        setInternalContextsByUserMessageId(
-          history.internalContextsByUserMessageId,
-        );
 
         setMessages((prev) => {
           // If it's the first load (empty prev), just set it
@@ -314,7 +304,6 @@ export function useChatMessages({
     isTyping,
     showTypingIndicator,
     sendMessage,
-    internalContextsByUserMessageId,
     runUsageByUserMessageId,
   };
 }
