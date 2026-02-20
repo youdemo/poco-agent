@@ -987,6 +987,11 @@
         "updated": "MCPサーバーを更新しました"
       }
     },
+    "pluginsManager": {
+      "toasts": {
+        "exclusiveEnabled": "（他のプリセットもオフにしました）"
+      }
+    },
     "presets": {
       "title": "プリセット",
       "description": "再利用可能な機能プリセットを管理"

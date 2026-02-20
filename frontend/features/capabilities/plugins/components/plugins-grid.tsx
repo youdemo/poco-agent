@@ -108,7 +108,7 @@ export function PluginsGrid({
                       </span>
                       {plugin.version && (
                         <Badge
-                          variant="secondary"
+                          variant="outline"
                           className="text-xs text-muted-foreground"
                         >
                           v{plugin.version}

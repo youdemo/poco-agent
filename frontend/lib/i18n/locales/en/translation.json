@@ -972,7 +972,7 @@
         "enabled": "Preset enabled",
         "disabled": "Preset disabled",
         "actionFailed": "Operation failed, please try again later",
-        "exclusiveEnabled": "Only one preset can be enabled at a time. Other presets were turned off."
+        "exclusiveEnabled": "(Other presets were turned off)"
       },
       "empty": "No presets yet",
       "unknownPlugin": "Unknown preset"

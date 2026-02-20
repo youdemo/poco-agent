@@ -991,6 +991,11 @@
         "updated": "MCP-Server aktualisiert"
       }
     },
+    "pluginsManager": {
+      "toasts": {
+        "exclusiveEnabled": "(Andere Vorlagen wurden deaktiviert)"
+      }
+    },
     "presets": {
       "title": "Vorlagen",
       "description": "Wiederverwendbare Funktionsvorlagen verwalten"

@@ -987,6 +987,11 @@
         "updated": "Serveur MCP mis à jour"
       }
     },
+    "pluginsManager": {
+      "toasts": {
+        "exclusiveEnabled": "(Autres préréglages désactivés)"
+      }
+    },
     "presets": {
       "title": "Préréglages",
       "description": "Gérer les préconfigurations de capacités réutilisables"
