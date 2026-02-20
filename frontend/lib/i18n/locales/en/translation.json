@@ -862,7 +862,8 @@
         "user": "User"
       },
       "fields": {
-        "id": "id"
+        "id": "id",
+        "source": "Source"
       },
       "actions": {
         "install": "Install",
@@ -958,7 +959,8 @@
         "user": "User"
       },
       "fields": {
-        "id": "id"
+        "id": "id",
+        "source": "Source"
       },
       "actions": {
         "install": "Install",
@@ -1091,6 +1093,13 @@
         "created": "MCP server created",
         "updated": "MCP server updated"
       }
+    },
+    "sources": {
+      "github": "GitHub",
+      "zip": "ZIP",
+      "system": "System",
+      "manual": "Manual",
+      "unknown": "Unknown"
     },
     "presets": {
       "title": "Presets",

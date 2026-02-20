@@ -36,11 +36,22 @@ export function PluginsPageClient() {
   const filteredPlugins = useMemo(() => {
     if (!searchQuery) return plugins;
     const lowerQuery = searchQuery.toLowerCase();
-    return plugins.filter(
-      (plugin) =>
+    return plugins.filter((plugin) => {
+      const repo =
+        typeof plugin.source?.repo === "string" ? plugin.source.repo : "";
+      const filename =
+        typeof plugin.source?.filename === "string"
+          ? plugin.source.filename
+          : "";
+      const description =
+        typeof plugin.description === "string" ? plugin.description : "";
+      return (
         plugin.name.toLowerCase().includes(lowerQuery) ||
-        String(plugin.id).includes(lowerQuery),
-    );
+        description.toLowerCase().includes(lowerQuery) ||
+        repo.toLowerCase().includes(lowerQuery) ||
+        filename.toLowerCase().includes(lowerQuery)
+      );
+    });
   }, [plugins, searchQuery]);
 
   const pagination = usePagination(filteredPlugins, { pageSize: PAGE_SIZE });

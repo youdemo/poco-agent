@@ -850,7 +850,8 @@
         "user": "Пользователь"
       },
       "fields": {
-        "id": "id"
+        "id": "id",
+        "source": "Источник"
       },
       "actions": {
         "install": "Установить",
@@ -986,6 +987,13 @@
         "created": "MCP сервер создан",
         "updated": "MCP сервер обновлён"
       }
+    },
+    "sources": {
+      "github": "GitHub",
+      "zip": "ZIP",
+      "system": "Система",
+      "manual": "Вручную",
+      "unknown": "Неизвестно"
     },
     "presets": {
       "title": "Пресеты",

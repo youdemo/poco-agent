@@ -36,11 +36,17 @@ export function SkillsPageClient() {
   const filteredSkills = useMemo(() => {
     if (!searchQuery) return skills;
     const lowerQuery = searchQuery.toLowerCase();
-    return skills.filter(
-      (skill) =>
+    return skills.filter((skill) => {
+      const repo =
+        typeof skill.source?.repo === "string" ? skill.source.repo : "";
+      const filename =
+        typeof skill.source?.filename === "string" ? skill.source.filename : "";
+      return (
         skill.name.toLowerCase().includes(lowerQuery) ||
-        String(skill.id).includes(lowerQuery),
-    );
+        repo.toLowerCase().includes(lowerQuery) ||
+        filename.toLowerCase().includes(lowerQuery)
+      );
+    });
   }, [skills, searchQuery]);
 
   const pagination = usePagination(filteredSkills, { pageSize: PAGE_SIZE });

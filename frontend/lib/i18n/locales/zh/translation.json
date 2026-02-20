@@ -862,7 +862,8 @@
         "user": "个人"
       },
       "fields": {
-        "id": "id"
+        "id": "id",
+        "source": "来源"
       },
       "actions": {
         "install": "安装",
@@ -958,7 +959,8 @@
         "user": "个人"
       },
       "fields": {
-        "id": "id"
+        "id": "id",
+        "source": "来源"
       },
       "actions": {
         "install": "安装",
@@ -1091,6 +1093,13 @@
         "created": "MCP 服务器已创建",
         "updated": "MCP 服务器已更新"
       }
+    },
+    "sources": {
+      "github": "GitHub",
+      "zip": "ZIP",
+      "system": "系统",
+      "manual": "手动",
+      "unknown": "未知"
     },
     "presets": {
       "title": "预设",

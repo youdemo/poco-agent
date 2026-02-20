@@ -850,7 +850,8 @@
         "user": "ユーザー"
       },
       "fields": {
-        "id": "ID"
+        "id": "ID",
+        "source": "ソース"
       },
       "actions": {
         "install": "インストール",
@@ -986,6 +987,13 @@
         "created": "MCPサーバーを作成しました",
         "updated": "MCPサーバーを更新しました"
       }
+    },
+    "sources": {
+      "github": "GitHub",
+      "zip": "ZIP",
+      "system": "システム",
+      "manual": "手動",
+      "unknown": "不明"
     },
     "presets": {
       "title": "プリセット",
