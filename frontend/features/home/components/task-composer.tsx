@@ -159,20 +159,6 @@ export function TaskComposer({
     return formatScheduleSummary(inferred, t);
   }, [scheduledCron, t]);
 
-  const runScheduleSummary = React.useMemo(() => {
-    if (runScheduleMode === "nightly")
-      return t("hero.runSchedule.badge.nightly");
-    if (runScheduleMode === "scheduled") {
-      const dt = (runScheduledAt || "").trim();
-      return dt
-        ? t("hero.runSchedule.badge.scheduled", {
-            datetime: dt.replace("T", " "),
-          })
-        : t("hero.runSchedule.badge.scheduledEmpty");
-    }
-    return t("hero.runSchedule.badge.immediate");
-  }, [runScheduleMode, runScheduledAt, t]);
-
   // ---- Effects ----
 
   // Auto-detect timezone

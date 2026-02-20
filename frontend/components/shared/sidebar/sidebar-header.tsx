@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import {
   PanelLeftClose,
@@ -87,9 +88,12 @@ export function SidebarHeaderSection({ onNewTask }: SidebarHeaderSectionProps) {
             style={{ border: "none", boxShadow: "none" }}
           >
             <span className="flex items-center justify-center w-full h-full">
-              <img
+              <Image
                 src="/logo.svg"
                 alt="Poco"
+                width={26}
+                height={26}
+                sizes="26px"
                 className="size-full object-cover transition-opacity group-data-[collapsible=icon]:group-hover/logo:opacity-0"
                 style={{ border: "none", boxShadow: "none" }}
               />

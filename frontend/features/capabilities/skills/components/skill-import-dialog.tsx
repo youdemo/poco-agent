@@ -55,7 +55,6 @@ export function SkillImportDialog({
 
   const [isDiscovering, setIsDiscovering] = useState(false);
   const [isCommitting, setIsCommitting] = useState(false);
-  const [commitJobId, setCommitJobId] = useState<string | null>(null);
   const [commitProgress, setCommitProgress] = useState<number | null>(null);
   const [commitError, setCommitError] = useState<string | null>(null);
   const [commitResult, setCommitResult] =
@@ -79,7 +78,6 @@ export function SkillImportDialog({
     setSelections({});
     setIsDiscovering(false);
     setIsCommitting(false);
-    setCommitJobId(null);
     setCommitProgress(null);
     setCommitError(null);
     setCommitResult(null);
@@ -190,7 +188,6 @@ export function SkillImportDialog({
     setCommitError(null);
     setCommitResult(null);
     setCommitProgress(0);
-    setCommitJobId(null);
     try {
       const payload = {
         archive_key: archiveKey,
@@ -203,7 +200,6 @@ export function SkillImportDialog({
       };
 
       const enqueue = await skillsService.importCommit(payload);
-      setCommitJobId(enqueue.job_id);
 
       const startedAt = Date.now();
       let finalError: string | null = null;

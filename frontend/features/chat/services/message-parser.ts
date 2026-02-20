@@ -126,7 +126,6 @@ export function parseMessages(
   const processedMessages: ChatMessage[] = [];
   const subagentTranscriptByToolUseId: Record<string, string[]> = {};
   let currentAssistantMessage: ChatMessage | null = null;
-  let currentTurnUserMessageId: string | null = null;
 
   for (const msg of rawMessages) {
     const contentObj = msg.content as MessageContentShape;
@@ -305,7 +304,6 @@ export function parseMessages(
         }
 
         currentAssistantMessage = null;
-        currentTurnUserMessageId = msg.id.toString();
         processedMessages.push({
           id: msg.id.toString(),
           role: "user",
